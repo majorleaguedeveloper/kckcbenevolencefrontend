@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Benevolence Fund Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .role-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid #fcc;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #373;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid #cfc;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .demo-credentials {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .demo-credentials h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .demo-credentials p {
+            color: #666;
+            margin: 0.3rem 0;
+        }
+
+        .demo-credentials code {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .demo-credentials p {
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+        .demo-credentials p:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        .demo-credentials p:active {
+            background-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 2rem 1.5rem;
+                margin: 10px;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="logo-icon">🤝</div>
+            <div class="logo-text">Benevolence Fund</div>
+        </div>
+
+        <a href="index.html" class="back-link">Back to Portal Selection</a>
+
+        <div class="login-header">
+            <div class="role-indicator" id="roleIndicator">Member Login</div>
+            <h1>Welcome Back</h1>
+            <p>Sign in to access your portal</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required 
+                       placeholder="Enter your email address">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required 
+                       placeholder="Enter your password">
+            </div>
+
+            <button type="submit" class="btn" id="loginBtn">
+                <span id="loginText">Sign In</span>
+                <div class="loading-spinner" id="loadingSpinner"></div>
+            </button>
+        </form>
+
+        <div class="demo-credentials" id="demoCredentials">
+            <h4>Demo Credentials:</h4>
+            <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 10px;">Click any credential below to auto-fill the login form</p>
+            <div id="credentialsList">
+                <!-- Credentials will be populated by JavaScript based on role -->
+            </div>
+        </div>
+    </div>
+
+    <script src="shared/auth.js"></script>
+    <script>
+        // Get role from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetRole = urlParams.get('role') || 'member';
+        
+        // Update UI based on target role
+        document.getElementById('roleIndicator').textContent = 
+            targetRole === 'admin' ? 'Admin Login' : 'Member Login';
+
+        // Populate demo credentials based on role
+        const credentialsList = document.getElementById('credentialsList');
+        if (targetRole === 'admin') {
+            credentialsList.innerHTML = `
+                <p onclick="fillCredentials('admin1@benevolence.fund', 'admin123456')">
+                    <strong>Admin 1:</strong> <code>admin1@benevolence.fund</code> / <code>admin123456</code>
+                </p>
+                <p onclick="fillCredentials('admin2@benevolence.fund', 'admin123456')">
+                    <strong>Admin 2:</strong> <code>admin2@benevolence.fund</code> / <code>admin123456</code>
+                </p>
+            `;
+            // Auto-fill with first admin credentials
+            document.getElementById('email').value = 'admin1@benevolence.fund';
+            document.getElementById('password').value = 'admin123456';
+        } else {
+            credentialsList.innerHTML = `
+                <p onclick="fillCredentials('member1@benevolence.fund', 'member123456')">
+                    <strong>Member 1:</strong> <code>member1@benevolence.fund</code> / <code>member123456</code>
+                </p>
+                <p onclick="fillCredentials('member2@benevolence.fund', 'member123456')">
+                    <strong>Member 2:</strong> <code>member2@benevolence.fund</code> / <code>member123456</code>
+                </p>
+                <p onclick="fillCredentials('member3@benevolence.fund', 'member123456')">
+                    <strong>Member 3:</strong> <code>member3@benevolence.fund</code> / <code>member123456</code>
+                </p>
+                <p onclick="fillCredentials('member4@benevolence.fund', 'member123456')">
+                    <strong>Member 4:</strong> <code>member4@benevolence.fund</code> / <code>member123456</code>
+                </p>
+            `;
+            // Auto-fill with first member credentials
+            document.getElementById('email').value = 'member1@benevolence.fund';
+            document.getElementById('password').value = 'member123456';
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginText = document.getElementById('loginText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        function fillCredentials(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+            hideMessages();
+            
+            // Add visual feedback
+            const emailField = document.getElementById('email');
+            const passwordField = document.getElementById('password');
+            emailField.style.borderColor = '#667eea';
+            passwordField.style.borderColor = '#667eea';
+            
+            setTimeout(() => {
+                emailField.style.borderColor = '';
+                passwordField.style.borderColor = '';
+            }, 1000);
+        }
+
+        function setLoading(loading) {
+            loginBtn.disabled = loading;
+            if (loading) {
+                loginText.style.display = 'none';
+                loadingSpinner.style.display = 'block';
+            } else {
+                loginText.style.display = 'inline';
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            setLoading(true);
+            hideMessages();
+
+            try {
+                const result = await AuthService.login(email, password);
+
+                if (result.success) {
+                    const user = result.user;
+                    
+                    // Check if user role matches target role
+                    if (targetRole === 'admin' && user.role !== 'admin') {
+                        showError('Admin access required. Please use admin credentials.');
+                        setLoading(false);
+                        return;
+                    }
+                    
+                    if (targetRole === 'member' && user.role === 'admin') {
+                        showError('This is the member portal. Use admin credentials in the admin portal.');
+                        setLoading(false);
+                        return;
+                    }
+
+                    showSuccess('Login successful! Redirecting...');
+                    
+                    // Redirect based on actual user role
+                    setTimeout(() => {
+                        if (user.role === 'admin') {
+                            window.location.href = 'admin/index.html';
+                        } else {
+                            window.location.href = 'member/index.html';
+                        }
+                    }, 1500);
+                    
+                } else {
+                    showError(result.message || 'Login failed. Please try again.');
+                    setLoading(false);
+                }
+            } catch (error) {
+                showError('Network error. Please check your connection and try again.');
+                setLoading(false);
+                console.error('Login error:', error);
+            }
+        });
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = AuthService.getToken();
+            const user = AuthService.getUser();
+            
+            if (token && user) {
+                showSuccess('Already logged in. Redirecting...');
+                setLoading(true);
+                
+                setTimeout(() => {
+                    if (user.role === 'admin') {
+                        window.location.href = 'admin/index.html';
+                    } else {
+                        window.location.href = 'member/index.html';
+                    }
+                }, 1000);
+            }
+        });
+
+        // Auto-submit form when demo credentials are pre-filled (for quick testing)
+        setTimeout(() => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password && (email.includes('admin1@') || email.includes('member1@'))) {
+                // Only auto-submit if credentials match the demo ones exactly
+                if ((email === 'admin1@benevolence.fund' && password === 'admin123456') ||
+                    (email === 'member1@benevolence.fund' && password === 'member123456')) {
+                    // Add a visual indicator that auto-login will happen
+                    const autoLoginNote = document.createElement('div');
+                    autoLoginNote.style.cssText = `
+                        background: rgba(102, 126, 234, 0.1);
+                        color: #667eea;
+                        padding: 8px;
+                        border-radius: 8px;
+                        font-size: 0.8rem;
+                        margin-top: 1rem;
+                        text-align: center;
+                    `;
+                    autoLoginNote.textContent = 'Demo credentials loaded. Click "Sign In" to continue.';
+                    document.querySelector('.login-container').appendChild(autoLoginNote);
+                }
+            }
+        }, 500);
+    </script>
+</body>
+</html>
