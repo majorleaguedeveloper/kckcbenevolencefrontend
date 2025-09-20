@@ -36,17 +36,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Logout button handler
-    document.getElementById('logout-btn').addEventListener('click', function() {
-        AuthService.logout();
-    });
+    // Logout is now handled by the navbar component
 });
 
 function showDashboard() {
     const user = AuthService.getUser();
     
-    // Inject navbar with user information
-    injectNavbar('member', `${user.firstName} ${user.lastName}`);
+    // Update navbar with user information (navbar is auto-injected via data-navbar attribute)
+    const userNameElement = document.querySelector('.navbar-user, .mobile-user');
+    if (userNameElement) {
+        userNameElement.textContent = `${user.firstName} ${user.lastName}`;
+    }
     
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('dashboard-section').classList.remove('hidden');

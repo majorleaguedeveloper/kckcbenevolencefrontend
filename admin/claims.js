@@ -12,8 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Inject navbar with user information
-    injectNavbar('admin', `${user.firstName} ${user.lastName}`);
+    // Update navbar with user information (navbar is auto-injected via data-navbar attribute)
+    const userNameElement = document.querySelector('.navbar-user, .mobile-user');
+    if (userNameElement) {
+        userNameElement.textContent = `${user.firstName} ${user.lastName}`;
+    }
 
     // Load claims and stats on page load
     loadClaimsStats();
