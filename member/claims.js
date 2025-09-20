@@ -117,9 +117,6 @@ function displayClaims(claims) {
             
             <div class="claim-actions">
                 <button onclick="viewClaimDetails('${claim._id}')" class="btn btn-outline">View Details</button>
-                ${claim.status === 'pending' ? `
-                    <button onclick="editClaim('${claim._id}')" class="btn btn-secondary">Edit</button>
-                ` : ''}
             </div>
         </div>
     `).join('');
@@ -450,11 +447,6 @@ function displayClaimDetailsModal(claim) {
     document.getElementById('claim-details-modal').style.display = 'block';
 }
 
-function editClaim(claimId) {
-    // This could be implemented to pre-fill the form with existing claim data
-    // For now, we'll show a message
-    alert('Edit functionality coming soon. For now, please contact an administrator to modify your claim.');
-}
 
 function resetClaimForm() {
     document.getElementById('new-claim-form').reset();

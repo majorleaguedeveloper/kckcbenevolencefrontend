@@ -13,6 +13,27 @@
             margin-bottom: 2rem;
         }
         
+        /* Mobile responsive layout for claims header */
+        @media (max-width: 768px) {
+            .claims-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .claims-header h2 {
+                margin-bottom: 0;
+                font-size: 1.5rem;
+            }
+            
+            .claims-header .btn {
+                width: 100%;
+                text-align: center;
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+        }
+        
         .claims-filters {
             display: flex;
             gap: 1rem;
@@ -206,11 +227,15 @@
                 <span class="portal-badge">Member Portal - Claims</span>
             </div>
             <div class="header-actions">
-                <span id="member-name" class="user-info"></span>
-                <a href="index.html" class="btn btn-outline">Dashboard</a>
-                <a href="profile.html" class="btn btn-outline">My Profile</a>
-                <a href="../index.html" class="btn btn-outline">Home</a>
-                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                    ☰
+                </button>
+                <div class="nav-menu" id="nav-menu">
+                    <span id="member-name" class="user-info"></span>
+                    <a href="index.html" class="btn btn-outline">Dashboard</a>
+                    <a href="profile.html" class="btn btn-outline">My Profile</a>
+                    <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                </div>
             </div>
         </header>
 
@@ -289,6 +314,7 @@
     </div>
 
     <script src="../shared/auth.js"></script>
+    <script src="../shared/mobile-nav.js"></script>
     <script src="claims.js"></script>
 </body>
 </html>

@@ -13,6 +13,27 @@
             margin-bottom: 2rem;
         }
         
+        /* Mobile responsive layout for users header */
+        @media (max-width: 768px) {
+            .users-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .users-header h2 {
+                margin-bottom: 0;
+                font-size: 1.5rem;
+            }
+            
+            .users-header .btn {
+                width: 100%;
+                text-align: center;
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+        }
+        
         .users-filters {
             display: flex;
             gap: 1rem;
@@ -340,11 +361,15 @@
                 <span class="portal-badge">Admin Portal - User Management</span>
             </div>
             <div class="header-actions">
-                <span id="admin-name" class="user-info"></span>
-                <a href="index.html" class="btn btn-outline">Dashboard</a>
-                <a href="claims.html" class="btn btn-outline">Claims Management</a>
-                <a href="../index.html" class="btn btn-outline">Home</a>
-                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                    ☰
+                </button>
+                <div class="nav-menu" id="nav-menu">
+                    <span id="admin-name" class="user-info"></span>
+                    <a href="index.html" class="btn btn-outline">Dashboard</a>
+                    <a href="claims.html" class="btn btn-outline">Claims Management</a>
+                    <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                </div>
             </div>
         </header>
 
@@ -413,6 +438,7 @@
     </div>
 
     <script src="../shared/auth.js"></script>
+    <script src="../shared/mobile-nav.js"></script>
     <script src="users.js"></script>
 </body>
 </html>
