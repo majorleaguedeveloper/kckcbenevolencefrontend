@@ -6,7 +6,7 @@
 .container,
 .dashboard-content,
 main {
-    margin-top: 90px !important;
+    margin-top: 20px !important;
 }
 
 /* Hide any remaining old dashboard headers */
@@ -19,7 +19,7 @@ main {
     .container,
     .dashboard-content,
     main {
-        margin-top: 80px !important;
+        margin-top: 20px !important;
     }
 }
 
@@ -27,6 +27,6 @@ main {
     .container,
     .dashboard-content,
     main {
-        margin-top: 76px !important;
+        margin-top: 20px !important;
     }
 }
