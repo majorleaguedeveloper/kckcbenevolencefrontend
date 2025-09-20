@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - Benevolence Fund Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .verify-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .verify-header {
+            margin-bottom: 2rem;
+        }
+
+        .verify-header h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .verify-header p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .email-display {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 0.5rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            font-family: 'Courier New', monospace;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(102, 126, 234, 0.2);
+            box-shadow: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid #fcc;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #373;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid #cfc;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .timer {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+
+        .timer.expired {
+            color: #e74c3c;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .verify-container {
+                padding: 2rem 1.5rem;
+                margin: 10px;
+            }
+            
+            .verify-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-container">
+        <div class="logo">
+            <div class="logo-icon">🤝</div>
+            <div class="logo-text">Benevolence Fund</div>
+        </div>
+
+        <div class="verify-header">
+            <h1>Verify Your Email</h1>
+            <p>We've sent a verification code to:</p>
+            <div class="email-display" id="emailDisplay"></div>
+            <p>Please enter the 6-digit code below to complete your registration.</p>
+        </div>
+
+        <form id="verifyForm">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <div class="form-group">
+                <label for="verificationCode">Verification Code</label>
+                <input type="text" id="verificationCode" class="code-input" 
+                       maxlength="6" placeholder="000000" required>
+            </div>
+
+            <div class="timer" id="timer">Code expires in: <span id="timeLeft">10:00</span></div>
+
+            <button type="submit" class="btn" id="verifyBtn">
+                <span id="verifyText">Verify Email</span>
+                <div class="loading-spinner" id="loadingSpinner"></div>
+            </button>
+
+            <button type="button" class="btn btn-secondary" id="resendBtn">
+                Resend Code
+            </button>
+        </form>
+
+        <a href="register.html" class="back-link">Back to Registration</a>
+    </div>
+
+    <script src="shared/auth.js"></script>
+    <script>
+        class EmailVerification {
+            constructor() {
+                this.email = '';
+                this.timeLeft = 600; // 10 minutes in seconds
+                this.timer = null;
+                this.initializeForm();
+            }
+
+            initializeForm() {
+                // Get email from URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                this.email = urlParams.get('email') || '';
+                
+                if (!this.email) {
+                    this.showError('No email provided. Please start registration again.');
+                    return;
+                }
+
+                document.getElementById('emailDisplay').textContent = this.email;
+                
+                // Set up event listeners
+                document.getElementById('verifyForm').addEventListener('submit', this.handleVerify.bind(this));
+                document.getElementById('resendBtn').addEventListener('click', this.handleResend.bind(this));
+                
+                // Format verification code input
+                const codeInput = document.getElementById('verificationCode');
+                codeInput.addEventListener('input', this.formatCodeInput.bind(this));
+                
+                // Start countdown timer
+                this.startTimer();
+            }
+
+            formatCodeInput(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 6) value = value.substr(0, 6);
+                e.target.value = value;
+            }
+
+            startTimer() {
+                this.timer = setInterval(() => {
+                    this.timeLeft--;
+                    this.updateTimerDisplay();
+                    
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timer);
+                        this.onTimerExpired();
+                    }
+                }, 1000);
+                
+                this.updateTimerDisplay();
+            }
+
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                const timeLeftElement = document.getElementById('timeLeft');
+                timeLeftElement.textContent = timeString;
+                
+                if (this.timeLeft <= 60) {
+                    document.getElementById('timer').classList.add('expired');
+                }
+            }
+
+            onTimerExpired() {
+                document.getElementById('timer').textContent = 'Code expired. Please request a new one.';
+                document.getElementById('verifyBtn').disabled = true;
+                this.showError('Verification code has expired. Please request a new code.');
+            }
+
+            showError(message) {
+                const errorElement = document.getElementById('errorMessage');
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+            }
+
+            showSuccess(message) {
+                const successElement = document.getElementById('successMessage');
+                successElement.textContent = message;
+                successElement.style.display = 'block';
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+
+            hideMessages() {
+                document.getElementById('errorMessage').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'none';
+            }
+
+            setLoading(loading, buttonId = 'verifyBtn', textId = 'verifyText') {
+                const btn = document.getElementById(buttonId);
+                const text = document.getElementById(textId);
+                const spinner = document.getElementById('loadingSpinner');
+                
+                btn.disabled = loading;
+                if (loading) {
+                    if (text) text.style.display = 'none';
+                    spinner.style.display = 'block';
+                } else {
+                    if (text) text.style.display = 'inline';
+                    spinner.style.display = 'none';
+                }
+            }
+
+            async handleVerify(e) {
+                e.preventDefault();
+                this.hideMessages();
+
+                const code = document.getElementById('verificationCode').value.trim();
+                
+                if (!code || code.length !== 6) {
+                    this.showError('Please enter a valid 6-digit verification code');
+                    return;
+                }
+
+                this.setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: this.email,
+                            code: code
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        clearInterval(this.timer);
+                        this.showSuccess('Email verified successfully! Redirecting to member portal...');
+                        
+                        // Store tokens and user data
+                        AuthService.setTokens(data.accessToken, data.refreshToken);
+                        AuthService.setUser(data.user);
+                        
+                        setTimeout(() => {
+                            window.location.href = 'member/index.html';
+                        }, 2000);
+                    } else {
+                        this.showError(data.message || 'Verification failed. Please try again.');
+                        this.setLoading(false);
+                    }
+                } catch (error) {
+                    console.error('Verification error:', error);
+                    this.showError('Network error. Please check your connection and try again.');
+                    this.setLoading(false);
+                }
+            }
+
+            async handleResend() {
+                this.hideMessages();
+                this.setLoading(true, 'resendBtn');
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: this.email
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        this.showSuccess('New verification code sent to your email!');
+                        
+                        // Reset timer
+                        clearInterval(this.timer);
+                        this.timeLeft = 600;
+                        document.getElementById('timer').classList.remove('expired');
+                        document.getElementById('verifyBtn').disabled = false;
+                        this.startTimer();
+                        
+                        this.setLoading(false, 'resendBtn');
+                    } else {
+                        this.showError(data.message || 'Failed to resend code. Please try again.');
+                        this.setLoading(false, 'resendBtn');
+                    }
+                } catch (error) {
+                    console.error('Resend error:', error);
+                    this.showError('Network error. Please check your connection and try again.');
+                    this.setLoading(false, 'resendBtn');
+                }
+            }
+        }
+
+        // Initialize when DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            new EmailVerification();
+        });
+    </script>
+</body>
+</html>

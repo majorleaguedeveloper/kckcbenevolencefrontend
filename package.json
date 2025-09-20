@@ -1,0 +1,12 @@
+{
+  "name": "benevolence-fund-frontend",
+  "version": "1.0.0",
+  "description": "Benevolence Fund Portal Frontend",
+  "scripts": {
+    "build": "echo 'Static site - no build required' && exit 0",
+    "start": "echo 'Static site - use a static server' && exit 0"
+  },
+  "keywords": ["benevolence", "fund", "portal"],
+  "author": "Your Organization",
+  "license": "ISC"
+}

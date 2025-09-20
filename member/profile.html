@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Benevolence Fund</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-role {
+            font-size: 1rem;
+            opacity: 0.9;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .profile-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e1e5e9;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .family-section {
+            margin-top: 1.5rem;
+        }
+
+        .family-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .family-header h4 {
+            font-size: 1.1rem;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+
+        .family-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .family-member {
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.15);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .family-member-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .family-member-relation {
+            color: #667eea;
+            font-size: 0.9rem;
+            text-transform: capitalize;
+            margin-bottom: 4px;
+        }
+
+        .family-member-dob {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-button::before {
+            content: '←';
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        .error {
+            text-align: center;
+            color: #dc3545;
+            padding: 2rem;
+            background: #f8d7da;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .member-since {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 10px;
+            }
+            
+            .profile-header {
+                padding: 1.5rem;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .family-members {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <a href="index.html" class="back-button">Back to Dashboard</a>
+            <a href="claims.html" class="back-button">My Claims</a>
+        </div>
+        
+        <div id="loading" class="loading">Loading profile...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div id="profileContent" style="display: none;">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-name" id="profileName">Loading...</div>
+                <div class="profile-role">Member</div>
+                <div class="member-since" id="memberSince">Member since...</div>
+            </div>
+
+            <!-- Personal Information Section -->
+            <div class="profile-section">
+                <div class="section-header">
+                    <div class="section-icon">👤</div>
+                    <div class="section-title">Personal Information</div>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">First Name</div>
+                        <div class="info-value" id="firstName">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Name</div>
+                        <div class="info-value" id="lastName">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email Address</div>
+                        <div class="info-value" id="email">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone Number</div>
+                        <div class="info-value" id="phone">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Account Status</div>
+                        <div class="info-value" id="accountStatus">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Login</div>
+                        <div class="info-value" id="lastLogin">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Family Information Section -->
+            <div class="profile-section">
+                <div class="section-header">
+                    <div class="section-icon">👨‍👩‍👧‍👦</div>
+                    <div class="section-title">Family Information</div>
+                </div>
+                
+                <!-- Spouse Section -->
+                <div class="family-section" id="spouseSection">
+                    <div class="family-header">
+                        <span>💑</span>
+                        <h4>Spouse</h4>
+                    </div>
+                    <div id="spouseContent">
+                        <div class="no-data">No spouse information provided</div>
+                    </div>
+                </div>
+
+                <!-- Children Section -->
+                <div class="family-section" id="childrenSection">
+                    <div class="family-header">
+                        <span>👶</span>
+                        <h4>Children</h4>
+                    </div>
+                    <div id="childrenContent">
+                        <div class="no-data">No children information provided</div>
+                    </div>
+                </div>
+
+                <!-- Parents Section -->
+                <div class="family-section" id="parentsSection">
+                    <div class="family-header">
+                        <span>👨‍👩‍👦</span>
+                        <h4>Parents</h4>
+                    </div>
+                    <div id="parentsContent">
+                        <div class="no-data">No parents information provided</div>
+                    </div>
+                </div>
+
+                <!-- Siblings Section -->
+                <div class="family-section" id="siblingsSection">
+                    <div class="family-header">
+                        <span>👫</span>
+                        <h4>Siblings</h4>
+                    </div>
+                    <div id="siblingsContent">
+                        <div class="no-data">No siblings information provided</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../shared/auth.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>

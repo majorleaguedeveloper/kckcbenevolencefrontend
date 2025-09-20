@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .test-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: rgba(40, 167, 69, 0.3);
+            border: 1px solid #28a745;
+        }
+        .error {
+            background: rgba(220, 53, 69, 0.3);
+            border: 1px solid #dc3545;
+        }
+        .pending {
+            background: rgba(255, 193, 7, 0.3);
+            border: 1px solid #ffc107;
+            color: #333;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        .nav-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Benevolence Fund - API Connection Test</h1>
+        
+        <div id="api-status" class="test-result pending">
+            🔌 API Status: Testing connection...
+        </div>
+        
+        <div id="test-results"></div>
+        
+        <div style="margin: 20px 0;">
+            <button onclick="testConnection()">🔄 Test API Connection</button>
+            <button onclick="testRegistration()">📝 Test Registration API</button>
+            <button onclick="testLogin()">🔑 Test Login API</button>
+        </div>
+        
+        <div class="nav-links">
+            <a href="index.html">🏠 Home</a>
+            <a href="register.html">📝 Register</a>
+            <a href="login.html">🔑 Login</a>
+            <a href="admin/index.html">⚙️ Admin</a>
+            <a href="member/index.html">👥 Member</a>
+        </div>
+    </div>
+
+    <script src="shared/auth.js"></script>
+    <script>
+        let testResults = [];
+
+        async function testConnection() {
+            updateStatus('🔌 Testing API connection...', 'pending');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+                
+                if (response.ok && data.status === 'OK') {
+                    updateStatus('✅ API Connection: SUCCESS', 'success');
+                    addTestResult('API Health Check', 'SUCCESS', `Backend is running at ${API_BASE_URL}`);
+                } else {
+                    updateStatus('❌ API Connection: FAILED', 'error');
+                    addTestResult('API Health Check', 'FAILED', `Response: ${response.status}`);
+                }
+            } catch (error) {
+                updateStatus('❌ API Connection: ERROR', 'error');
+                addTestResult('API Health Check', 'ERROR', `Error: ${error.message}`);
+            }
+        }
+
+        async function testRegistration() {
+            addTestResult('Registration API', 'TESTING', 'Testing registration endpoint...');
+            
+            try {
+                // Test with invalid data to check validation
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        firstName: 'Test',
+                        lastName: 'User',
+                        email: 'invalid-email', // Invalid email to test validation
+                        phone: '+1234567890',
+                        password: '123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 400 && data.errors) {
+                    addTestResult('Registration API', 'SUCCESS', 'Validation working correctly');
+                } else {
+                    addTestResult('Registration API', 'UNEXPECTED', `Status: ${response.status}, Data: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                addTestResult('Registration API', 'ERROR', `Error: ${error.message}`);
+            }
+        }
+
+        async function testLogin() {
+            addTestResult('Login API', 'TESTING', 'Testing login endpoint...');
+            
+            try {
+                // Test with invalid credentials
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'nonexistent@test.com',
+                        password: 'wrongpassword'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 400 && data.message) {
+                    addTestResult('Login API', 'SUCCESS', 'Authentication endpoint responding correctly');
+                } else {
+                    addTestResult('Login API', 'UNEXPECTED', `Status: ${response.status}, Data: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                addTestResult('Login API', 'ERROR', `Error: ${error.message}`);
+            }
+        }
+
+        function updateStatus(message, type) {
+            const statusEl = document.getElementById('api-status');
+            statusEl.textContent = message;
+            statusEl.className = `test-result ${type}`;
+        }
+
+        function addTestResult(test, status, details) {
+            const resultsEl = document.getElementById('test-results');
+            const statusClass = status.toLowerCase() === 'success' ? 'success' : 
+                              status.toLowerCase() === 'error' ? 'error' : 'pending';
+            
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${statusClass}`;
+            resultDiv.innerHTML = `
+                <strong>${test}:</strong> ${status}<br>
+                <small>${details}</small>
+            `;
+            
+            resultsEl.appendChild(resultDiv);
+        }
+
+        // Auto-test connection on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            testConnection();
+        });
+    </script>
+</body>
+</html>

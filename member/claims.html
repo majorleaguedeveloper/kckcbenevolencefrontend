@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Claims - Benevolence Fund</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .claims-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .claims-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .claim-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #ddd;
+        }
+        
+        .claim-card.pending { border-left-color: #ffa500; }
+        .claim-card.review { border-left-color: #007bff; }
+        .claim-card.approved { border-left-color: #28a745; }
+        .claim-card.rejected { border-left-color: #dc3545; }
+        .claim-card.completed { border-left-color: #6c757d; }
+        
+        .claim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .claim-deceased {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .claim-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-review { background: #cce5ff; color: #004085; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-completed { background: #e2e3e5; color: #383d41; }
+        
+        .claim-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .claim-detail {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .claim-detail-label {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .claim-detail-value {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .claim-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .payment-link-section {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-section h3 {
+            margin-bottom: 1rem;
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+        }
+        
+        .family-member-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .family-member-option:hover {
+            background: #e9ecef;
+        }
+        
+        .family-member-option.selected {
+            background: #cce5ff;
+            border-color: #007bff;
+        }
+        
+        .family-member-option input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            background: #f8f9fa;
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination .current-page {
+            font-weight: 600;
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>🤝 Benevolence Fund</h1>
+                <span class="portal-badge">Member Portal - Claims</span>
+            </div>
+            <div class="header-actions">
+                <span id="member-name" class="user-info"></span>
+                <a href="index.html" class="btn btn-outline">Dashboard</a>
+                <a href="profile.html" class="btn btn-outline">My Profile</a>
+                <a href="../index.html" class="btn btn-outline">Home</a>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="claims-header">
+                <h2>My Claims</h2>
+                <button id="new-claim-btn" class="btn btn-primary">Submit New Claim</button>
+            </div>
+
+
+            <div id="loading" class="loading">Loading claims...</div>
+            <div id="error" class="error-message" style="display: none;"></div>
+            
+            <div id="claims-list"></div>
+            <div id="pagination"></div>
+        </main>
+    </div>
+
+    <!-- New Claim Modal -->
+    <div id="new-claim-modal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Submit New Claim</h3>
+                <button id="close-modal" class="btn btn-secondary">×</button>
+            </div>
+            
+            <form id="new-claim-form">
+                <div class="form-section">
+                    <h3>👨‍👩‍👧‍👦 Select Deceased Family Member</h3>
+                    <div id="family-members-list">
+                        <div class="loading">Loading family members...</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>💀 Date of Death</h3>
+                    <div class="form-group">
+                        <input type="date" id="date-of-death" required>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>📝 Claim Details</h3>
+                    <div class="form-group">
+                        <label for="claim-reason">Reason for Claim:</label>
+                        <textarea id="claim-reason" rows="4" placeholder="Please provide details about the circumstances and why this claim is being made..." required></textarea>
+                    </div>
+                    <p style="background: #e3f2fd; padding: 1rem; border-radius: 4px; color: #1565c0; font-size: 0.875rem;">
+                        ℹ️ The claim amount will be determined by the admin during the review process.
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" id="cancel-claim" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Claim</button>
+                </div>
+            </form>
+            
+            <div id="claim-error" class="error-message" style="display: none;"></div>
+            <div id="claim-success" class="success-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Claim Details Modal -->
+    <div id="claim-details-modal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Claim Details</h3>
+                <button id="close-details-modal" class="btn btn-secondary">×</button>
+            </div>
+            
+            <div id="claim-details-content">
+                <!-- Claim details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../shared/auth.js"></script>
+    <script src="claims.js"></script>
+</body>
+</html>

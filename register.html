@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Benevolence Fund Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .register-header h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .register-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .section-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .optional-text {
+            font-size: 0.8rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 1px solid #667eea;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .add-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .add-btn::before {
+            content: '+';
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        .remove-btn {
+            padding: 4px 8px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+
+        .family-member-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.7);
+            position: relative;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid #fcc;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #373;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid #cfc;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Password Input Styling */
+        .password-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-input-container input {
+            width: 100%;
+            padding-right: 45px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 1rem;
+            color: #666;
+            transition: color 0.3s ease;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .password-toggle:focus {
+            outline: none;
+            color: #667eea;
+        }
+
+        .password-hint {
+            display: block;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .password-match-message {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            padding: 5px 0;
+            font-weight: 500;
+        }
+
+        .password-match-message.match {
+            color: #28a745;
+        }
+
+        .password-match-message.no-match {
+            color: #dc3545;
+        }
+
+        .password-match-message.empty {
+            color: #666;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ddd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .step.active {
+            background: #667eea;
+        }
+
+        .step.completed {
+            background: #27ae60;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .register-container {
+                padding: 1.5rem;
+                margin: 10px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .register-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">
+            <div class="logo-icon">🤝</div>
+            <div class="logo-text">Benevolence Fund</div>
+        </div>
+
+        <a href="login.html" class="back-link">Back to Login</a>
+
+        <div class="register-header">
+            <h1>Member Registration</h1>
+            <p>Join our community and provide your family information for better support</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step active">1</div>
+            <div class="step">2</div>
+        </div>
+
+        <form id="registrationForm">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <!-- Personal Information Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">👤</div>
+                    <div class="section-title">Personal Information</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="required">*</span></label>
+                        <input type="text" id="firstName" name="firstName" required maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name <span class="required">*</span></label>
+                        <input type="text" id="lastName" name="lastName" required maxlength="50">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="phone" name="phone" required placeholder="+254712345678">
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Spouse Information Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">💑</div>
+                    <div class="section-title">Spouse/Partner Information <span class="optional-text">(Optional)</span></div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="spouseFirstName">First Name</label>
+                        <input type="text" id="spouseFirstName" name="spouse.firstName" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="spouseLastName">Last Name</label>
+                        <input type="text" id="spouseLastName" name="spouse.lastName" maxlength="50">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="spouseDateOfBirth">Date of Birth</label>
+                        <input type="date" id="spouseDateOfBirth" name="spouse.dateOfBirth">
+                    </div>
+                    <div class="form-group">
+                        <label for="spouseRelationship">Relationship</label>
+                        <select id="spouseRelationship" name="spouse.relationship">
+                            <option value="">Select relationship</option>
+                            <option value="spouse">Spouse</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Children Information Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">👶</div>
+                    <div class="section-title">Children Information <span class="optional-text">(Optional)</span></div>
+                </div>
+                
+                <div id="childrenContainer">
+                    <!-- Children will be added dynamically -->
+                </div>
+                
+                <button type="button" class="add-btn" onclick="addChild()">Add Child</button>
+            </div>
+
+            <!-- Parents Information Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">👨‍👩‍👦</div>
+                    <div class="section-title">Parents Information <span class="optional-text">(Optional)</span></div>
+                </div>
+                
+                <div id="parentsContainer">
+                    <!-- Parents will be added dynamically -->
+                </div>
+                
+                <button type="button" class="add-btn" onclick="addParent()">Add Parent</button>
+            </div>
+
+            <!-- Siblings Information Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">👫</div>
+                    <div class="section-title">Siblings Information <span class="optional-text">(Optional)</span></div>
+                </div>
+                
+                <div id="siblingsContainer">
+                    <!-- Siblings will be added dynamically -->
+                </div>
+                
+                <button type="button" class="add-btn" onclick="addSibling()">Add Sibling</button>
+            </div>
+
+            <!-- Password Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">🔒</div>
+                    <div class="section-title">Password Setup</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password <span class="required">*</span></label>
+                    <div class="password-input-container">
+                        <input type="password" id="password" name="password" required minlength="6" placeholder="Enter your password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                            <span id="password-toggle-icon">👁️</span>
+                        </button>
+                    </div>
+                    <small class="password-hint">Password must be at least 6 characters long</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                    <div class="password-input-container">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6" placeholder="Confirm your password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                            <span id="confirmPassword-toggle-icon">👁️</span>
+                        </button>
+                    </div>
+                    <div id="password-match-message" class="password-match-message"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" id="registerBtn">
+                <span id="registerText">Register</span>
+                <div class="loading-spinner" id="loadingSpinner"></div>
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1rem; color: #666;">
+            Already have an account? <a href="login.html" style="color: #667eea;">Sign in here</a>
+        </div>
+    </div>
+
+    <script src="shared/auth.js"></script>
+    <script src="register.js"></script>
+</body>
+</html>

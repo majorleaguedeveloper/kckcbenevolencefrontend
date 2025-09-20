@@ -333,3 +333,47 @@ function showPaymentDetailsModal(paymentRequest, payments) {
         delete window.closeModal;
     };
 }
+
+// Utility functions
+function showError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+}
+
+function hideError(elementId) {
+    const errorElement = document.getElementById(elementId);
+    if (errorElement) {
+        errorElement.style.display = 'none';
+    }
+}
+
+function showSuccess(elementId, message) {
+    const successElement = document.getElementById(elementId);
+    if (successElement) {
+        successElement.textContent = message;
+        successElement.style.display = 'block';
+        setTimeout(() => {
+            successElement.style.display = 'none';
+        }, 5000);
+    }
+}
+
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(amount);
+}
+
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}

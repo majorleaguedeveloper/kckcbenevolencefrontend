@@ -147,7 +147,6 @@ function createPendingPaymentHTML(request) {
                         Due: ${formatDate(request.dueDate)}
                     </div>
                 </div>
-                <div class="payment-amount">Click to Pay</div>
             </div>
             
             <div class="payment-request-description">${request.description}</div>
