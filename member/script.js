@@ -44,7 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function showDashboard() {
     const user = AuthService.getUser();
-    document.getElementById('member-name').textContent = `${user.firstName} ${user.lastName}`;
+    
+    // Inject navbar with user information
+    injectNavbar('member', `${user.firstName} ${user.lastName}`);
     
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('dashboard-section').classList.remove('hidden');

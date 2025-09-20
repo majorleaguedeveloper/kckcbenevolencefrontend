@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management - Admin Portal</title>
+    <link rel="stylesheet" href="../shared/navbar.css">
+    <link rel="stylesheet" href="../shared/navbar-spacing.css">
     <link rel="stylesheet" href="style.css">
     <style>
         .users-header {
@@ -353,27 +355,8 @@
         }
     </style>
 </head>
-<body>
+<body data-navbar="admin">
     <div class="container">
-        <header class="dashboard-header">
-            <div class="header-left">
-                <h1>🤝 Benevolence Fund</h1>
-                <span class="portal-badge">Admin Portal - User Management</span>
-            </div>
-            <div class="header-actions">
-                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
-                    ☰
-                </button>
-                <div class="nav-menu" id="nav-menu">
-                    <button class="mobile-close" id="mobile-close" aria-label="Close navigation menu">×</button>
-                    <span id="admin-name" class="user-info"></span>
-                    <a href="index.html" class="btn btn-outline">Dashboard</a>
-                    <a href="claims.html" class="btn btn-outline">Claims Management</a>
-                    <button id="logout-btn" class="btn btn-secondary">Logout</button>
-                </div>
-                <div class="mobile-overlay" id="mobile-overlay"></div>
-            </div>
-        </header>
 
         <main class="dashboard-content">
             <div class="users-header">
@@ -440,7 +423,8 @@
     </div>
 
     <script src="../shared/auth.js"></script>
-    <script src="../shared/mobile-nav.js"></script>
+    <script src="../shared/navbar-template.js"></script>
+    <script src="../shared/navbar.js"></script>
     <script src="users.js"></script>
 </body>
 </html>

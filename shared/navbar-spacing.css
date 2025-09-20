@@ -1,0 +1,32 @@
+/* ============================================
+   NAVBAR SPACING ADJUSTMENTS
+   ============================================ */
+
+/* Add top margin to main content areas to prevent overlap with fixed navbar */
+.container,
+.dashboard-content,
+main {
+    margin-top: 90px !important;
+}
+
+/* Hide any remaining old dashboard headers */
+.dashboard-header {
+    display: none !important;
+}
+
+/* Responsive spacing adjustments */
+@media (max-width: 768px) {
+    .container,
+    .dashboard-content,
+    main {
+        margin-top: 80px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .container,
+    .dashboard-content,
+    main {
+        margin-top: 76px !important;
+    }
+}

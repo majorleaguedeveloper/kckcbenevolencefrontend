@@ -12,13 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Set admin name
-    document.getElementById('admin-name').textContent = `${user.firstName} ${user.lastName}`;
-
-    // Logout functionality
-    document.getElementById('logout-btn').addEventListener('click', () => {
-        AuthService.logout();
-    });
+    // Inject navbar with user information
+    injectNavbar('admin', `${user.firstName} ${user.lastName}`);
 
     // Load claims and stats on page load
     loadClaimsStats();
