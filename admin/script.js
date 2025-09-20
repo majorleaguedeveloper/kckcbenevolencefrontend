@@ -42,10 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Logout button handler
-    document.getElementById('logout-btn').addEventListener('click', function() {
-        AuthService.logout();
-    });
+    // Logout is now handled by the navbar component
 
     // Payment request form handler
     document.getElementById('payment-request-form').addEventListener('submit', async function(e) {
@@ -106,12 +103,8 @@ function showDashboard() {
             return;
         }
         
-        const adminNameElement = document.getElementById('admin-name');
-        if (adminNameElement) {
-            adminNameElement.textContent = `${user.firstName} ${user.lastName}`;
-        } else {
-            console.error('admin-name element not found');
-        }
+        // Inject navbar with user information
+        injectNavbar('admin', `${user.firstName} ${user.lastName}`);
         
         const loginSection = document.getElementById('login-section');
         const dashboardSection = document.getElementById('dashboard-section');

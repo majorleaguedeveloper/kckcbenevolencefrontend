@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Navbar Demo - Benevolence Fund</title>
+    <link rel="stylesheet" href="shared/navbar.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .demo-content {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .demo-title {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .demo-text {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .demo-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .demo-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .demo-btn.primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .demo-btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+        
+        .demo-btn.secondary:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .feature-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .feature-desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-content {
+                padding: 20px 16px;
+            }
+            
+            .demo-card {
+                padding: 20px;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo content -->
+    <div class="demo-content">
+        <div class="demo-card">
+            <h1 class="demo-title">🎯 Responsive Navbar Demo</h1>
+            <p class="demo-text">
+                This page demonstrates the new responsive horizontal navbar component for the Benevolence Fund project. 
+                The navbar features a clean design with proper branding and mobile-optimized navigation.
+            </p>
+            
+            <div class="demo-buttons">
+                <button class="demo-btn primary" onclick="switchToAdmin()">Switch to Admin Theme</button>
+                <button class="demo-btn primary" onclick="switchToMember()">Switch to Member Theme</button>
+                <button class="demo-btn secondary" onclick="toggleUser()">Toggle User Name</button>
+            </div>
+        </div>
+        
+        <div class="demo-card">
+            <h2 class="demo-title">🚀 Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-title">📱 Mobile-First Design</div>
+                    <div class="feature-desc">Responsive design that works perfectly on all screen sizes with touch-friendly interactions.</div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-title">🎨 Sleek Animations</div>
+                    <div class="feature-desc">Smooth transitions and micro-interactions for a professional user experience.</div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-title">♿ Accessibility</div>
+                    <div class="feature-desc">Full keyboard navigation, ARIA labels, and screen reader compatibility.</div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-title">🔧 Easy Integration</div>
+                    <div class="feature-desc">Simple data attributes for automatic navbar injection with customizable themes.</div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-title">🎯 Focus Management</div>
+                    <div class="feature-desc">Proper focus trapping and management for optimal accessibility and UX.</div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-title">📏 Consistent Spacing</div>
+                    <div class="feature-desc">Automatic spacing and layout adjustments to prevent content overlap.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-card">
+            <h2 class="demo-title">📋 Usage Instructions</h2>
+            <p class="demo-text">
+                To use this navbar in your pages, simply include the CSS and JavaScript files, then add the 
+                appropriate data attributes to your body tag:
+            </p>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <code style="color: #333;">
+                    &lt;!-- For Admin Portal --&gt;<br>
+                    &lt;body data-navbar="admin"&gt;<br><br>
+                    &lt;!-- For Member Portal --&gt;<br>
+                    &lt;body data-navbar="member"&gt;
+                </code>
+            </div>
+            
+            <p class="demo-text">
+                The navbar will automatically inject with the appropriate theme and navigation items!
+            </p>
+        </div>
+    </div>
+
+    <!-- Include navbar scripts -->
+    <script src="shared/navbar-template.js"></script>
+    <script src="shared/navbar.js"></script>
+    
+    <script>
+        // Demo functionality
+        let currentTheme = 'admin';
+        let showUser = true;
+        
+        function initDemo() {
+            // Inject initial navbar
+            injectNavbar(currentTheme, showUser ? 'John Admin' : '');
+        }
+        
+        function switchToAdmin() {
+            currentTheme = 'admin';
+            document.body.innerHTML = document.body.innerHTML.replace(/<nav class="navbar[^>]*>.*?<\/nav>/s, '');
+            injectNavbar(currentTheme, showUser ? 'John Admin' : '');
+        }
+        
+        function switchToMember() {
+            currentTheme = 'member';
+            document.body.innerHTML = document.body.innerHTML.replace(/<nav class="navbar[^>]*>.*?<\/nav>/s, '');
+            injectNavbar(currentTheme, showUser ? 'Jane Member' : '');
+        }
+        
+        function toggleUser() {
+            showUser = !showUser;
+            const userName = showUser ? (currentTheme === 'admin' ? 'John Admin' : 'Jane Member') : '';
+            document.body.innerHTML = document.body.innerHTML.replace(/<nav class="navbar[^>]*>.*?<\/nav>/s, '');
+            injectNavbar(currentTheme, userName);
+        }
+        
+        // Dummy logout function for demo
+        function handleLogout() {
+            alert('Logout clicked! In a real app, this would log the user out.');
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', initDemo);
+    </script>
+</body>
+</html>
