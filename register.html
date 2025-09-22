@@ -174,6 +174,64 @@
             font-style: italic;
         }
 
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 0.75rem;
+            transform: scale(1.2);
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .radio-option:has(input[type="radio"]:checked) {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .radio-label {
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .family-details {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(102, 126, 234, 0.02);
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+        }
+
+        .char-count {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
         .add-btn {
             display: inline-flex;
             align-items: center;
@@ -449,31 +507,53 @@
             <div class="form-section">
                 <div class="section-header">
                     <div class="section-icon">💑</div>
-                    <div class="section-title">Spouse/Partner Information <span class="optional-text">(Optional)</span></div>
+                    <div class="section-title">Spouse/Partner Information <span class="required">*</span></div>
                 </div>
                 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="spouseFirstName">First Name</label>
-                        <input type="text" id="spouseFirstName" name="spouse.firstName" maxlength="50">
-                    </div>
-                    <div class="form-group">
-                        <label for="spouseLastName">Last Name</label>
-                        <input type="text" id="spouseLastName" name="spouse.lastName" maxlength="50">
+                <div class="form-group">
+                    <label>Do you have a spouse/partner? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="hasSpouse" value="true" required onchange="toggleSpouseDetails(true)">
+                            <span class="radio-label">Yes, I have a spouse/partner</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="hasSpouse" value="false" required onchange="toggleSpouseDetails(false)">
+                            <span class="radio-label">None</span>
+                        </label>
                     </div>
                 </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="spouseDateOfBirth">Date of Birth</label>
-                        <input type="date" id="spouseDateOfBirth" name="spouse.dateOfBirth">
+
+                <div id="spouseDetails" class="family-details" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="spouseFirstName">First Name <span class="required">*</span></label>
+                            <input type="text" id="spouseFirstName" name="spouse.firstName" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="spouseLastName">Last Name <span class="required">*</span></label>
+                            <input type="text" id="spouseLastName" name="spouse.lastName" maxlength="50">
+                        </div>
                     </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="spouseDateOfBirth">Date of Birth</label>
+                            <input type="date" id="spouseDateOfBirth" name="spouse.dateOfBirth">
+                        </div>
+                        <div class="form-group">
+                            <label for="spouseRelationship">Relationship <span class="required">*</span></label>
+                            <select id="spouseRelationship" name="spouse.relationship">
+                                <option value="">Select relationship</option>
+                                <option value="spouse">Spouse</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label for="spouseRelationship">Relationship</label>
-                        <select id="spouseRelationship" name="spouse.relationship">
-                            <option value="">Select relationship</option>
-                            <option value="spouse">Spouse</option>
-                        </select>
+                        <label for="spouseNotes">Notes (Special circumstances, adopted, etc.)</label>
+                        <textarea id="spouseNotes" name="spouse.notes" rows="2" maxlength="500" placeholder="Any special notes about this family member..." oninput="updateCharCount('spouseNotes', 500)"></textarea>
+                        <small class="char-count">0/500 characters</small>
                     </div>
                 </div>
             </div>
@@ -482,42 +562,90 @@
             <div class="form-section">
                 <div class="section-header">
                     <div class="section-icon">👶</div>
-                    <div class="section-title">Children Information <span class="optional-text">(Optional)</span></div>
+                    <div class="section-title">Children Information <span class="required">*</span></div>
                 </div>
                 
-                <div id="childrenContainer">
-                    <!-- Children will be added dynamically -->
+                <div class="form-group">
+                    <label>Do you have children? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="hasChildren" value="true" required onchange="toggleChildrenDetails(true)">
+                            <span class="radio-label">Yes, I have children</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="hasChildren" value="false" required onchange="toggleChildrenDetails(false)">
+                            <span class="radio-label">None</span>
+                        </label>
+                    </div>
                 </div>
-                
-                <button type="button" class="add-btn" onclick="addChild()">Add Child</button>
+
+                <div id="childrenDetails" class="family-details" style="display: none;">
+                    <div id="childrenContainer">
+                        <!-- Children will be added dynamically -->
+                    </div>
+                    
+                    <button type="button" class="add-btn" onclick="addChild()">Add Child</button>
+                </div>
             </div>
 
             <!-- Parents Information Section -->
             <div class="form-section">
                 <div class="section-header">
                     <div class="section-icon">👨‍👩‍👦</div>
-                    <div class="section-title">Parents Information <span class="optional-text">(Optional)</span></div>
+                    <div class="section-title">Parents Information <span class="required">*</span></div>
                 </div>
                 
-                <div id="parentsContainer">
-                    <!-- Parents will be added dynamically -->
+                <div class="form-group">
+                    <label>Do you have living parents/guardians? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="hasParents" value="true" required onchange="toggleParentsDetails(true)">
+                            <span class="radio-label">Yes, I have living parents/guardians</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="hasParents" value="false" required onchange="toggleParentsDetails(false)">
+                            <span class="radio-label">None</span>
+                        </label>
+                    </div>
                 </div>
-                
-                <button type="button" class="add-btn" onclick="addParent()">Add Parent</button>
+
+                <div id="parentsDetails" class="family-details" style="display: none;">
+                    <div id="parentsContainer">
+                        <!-- Parents will be added dynamically -->
+                    </div>
+                    
+                    <button type="button" class="add-btn" onclick="addParent()">Add Parent</button>
+                </div>
             </div>
 
             <!-- Siblings Information Section -->
             <div class="form-section">
                 <div class="section-header">
                     <div class="section-icon">👫</div>
-                    <div class="section-title">Siblings Information <span class="optional-text">(Optional)</span></div>
+                    <div class="section-title">Siblings Information <span class="required">*</span></div>
                 </div>
                 
-                <div id="siblingsContainer">
-                    <!-- Siblings will be added dynamically -->
+                <div class="form-group">
+                    <label>Do you have siblings? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="hasSiblings" value="true" required onchange="toggleSiblingsDetails(true)">
+                            <span class="radio-label">Yes, I have siblings</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="hasSiblings" value="false" required onchange="toggleSiblingsDetails(false)">
+                            <span class="radio-label">None</span>
+                        </label>
+                    </div>
                 </div>
-                
-                <button type="button" class="add-btn" onclick="addSibling()">Add Sibling</button>
+
+                <div id="siblingsDetails" class="family-details" style="display: none;">
+                    <div id="siblingsContainer">
+                        <!-- Siblings will be added dynamically -->
+                    </div>
+                    
+                    <button type="button" class="add-btn" onclick="addSibling()">Add Sibling</button>
+                </div>
             </div>
 
             <!-- Password Section -->

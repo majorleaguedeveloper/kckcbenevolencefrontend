@@ -124,71 +124,96 @@ class RegistrationForm {
             password: document.getElementById('password').value
         };
 
-        // Collect spouse data
-        const spouseFirstName = document.getElementById('spouseFirstName').value.trim();
-        const spouseLastName = document.getElementById('spouseLastName').value.trim();
-        
-        if (spouseFirstName || spouseLastName) {
+        // Collect family flags
+        const hasSpouseRadio = document.querySelector('input[name="hasSpouse"]:checked');
+        const hasChildrenRadio = document.querySelector('input[name="hasChildren"]:checked');
+        const hasParentsRadio = document.querySelector('input[name="hasParents"]:checked');
+        const hasSiblingsRadio = document.querySelector('input[name="hasSiblings"]:checked');
+
+        formData.hasSpouse = hasSpouseRadio ? hasSpouseRadio.value === 'true' : false;
+        formData.hasChildren = hasChildrenRadio ? hasChildrenRadio.value === 'true' : false;
+        formData.hasParents = hasParentsRadio ? hasParentsRadio.value === 'true' : false;
+        formData.hasSiblings = hasSiblingsRadio ? hasSiblingsRadio.value === 'true' : false;
+
+        // Collect spouse data only if hasSpouse is true
+        if (formData.hasSpouse) {
+            const spouseFirstName = document.getElementById('spouseFirstName').value.trim();
+            const spouseLastName = document.getElementById('spouseLastName').value.trim();
+            const spouseNotes = document.getElementById('spouseNotes').value.trim();
+            
             formData.spouse = {
                 firstName: spouseFirstName,
                 lastName: spouseLastName,
                 dateOfBirth: document.getElementById('spouseDateOfBirth').value,
-                relationship: document.getElementById('spouseRelationship').value || 'spouse'
+                relationship: document.getElementById('spouseRelationship').value || 'spouse',
+                notes: spouseNotes
             };
         }
 
-        // Collect children data
+        // Collect children data only if hasChildren is true
         formData.children = [];
-        const childrenInputs = document.querySelectorAll('#childrenContainer .family-member-item');
-        childrenInputs.forEach(child => {
-            const firstName = child.querySelector('[name$=".firstName"]').value.trim();
-            const lastName = child.querySelector('[name$=".lastName"]').value.trim();
-            const dateOfBirth = child.querySelector('[name$=".dateOfBirth"]').value;
-            const relationship = child.querySelector('[name$=".relationship"]').value;
-            
-            if (firstName && lastName) {
-                formData.children.push({
-                    firstName,
-                    lastName,
-                    dateOfBirth,
-                    relationship: relationship || 'son'
-                });
-            }
-        });
+        if (formData.hasChildren) {
+            const childrenInputs = document.querySelectorAll('#childrenContainer .family-member-item');
+            childrenInputs.forEach(child => {
+                const firstName = child.querySelector('[name$=".firstName"]').value.trim();
+                const lastName = child.querySelector('[name$=".lastName"]').value.trim();
+                const dateOfBirth = child.querySelector('[name$=".dateOfBirth"]').value;
+                const relationship = child.querySelector('[name$=".relationship"]').value;
+                const notes = child.querySelector('[name$=".notes"]').value.trim();
+                
+                if (firstName && lastName && relationship) {
+                    formData.children.push({
+                        firstName,
+                        lastName,
+                        dateOfBirth,
+                        relationship,
+                        notes
+                    });
+                }
+            });
+        }
 
-        // Collect parents data
+        // Collect parents data only if hasParents is true
         formData.parents = [];
-        const parentsInputs = document.querySelectorAll('#parentsContainer .family-member-item');
-        parentsInputs.forEach(parent => {
-            const firstName = parent.querySelector('[name$=".firstName"]').value.trim();
-            const lastName = parent.querySelector('[name$=".lastName"]').value.trim();
-            const relationship = parent.querySelector('[name$=".relationship"]').value;
-            
-            if (firstName && lastName && relationship) {
-                formData.parents.push({
-                    firstName,
-                    lastName,
-                    relationship
-                });
-            }
-        });
+        if (formData.hasParents) {
+            const parentsInputs = document.querySelectorAll('#parentsContainer .family-member-item');
+            parentsInputs.forEach(parent => {
+                const firstName = parent.querySelector('[name$=".firstName"]').value.trim();
+                const lastName = parent.querySelector('[name$=".lastName"]').value.trim();
+                const relationship = parent.querySelector('[name$=".relationship"]').value;
+                const notes = parent.querySelector('[name$=".notes"]').value.trim();
+                
+                if (firstName && lastName && relationship) {
+                    formData.parents.push({
+                        firstName,
+                        lastName,
+                        relationship,
+                        notes
+                    });
+                }
+            });
+        }
 
-        // Collect siblings data
+        // Collect siblings data only if hasSiblings is true
         formData.siblings = [];
-        const siblingsInputs = document.querySelectorAll('#siblingsContainer .family-member-item');
-        siblingsInputs.forEach(sibling => {
-            const firstName = sibling.querySelector('[name$=".firstName"]').value.trim();
-            const lastName = sibling.querySelector('[name$=".lastName"]').value.trim();
-            const relationship = sibling.querySelector('[name$=".relationship"]').value;
-            
-            if (firstName && lastName && relationship) {
-                formData.siblings.push({
-                    firstName,
-                    lastName,
-                    relationship
-                });
-            }
-        });
+        if (formData.hasSiblings) {
+            const siblingsInputs = document.querySelectorAll('#siblingsContainer .family-member-item');
+            siblingsInputs.forEach(sibling => {
+                const firstName = sibling.querySelector('[name$=".firstName"]').value.trim();
+                const lastName = sibling.querySelector('[name$=".lastName"]').value.trim();
+                const relationship = sibling.querySelector('[name$=".relationship"]').value;
+                const notes = sibling.querySelector('[name$=".notes"]').value.trim();
+                
+                if (firstName && lastName && relationship) {
+                    formData.siblings.push({
+                        firstName,
+                        lastName,
+                        relationship,
+                        notes
+                    });
+                }
+            });
+        }
 
         return formData;
     }
@@ -247,12 +272,12 @@ function addChild() {
     childDiv.innerHTML = `
         <div class="form-row">
             <div class="form-group">
-                <label>First Name</label>
-                <input type="text" name="children[${index}].firstName" maxlength="50">
+                <label>First Name <span class="required">*</span></label>
+                <input type="text" name="children[${index}].firstName" maxlength="50" required>
             </div>
             <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" name="children[${index}].lastName" maxlength="50">
+                <label>Last Name <span class="required">*</span></label>
+                <input type="text" name="children[${index}].lastName" maxlength="50" required>
             </div>
         </div>
         <div class="form-row">
@@ -261,12 +286,18 @@ function addChild() {
                 <input type="date" name="children[${index}].dateOfBirth">
             </div>
             <div class="form-group">
-                <label>Relationship</label>
-                <select name="children[${index}].relationship">
+                <label>Relationship <span class="required">*</span></label>
+                <select name="children[${index}].relationship" required>
+                    <option value="">Select relationship</option>
                     <option value="son">Son</option>
                     <option value="daughter">Daughter</option>
                 </select>
             </div>
+        </div>
+        <div class="form-group">
+            <label>Notes (Special circumstances, adopted, etc.)</label>
+            <textarea name="children[${index}].notes" rows="2" maxlength="500" placeholder="Any special notes about this child..." id="childNotes${index}" oninput="updateCharCount('childNotes${index}', 500)"></textarea>
+            <small class="char-count">0/500 characters</small>
         </div>
         <button type="button" class="remove-btn" onclick="removeChild(this)">Remove</button>
     `;
@@ -287,22 +318,27 @@ function addParent() {
     parentDiv.innerHTML = `
         <div class="form-row">
             <div class="form-group">
-                <label>First Name</label>
-                <input type="text" name="parents[${index}].firstName" maxlength="50">
+                <label>First Name <span class="required">*</span></label>
+                <input type="text" name="parents[${index}].firstName" maxlength="50" required>
             </div>
             <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" name="parents[${index}].lastName" maxlength="50">
+                <label>Last Name <span class="required">*</span></label>
+                <input type="text" name="parents[${index}].lastName" maxlength="50" required>
             </div>
         </div>
         <div class="form-group">
-            <label>Relationship</label>
-            <select name="parents[${index}].relationship">
+            <label>Relationship <span class="required">*</span></label>
+            <select name="parents[${index}].relationship" required>
                 <option value="">Select relationship</option>
                 <option value="father">Father</option>
                 <option value="mother">Mother</option>
                 <option value="guardian">Guardian</option>
             </select>
+        </div>
+        <div class="form-group">
+            <label>Notes (Special circumstances, adopted, etc.)</label>
+            <textarea name="parents[${index}].notes" rows="2" maxlength="500" placeholder="Any special notes about this parent/guardian..." id="parentNotes${index}" oninput="updateCharCount('parentNotes${index}', 500)"></textarea>
+            <small class="char-count">0/500 characters</small>
         </div>
         <button type="button" class="remove-btn" onclick="removeParent(this)">Remove</button>
     `;
@@ -323,21 +359,26 @@ function addSibling() {
     siblingDiv.innerHTML = `
         <div class="form-row">
             <div class="form-group">
-                <label>First Name</label>
-                <input type="text" name="siblings[${index}].firstName" maxlength="50">
+                <label>First Name <span class="required">*</span></label>
+                <input type="text" name="siblings[${index}].firstName" maxlength="50" required>
             </div>
             <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" name="siblings[${index}].lastName" maxlength="50">
+                <label>Last Name <span class="required">*</span></label>
+                <input type="text" name="siblings[${index}].lastName" maxlength="50" required>
             </div>
         </div>
         <div class="form-group">
-            <label>Relationship</label>
-            <select name="siblings[${index}].relationship">
+            <label>Relationship <span class="required">*</span></label>
+            <select name="siblings[${index}].relationship" required>
                 <option value="">Select relationship</option>
                 <option value="brother">Brother</option>
                 <option value="sister">Sister</option>
             </select>
+        </div>
+        <div class="form-group">
+            <label>Notes (Special circumstances, adopted, etc.)</label>
+            <textarea name="siblings[${index}].notes" rows="2" maxlength="500" placeholder="Any special notes about this sibling..." id="siblingNotes${index}" oninput="updateCharCount('siblingNotes${index}', 500)"></textarea>
+            <small class="char-count">0/500 characters</small>
         </div>
         <button type="button" class="remove-btn" onclick="removeSibling(this)">Remove</button>
     `;
@@ -347,6 +388,101 @@ function addSibling() {
 
 function removeSibling(btn) {
     btn.parentElement.remove();
+}
+
+// Family section toggle functions
+function toggleSpouseDetails(hasSpouse) {
+    const spouseDetails = document.getElementById('spouseDetails');
+    const spouseInputs = spouseDetails.querySelectorAll('input, select, textarea');
+    
+    if (hasSpouse) {
+        spouseDetails.style.display = 'block';
+        // Make spouse fields required
+        document.getElementById('spouseFirstName').required = true;
+        document.getElementById('spouseLastName').required = true;
+        document.getElementById('spouseRelationship').required = true;
+    } else {
+        spouseDetails.style.display = 'none';
+        // Remove required and clear values
+        spouseInputs.forEach(input => {
+            input.required = false;
+            input.value = '';
+        });
+    }
+}
+
+function toggleChildrenDetails(hasChildren) {
+    const childrenDetails = document.getElementById('childrenDetails');
+    const childrenContainer = document.getElementById('childrenContainer');
+    
+    if (hasChildren) {
+        childrenDetails.style.display = 'block';
+        // Add first child if none exist
+        if (childrenContainer.children.length === 0) {
+            addChild();
+        }
+    } else {
+        childrenDetails.style.display = 'none';
+        // Clear all children
+        childrenContainer.innerHTML = '';
+        registrationForm.childrenCount = 0;
+    }
+}
+
+function toggleParentsDetails(hasParents) {
+    const parentsDetails = document.getElementById('parentsDetails');
+    const parentsContainer = document.getElementById('parentsContainer');
+    
+    if (hasParents) {
+        parentsDetails.style.display = 'block';
+        // Add first parent if none exist
+        if (parentsContainer.children.length === 0) {
+            addParent();
+        }
+    } else {
+        parentsDetails.style.display = 'none';
+        // Clear all parents
+        parentsContainer.innerHTML = '';
+        registrationForm.parentsCount = 0;
+    }
+}
+
+function toggleSiblingsDetails(hasSiblings) {
+    const siblingsDetails = document.getElementById('siblingsDetails');
+    const siblingsContainer = document.getElementById('siblingsContainer');
+    
+    if (hasSiblings) {
+        siblingsDetails.style.display = 'block';
+        // Add first sibling if none exist
+        if (siblingsContainer.children.length === 0) {
+            addSibling();
+        }
+    } else {
+        siblingsDetails.style.display = 'none';
+        // Clear all siblings
+        siblingsContainer.innerHTML = '';
+        registrationForm.siblingsCount = 0;
+    }
+}
+
+// Character count functionality
+function updateCharCount(textareaId, maxLength) {
+    const textarea = document.getElementById(textareaId);
+    const charCountElement = textarea.nextElementSibling;
+    const currentLength = textarea.value.length;
+    
+    if (charCountElement && charCountElement.classList.contains('char-count')) {
+        charCountElement.textContent = `${currentLength}/${maxLength} characters`;
+        
+        // Change color when approaching limit
+        if (currentLength > maxLength * 0.9) {
+            charCountElement.style.color = '#e74c3c';
+        } else if (currentLength > maxLength * 0.8) {
+            charCountElement.style.color = '#f39c12';
+        } else {
+            charCountElement.style.color = '#666';
+        }
+    }
 }
 
 // Password toggle functionality

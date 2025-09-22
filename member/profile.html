@@ -163,6 +163,350 @@
             font-size: 0.8rem;
         }
 
+        .family-member-notes {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #555;
+            border-left: 3px solid #667eea;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .amendment-modal {
+            max-width: 1000px;
+            width: 95%;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 0.75rem;
+            transform: scale(1.2);
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .radio-option:has(input[type="radio"]:checked) {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .radio-label {
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .family-details {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(102, 126, 234, 0.02);
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .family-member-item {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 1px solid #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .add-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .amendment-modal {
+                width: 98%;
+                max-width: none;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e1e5e9;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .section-header h4 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .section-header p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        .form-group textarea:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .char-count {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .amendment-request-item {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .amendment-request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .amendment-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .amendment-status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .amendment-notes {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 4px;
+            border-left: 3px solid #667eea;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
         .no-data {
             text-align: center;
             color: #666;
@@ -220,6 +564,87 @@
             opacity: 0.9;
         }
 
+        /* Amendment Modal Specific Styles */
+        .add-family-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .add-family-btn:hover {
+            background: #218838;
+        }
+
+        .family-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .family-header h4 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .editable-family-member {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .editable-family-member .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .editable-family-member .member-title {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .remove-member-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .remove-member-btn:hover {
+            background: #c82333;
+        }
+
+        .editable-family-member .form-row {
+            margin-bottom: 1rem;
+        }
+
+        .editable-family-member .form-group {
+            margin-bottom: 0;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .profile-container {
@@ -241,12 +666,178 @@
             .family-members {
                 grid-template-columns: 1fr;
             }
+
+            /* Amendment Modal Mobile Styles */
+            .modal-content {
+                width: 95%;
+                max-width: 100%;
+                margin: 10px;
+                max-height: 95vh;
+                border-radius: 10px;
+            }
+
+            .amendment-modal {
+                width: 98%;
+                max-width: 100%;
+                padding: 0;
+            }
+
+            .modal-header {
+                padding: 1rem;
+                font-size: 1.2rem;
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .family-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .family-header h4 {
+                font-size: 1.1rem;
+            }
+
+            .add-family-btn {
+                width: 100%;
+                padding: 0.75rem;
+                font-size: 1rem;
+            }
+
+            .editable-family-member {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .member-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .remove-member-btn {
+                width: 100%;
+                padding: 0.6rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 0.75rem;
+            }
+
+            .char-count {
+                font-size: 0.8rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .navigation-buttons .back-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-container {
+                padding: 5px;
+            }
+
+            .back-button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .profile-header {
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .profile-name {
+                font-size: 1.3rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            .modal-header h3 {
+                font-size: 1.1rem;
+            }
+
+            .btn-close {
+                font-size: 1.5rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .form-section {
+                margin-bottom: 1rem;
+            }
+
+            .family-header h4 {
+                font-size: 1rem;
+            }
+
+            .editable-family-member {
+                padding: 0.5rem;
+            }
+
+            .member-title {
+                font-size: 0.95rem;
+            }
+
+            .amendment-request-item {
+                padding: 0.75rem;
+            }
+
+            .amendment-date {
+                font-size: 0.8rem;
+            }
+
+            .amendment-status-badge {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            /* Touch-friendly button sizing */
+            .btn, .back-button, .add-family-btn, .remove-member-btn {
+                min-height: 44px; /* Apple's recommended touch target */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .btn-close {
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="profile-container">
-        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+        <div class="navigation-buttons">
             <a href="index.html" class="back-button">Back to Dashboard</a>
             <a href="claims.html" class="back-button">My Claims</a>
         </div>
@@ -303,6 +894,9 @@
                 <div class="section-header">
                     <div class="section-icon">👨‍👩‍👧‍👦</div>
                     <div class="section-title">Family Information</div>
+                    <button id="request-amendment-btn" class="btn btn-secondary" onclick="openAmendmentModal()">
+                        📝 Request Amendment
+                    </button>
                 </div>
                 
                 <!-- Spouse Section -->
@@ -348,6 +942,115 @@
                         <div class="no-data">No siblings information provided</div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Amendment Requests Section -->
+            <div class="profile-section">
+                <div class="section-header">
+                    <div class="section-icon">📝</div>
+                    <div class="section-title">Amendment Requests</div>
+                </div>
+                
+                <div id="amendmentRequestsSection">
+                    <div id="loadingAmendments" class="loading">Loading amendment requests...</div>
+                    <div id="amendmentRequestsList">
+                        <!-- Amendment requests will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Amendment Request Modal -->
+    <div id="amendmentModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content amendment-modal">
+            <div class="modal-header">
+                <h3>Request Family Information Amendment</h3>
+                <button onclick="closeAmendmentModal()" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="amendmentForm">
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h4>Instructions</h4>
+                            <p>Update your family information below. Your current information is pre-filled - make any necessary changes and explain why you need this amendment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Spouse Amendment Section -->
+                    <div class="form-section">
+                        <div class="family-section" id="amendSpouseSection">
+                            <div class="family-header">
+                                <span>💑</span>
+                                <h4>Spouse</h4>
+                                <button type="button" id="addSpouseBtn" class="add-family-btn" onclick="addSpouse()" style="display: none;">Add Spouse</button>
+                            </div>
+                            <div id="amendSpouseContent">
+                                <div class="no-data">No spouse information provided</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Children Amendment Section -->
+                    <div class="form-section">
+                        <div class="family-section" id="amendChildrenSection">
+                            <div class="family-header">
+                                <span>👶</span>
+                                <h4>Children</h4>
+                                <button type="button" id="addChildBtn" class="add-family-btn" onclick="addChild()">Add Child</button>
+                            </div>
+                            <div id="amendChildrenContent">
+                                <div class="no-data">No children information provided</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parents Amendment Section -->
+                    <div class="form-section">
+                        <div class="family-section" id="amendParentsSection">
+                            <div class="family-header">
+                                <span>👨‍👩‍👦</span>
+                                <h4>Parents</h4>
+                                <button type="button" id="addParentBtn" class="add-family-btn" onclick="addParent()">Add Parent</button>
+                            </div>
+                            <div id="amendParentsContent">
+                                <div class="no-data">No parents information provided</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Siblings Amendment Section -->
+                    <div class="form-section">
+                        <div class="family-section" id="amendSiblingsSection">
+                            <div class="family-header">
+                                <span>👫</span>
+                                <h4>Siblings</h4>
+                                <button type="button" id="addSiblingBtn" class="add-family-btn" onclick="addSibling()">Add Sibling</button>
+                            </div>
+                            <div id="amendSiblingsContent">
+                                <div class="no-data">No siblings information provided</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Explanation Section -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h4>Explanation</h4>
+                            <p>Please explain why you are requesting these changes to your family information.</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="memberNotes">Reason for Amendment <span class="required">*</span></label>
+                            <textarea id="memberNotes" rows="4" maxlength="1000" placeholder="Please explain why you are requesting these changes (e.g., marriage, birth, adoption, name change, etc.)..." required oninput="updateAmendmentCharCount('memberNotes', 1000)"></textarea>
+                            <small class="char-count">0/1000 characters</small>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" onclick="closeAmendmentModal()" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit Amendment Request</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

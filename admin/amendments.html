@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amendment Management - Benevolence Fund Admin</title>
+    <link rel="stylesheet" href="../shared/navbar.css">
+    <link rel="stylesheet" href="../shared/navbar-spacing.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .amendments-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e1e5e9;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e1e5e9;
+            margin-bottom: 2rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .amendments-list {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e1e5e9;
+            overflow: hidden;
+        }
+
+        .list-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .list-title {
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .amendment-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e1e5e9;
+            transition: background 0.3s ease;
+        }
+
+        .amendment-item:hover {
+            background: #f8f9fa;
+        }
+
+        .amendment-item:last-child {
+            border-bottom: none;
+        }
+
+        .amendment-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .amendment-user {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .amendment-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .amendment-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .amendment-notes {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            margin: 1rem 0;
+        }
+
+        .amendment-notes-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .amendment-notes-text {
+            color: #555;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .amendment-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #dc3545;
+            background: #f8d7da;
+            border-radius: 6px;
+            margin: 1rem;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e1e5e9;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .comparison-section {
+            padding: 1rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+        }
+
+        .comparison-section h4 {
+            margin: 0 0 1rem 0;
+            color: #333;
+        }
+
+        .family-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .family-type {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .family-member {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #667eea;
+        }
+
+        .member-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .member-details {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        /* Enhanced Comparison Styles */
+        .family-section-comparison {
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .family-section-comparison.has-changes {
+            border-color: #f39c12;
+            box-shadow: 0 0 0 1px rgba(243, 156, 18, 0.1);
+        }
+
+        .section-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .has-changes .section-header {
+            background: #fff3cd;
+        }
+
+        .section-header h5 {
+            margin: 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .change-indicator {
+            background: #f39c12;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .no-change-indicator {
+            background: #6c757d;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .comparison-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .current-column, .proposed-column {
+            padding: 1rem;
+        }
+
+        .current-column {
+            border-right: 1px solid #e1e5e9;
+        }
+
+        .current-column h6, .proposed-column h6 {
+            margin: 0 0 1rem 0;
+            color: #495057;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .current-column h6 {
+            color: #6c757d;
+        }
+
+        .proposed-column h6 {
+            color: #007bff;
+        }
+
+        .change-modified {
+            background: #fff3cd !important;
+            border-left-color: #f39c12 !important;
+        }
+
+        .change-added .no-data {
+            background: #d4edda;
+            color: #155724;
+            border-left: 3px solid #28a745;
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+
+        .no-changes {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .amendments-container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .current-column {
+                border-right: none;
+                border-bottom: 1px solid #e1e5e9;
+                padding-bottom: 1rem;
+            }
+
+            .proposed-column {
+                padding-top: 1rem;
+            }
+
+            .amendment-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .amendment-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .amendment-actions .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .filter-group {
+                margin-bottom: 1rem;
+            }
+
+            .amendment-list {
+                grid-template-columns: 1fr;
+            }
+
+            .amendment-item {
+                padding: 1rem;
+            }
+
+            .amendment-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .review-modal .modal-content {
+                width: 95%;
+                max-width: 100%;
+                margin: 10px;
+                max-height: 95vh;
+                border-radius: 10px;
+            }
+
+            .modal-header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .modal-header h3 {
+                font-size: 1.2rem;
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+
+            .section h4 {
+                font-size: 1.1rem;
+            }
+
+            .family-section-comparison {
+                margin-bottom: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                padding: 0.75rem;
+            }
+
+            .change-indicator,
+            .no-change-indicator {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .amendments-container {
+                padding: 0.5rem;
+            }
+
+            .page-header {
+                padding: 1rem 0;
+                text-align: center;
+            }
+
+            .page-title {
+                font-size: 1.3rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 0.75rem;
+                text-align: center;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.8rem;
+            }
+
+            .filters-section {
+                padding: 1rem 0;
+            }
+
+            .filter-group label {
+                font-size: 0.9rem;
+            }
+
+            .filter-group select,
+            .filter-group input {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 0.75rem;
+            }
+
+            .amendment-item {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .amendment-title {
+                font-size: 1rem;
+            }
+
+            .amendment-status {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                border-radius: 8px;
+            }
+
+            .modal-header {
+                padding: 0.75rem;
+            }
+
+            .modal-header h3 {
+                font-size: 1.1rem;
+            }
+
+            .btn-close {
+                font-size: 1.5rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .modal-body {
+                padding: 0.75rem;
+            }
+
+            .section {
+                margin-bottom: 1rem;
+            }
+
+            .section h4 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .comparison-columns h6 {
+                font-size: 0.85rem;
+            }
+
+            .family-member {
+                padding: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .member-name {
+                font-size: 0.9rem;
+            }
+
+            .member-details {
+                font-size: 0.8rem;
+            }
+
+            .amendment-actions .btn {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            /* Touch-friendly button sizing */
+            .btn {
+                min-height: 44px; /* Apple's recommended touch target */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                touch-action: manipulation; /* Prevents double-tap zoom */
+            }
+
+            .btn-close {
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                touch-action: manipulation;
+            }
+
+            /* Improve form controls for mobile */
+            select, input {
+                touch-action: manipulation;
+                -webkit-appearance: none;
+                appearance: none;
+            }
+
+            /* Better spacing for touch */
+            .amendment-item {
+                margin-bottom: 1rem;
+            }
+
+            .amendment-actions {
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body data-navbar="admin">
+    <div class="amendments-container">
+        <div class="page-header">
+            <h1 class="page-title">Amendment Management</h1>
+            <p class="page-subtitle">Review and manage family information amendment requests</p>
+        </div>
+
+        <!-- Statistics -->
+        <div id="amendmentStats" class="stats-grid">
+            <!-- Stats will be populated dynamically -->
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="statusFilter">Status Filter</label>
+                    <select id="statusFilter" onchange="loadAmendments()">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="searchUser">Search by User</label>
+                    <input type="text" id="searchUser" placeholder="Enter user name or email..." onkeyup="debounceSearch()">
+                </div>
+                <div class="filter-group">
+                    <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Amendments List -->
+        <div class="amendments-list">
+            <div class="list-header">
+                <h2 class="list-title">Amendment Requests</h2>
+            </div>
+            
+            <div id="loading" class="loading">Loading amendments...</div>
+            <div id="error" class="error" style="display: none;"></div>
+            <div id="amendmentsList">
+                <!-- Amendments will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Amendment Review Modal -->
+    <div id="reviewModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="reviewModalTitle">Review Amendment Request</h3>
+                <button onclick="closeReviewModal()" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body" id="reviewModalBody">
+                <!-- Modal content will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../shared/auth.js"></script>
+    <script src="../shared/navbar-template.js"></script>
+    <script src="../shared/navbar.js"></script>
+    <script src="amendments.js"></script>
+</body>
+</html>

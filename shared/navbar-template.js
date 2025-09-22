@@ -97,6 +97,12 @@ const NAVBAR_CONFIGS = {
                 href: 'users.html',
                 icon: '👥',
                 title: 'Manage Users'
+            },
+            {
+                text: 'Amendment Management',
+                href: 'amendments.html',
+                icon: '📝',
+                title: 'Manage Family Information Amendments'
             }
         ]
     },
