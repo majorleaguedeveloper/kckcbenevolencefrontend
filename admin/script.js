@@ -214,6 +214,9 @@ function createPaymentRequestHTML(request) {
                 <button onclick="viewPaymentDetails('${request._id}')" class="btn btn-success">
                     View Details
                 </button>
+                <button onclick="generateSpreadsheet('${request._id}')" class="btn btn-primary" style="margin-left: 10px;">
+                    Generate Spreadsheet
+                </button>
             </div>
         </div>
     `;
@@ -328,6 +331,150 @@ function showPaymentDetailsModal(paymentRequest, payments) {
         document.head.removeChild(style);
         delete window.closeModal;
     };
+}
+
+async function generateSpreadsheet(paymentRequestId) {
+    // Find the button that was clicked
+    const button = event ? event.target : document.querySelector(`button[onclick="generateSpreadsheet('${paymentRequestId}')"]`);
+    
+    try {
+        // Show loading state
+        if (button) {
+            button.textContent = 'Generating...';
+            button.disabled = true;
+        }
+
+        const response = await AuthService.makeRequest(`/payments/admin/payment-requests/${paymentRequestId}/export-spreadsheet`);
+        const data = await response.json();
+
+        if (response.ok) {
+            // Create Excel file
+            const workbook = createExcelWorkbook(data);
+            
+            // Create and trigger download
+            downloadExcel(workbook, `payment-request-${data.paymentRequest.title.replace(/[^a-zA-Z0-9]/g, '-')}.xlsx`);
+        } else {
+            alert('Failed to generate spreadsheet: ' + (data.message || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Generate spreadsheet error:', error);
+        alert('Network error. Please try again.');
+    } finally {
+        // Restore button state
+        if (button) {
+            button.textContent = 'Generate Spreadsheet';
+            button.disabled = false;
+        }
+    }
+}
+
+function createExcelWorkbook(data) {
+    const { paymentRequest, generatedAt, totalMembers, paidMembers, data: memberData } = data;
+    
+    // Create a new workbook
+    const workbook = XLSX.utils.book_new();
+    
+    // Prepare data for the worksheet
+    const worksheetData = [];
+    
+    // Add header information (metadata)
+    worksheetData.push(['Payment Request Report']);
+    worksheetData.push(['Title:', paymentRequest.title]);
+    worksheetData.push(['Description:', paymentRequest.description]);
+    worksheetData.push(['Generated on:', formatDate(generatedAt)]);
+    worksheetData.push(['Total Members:', totalMembers]);
+    worksheetData.push(['Paid Members:', paidMembers]);
+    worksheetData.push([]); // Empty row separator
+    
+    // Add column headers
+    worksheetData.push(['Member Name', 'Email', 'Amount', 'Payment Date', 'Payment Status']);
+    
+    // Add member data
+    memberData.forEach(member => {
+        const amount = member.amount ? formatCurrency(member.amount) : '-';
+        const paymentDate = member.paymentDate ? formatDate(member.paymentDate) : '-';
+        
+        worksheetData.push([
+            member.memberName,
+            member.email,
+            amount,
+            paymentDate,
+            member.paymentStatus
+        ]);
+    });
+    
+    // Create worksheet from data
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    
+    // Set column widths
+    const columnWidths = [
+        { wch: 25 }, // Member Name
+        { wch: 30 }, // Email
+        { wch: 15 }, // Amount
+        { wch: 20 }, // Payment Date
+        { wch: 15 }  // Payment Status
+    ];
+    worksheet['!cols'] = columnWidths;
+    
+    // Style the header row (row 8, which contains the column headers)
+    const headerRowIndex = 7; // 0-based index for row 8
+    const headerCells = ['A8', 'B8', 'C8', 'D8', 'E8'];
+    
+    headerCells.forEach(cellRef => {
+        if (!worksheet[cellRef]) worksheet[cellRef] = {};
+        worksheet[cellRef].s = {
+            font: { bold: true, color: { rgb: 'FFFFFF' } },
+            fill: { bgColor: { indexed: 64 }, fgColor: { rgb: '366092' } },
+            alignment: { horizontal: 'center' }
+        };
+    });
+    
+    // Style the title row (row 1)
+    if (!worksheet['A1']) worksheet['A1'] = {};
+    worksheet['A1'].s = {
+        font: { bold: true, sz: 16, color: { rgb: '366092' } }
+    };
+    
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Payment Report');
+    
+    return workbook;
+}
+
+function downloadExcel(workbook, filename) {
+    try {
+        // Generate Excel file buffer
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        
+        // Create blob with Excel content
+        const blob = new Blob([excelBuffer], { 
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' 
+        });
+        
+        // Create download link
+        const link = document.createElement('a');
+        if (link.download !== undefined) {
+            // Use HTML5 download attribute
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } else {
+            // Fallback for older browsers
+            if (navigator.msSaveBlob) {
+                navigator.msSaveBlob(blob, filename);
+            } else {
+                alert('Your browser does not support file downloads. Please try a different browser.');
+            }
+        }
+    } catch (error) {
+        console.error('Excel download error:', error);
+        alert('Failed to generate Excel file. Please try again.');
+    }
 }
 
 // Utility functions

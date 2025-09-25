@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'https://kckcbenevolencebackend.onrender.com/api';
+const API_BASE_URL = 'http://172.31.233.149:5000/api';
 
 // Auth utility functions
 class AuthService {
