@@ -272,6 +272,14 @@ function displayUserDetailsModal(user) {
                         <span class="user-detail-label">Last Login</span>
                         <span class="user-detail-value">${user.lastLogin ? formatDate(user.lastLogin) : 'Never'}</span>
                     </div>
+                    <div class="user-detail">
+                        <span class="user-detail-label">Date of Birth</span>
+                        <span class="user-detail-value">${user.dateOfBirth ? formatDate(user.dateOfBirth) : 'Not provided'}</span>
+                    </div>
+                    <div class="user-detail">
+                        <span class="user-detail-label">Home Address</span>
+                        <span class="user-detail-value">${getFormattedAddress(user.homeAddress)}</span>
+                    </div>
                 </div>
             </div>
 
@@ -302,6 +310,12 @@ function getDetailedFamilyInfo(user) {
                     <div class="user-detail">
                         <span class="user-detail-label">Date of Birth</span>
                         <span class="user-detail-value">${formatDate(user.spouse.dateOfBirth)}</span>
+                    </div>
+                    ` : ''}
+                    ${user.spouse.phone ? `
+                    <div class="user-detail">
+                        <span class="user-detail-label">Phone</span>
+                        <span class="user-detail-value">${user.spouse.phone}</span>
                     </div>
                     ` : ''}
                 </div>
@@ -387,6 +401,37 @@ function getDetailedFamilyInfo(user) {
         }
     }
     
+    // Beneficiaries
+    if (user.beneficiaries && user.beneficiaries.length > 0) {
+        familyHTML += `
+            <div class="family-section">
+                <h4>🎯 Beneficiaries</h4>
+                ${user.beneficiaries.map(beneficiary => `
+                    <div class="user-details" style="margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
+                        <div class="user-detail">
+                            <span class="user-detail-label">Name</span>
+                            <span class="user-detail-value">${beneficiary.name}</span>
+                        </div>
+                        <div class="user-detail">
+                            <span class="user-detail-label">Phone</span>
+                            <span class="user-detail-value">${beneficiary.phone}</span>
+                        </div>
+                        <div class="user-detail">
+                            <span class="user-detail-label">Percentage</span>
+                            <span class="user-detail-value">${beneficiary.beneficiaryPercentage}%</span>
+                        </div>
+                    </div>
+                `).join('')}
+                <div class="user-details" style="margin-top: 1rem; padding: 0.5rem; background: #e8f5e8; border-radius: 4px;">
+                    <div class="user-detail">
+                        <span class="user-detail-label">Total Percentage</span>
+                        <span class="user-detail-value">${user.beneficiaries.reduce((sum, b) => sum + (b.beneficiaryPercentage || 0), 0)}%</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
     if (!familyHTML) {
         familyHTML = '<p style="color: #666; font-style: italic;">No family members registered</p>';
     }
@@ -462,6 +507,19 @@ function showSuccess(elementId, message) {
             successElement.style.display = 'none';
         }, 5000);
     }
+}
+
+function getFormattedAddress(homeAddress) {
+    if (!homeAddress) return 'Not provided';
+    
+    const addressParts = [];
+    if (homeAddress.street) addressParts.push(homeAddress.street);
+    if (homeAddress.city) addressParts.push(homeAddress.city);
+    if (homeAddress.state) addressParts.push(homeAddress.state);
+    if (homeAddress.postalCode) addressParts.push(homeAddress.postalCode);
+    if (homeAddress.country) addressParts.push(homeAddress.country);
+    
+    return addressParts.length > 0 ? addressParts.join(', ') : 'Not provided';
 }
 
 function formatDate(dateString) {

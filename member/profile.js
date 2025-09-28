@@ -69,12 +69,24 @@ function displayProfile(user) {
     document.getElementById('phone').textContent = user.phone;
     document.getElementById('accountStatus').textContent = user.isActive ? 'Active' : 'Inactive';
     document.getElementById('lastLogin').textContent = user.lastLogin ? formatDate(user.lastLogin) : 'Never';
+    
+    // Additional personal information
+    const dateOfBirthElement = document.getElementById('dateOfBirth');
+    if (dateOfBirthElement) {
+        dateOfBirthElement.textContent = user.dateOfBirth ? formatDate(user.dateOfBirth) : 'Not provided';
+    }
+    
+    // Home address
+    displayHomeAddress(user.homeAddress);
 
     // Family information
     displaySpouse(user.spouse);
     displayChildren(user.children);
     displayParents(user.parents);
     displaySiblings(user.siblings);
+    
+    // Beneficiaries information
+    displayBeneficiaries(user.beneficiaries);
     
     // Load amendment requests
     loadAmendmentRequests();
@@ -93,6 +105,7 @@ function displaySpouse(spouse) {
                     <div class="family-member-name">${spouse.firstName} ${spouse.lastName || ''}</div>
                     <div class="family-member-relation">${spouse.relationship || 'spouse'}</div>
                     ${spouse.dateOfBirth ? `<div class="family-member-dob">Born: ${formatDate(spouse.dateOfBirth)}</div>` : ''}
+                    ${spouse.phone ? `<div class="family-member-phone">Phone: ${spouse.phone}</div>` : ''}
                     ${spouse.notes ? `<div class="family-member-notes"><strong>Notes:</strong> ${spouse.notes}</div>` : ''}
                 </div>
             </div>
@@ -166,6 +179,55 @@ function displaySiblings(siblings) {
     }
 }
 
+function displayHomeAddress(homeAddress) {
+    const addressElement = document.getElementById('homeAddressContent');
+    if (!addressElement) return;
+    
+    if (homeAddress && (homeAddress.street || homeAddress.city || homeAddress.state || homeAddress.postalCode || homeAddress.country)) {
+        const addressParts = [];
+        if (homeAddress.street) addressParts.push(homeAddress.street);
+        if (homeAddress.city) addressParts.push(homeAddress.city);
+        if (homeAddress.state) addressParts.push(homeAddress.state);
+        if (homeAddress.postalCode) addressParts.push(homeAddress.postalCode);
+        if (homeAddress.country) addressParts.push(homeAddress.country);
+        
+        addressElement.innerHTML = `
+            <div class="address-info">
+                ${addressParts.join(', ')}
+            </div>
+        `;
+    } else {
+        addressElement.innerHTML = '<div class="no-data">No home address provided</div>';
+    }
+}
+
+function displayBeneficiaries(beneficiaries) {
+    const beneficiariesContent = document.getElementById('beneficiariesContent');
+    if (!beneficiariesContent) return;
+    
+    console.log('displayBeneficiaries called with:', beneficiaries);
+    
+    if (beneficiaries && beneficiaries.length > 0) {
+        const beneficiariesHTML = beneficiaries.map(beneficiary => `
+            <div class="family-member">
+                <div class="family-member-name">${beneficiary.name}</div>
+                <div class="family-member-phone">Phone: ${beneficiary.phone}</div>
+                <div class="family-member-percentage">Percentage: ${beneficiary.beneficiaryPercentage}%</div>
+            </div>
+        `).join('');
+        
+        // Calculate total percentage
+        const totalPercentage = beneficiaries.reduce((sum, b) => sum + (b.beneficiaryPercentage || 0), 0);
+        
+        beneficiariesContent.innerHTML = `
+            <div class="family-members">${beneficiariesHTML}</div>
+            <div class="percentage-summary">Total: ${totalPercentage}%</div>
+        `;
+    } else {
+        beneficiariesContent.innerHTML = '<div class="no-data">No beneficiaries information provided</div>';
+    }
+}
+
 function formatDate(dateString) {
     if (!dateString) return 'Not specified';
     
@@ -182,8 +244,12 @@ function formatDate(dateString) {
 // Amendment Modal Functions
 let currentUserData = null;
 let currentProfileData = null;
+let originalUserDataForAmendment = null;
 
 function populateAmendmentForm(userData) {
+    // Populate personal information
+    displayAmendmentPersonalInfo(userData);
+    
     // Populate spouse information
     displayAmendmentSpouse(userData.spouse);
     
@@ -195,6 +261,9 @@ function populateAmendmentForm(userData) {
     
     // Populate siblings information
     displayAmendmentSiblings(userData.siblings || []);
+    
+    // Populate beneficiaries information
+    displayAmendmentBeneficiaries(userData.beneficiaries || []);
 }
 
 function displayAmendmentSpouse(spouse) {
@@ -221,8 +290,14 @@ function displayAmendmentSpouse(spouse) {
                 <div class="form-row">
                     <div class="form-group">
                         <label>Date of Birth</label>
-                        <input type="date" name="spouse[dateOfBirth]" value="${spouse.dateOfBirth ? new Date(spouse.dateOfBirth).toISOString().split('T')[0] : ''}">
+                        <input type="date" name="spouse[dateOfBirth]" value="${spouse.dateOfBirth && spouse.dateOfBirth !== null ? new Date(spouse.dateOfBirth).toISOString().split('T')[0] : ''}">
                     </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="spouse[phone]" value="${spouse.phone || ''}" placeholder="+254712345678">
+                    </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group">
                         <label>Relationship *</label>
                         <select name="spouse[relationship]" required>
@@ -252,7 +327,7 @@ function displayAmendmentChildren(children) {
             <div class="editable-family-member" data-type="child" data-index="${index}">
                 <div class="member-header">
                     <div class="member-title">${child.firstName} ${child.lastName}</div>
-                    <button type="button" class="remove-member-btn" onclick="removeChild(${index})">Remove</button>
+                    <button type="button" class="remove-member-btn" onclick="removeFamilyChild(${index})">Remove</button>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -443,7 +518,7 @@ function addChild() {
         <div class="editable-family-member" data-type="child" data-index="${newIndex}">
             <div class="member-header">
                 <div class="member-title">New Child</div>
-                <button type="button" class="remove-member-btn" onclick="removeChild(${newIndex})">Remove</button>
+                <button type="button" class="remove-member-btn" onclick="removeFamilyChild(${newIndex})">Remove</button>
             </div>
             <div class="form-row">
                 <div class="form-group">
@@ -581,6 +656,22 @@ function addSibling() {
     siblingsContent.insertAdjacentHTML('beforeend', siblingHTML);
 }
 
+function addBeneficiary() {
+    const beneficiariesContent = document.getElementById('amendBeneficiariesContent');
+    const existingBeneficiaries = beneficiariesContent.querySelectorAll('.editable-family-member');
+    
+    if (existingBeneficiaries.length >= 3) {
+        alert('Maximum 3 beneficiaries allowed');
+        return;
+    }
+    
+    if (existingBeneficiaries.length === 0) {
+        beneficiariesContent.innerHTML = '';
+    }
+    
+    addAmendmentBeneficiary();
+}
+
 // Functions to remove family members
 function removeSpouse() {
     const spouseContent = document.getElementById('amendSpouseContent');
@@ -590,7 +681,7 @@ function removeSpouse() {
     addSpouseBtn.style.display = 'inline-block';
 }
 
-function removeChild(index) {
+function removeFamilyChild(index) {
     const childElement = document.querySelector(`[data-type="child"][data-index="${index}"]`);
     if (childElement) {
         childElement.remove();
@@ -605,7 +696,7 @@ function removeChild(index) {
             // Re-index remaining children
             remainingChildren.forEach((child, newIndex) => {
                 child.setAttribute('data-index', newIndex);
-                child.querySelector('.remove-member-btn').setAttribute('onclick', `removeChild(${newIndex})`);
+                child.querySelector('.remove-member-btn').setAttribute('onclick', `removeFamilyChild(${newIndex})`);
                 
                 // Update form field names
                 const inputs = child.querySelectorAll('input, select, textarea');
@@ -683,23 +774,40 @@ function removeSibling(index) {
     }
 }
 
-function openAmendmentModal() {
-    // Use fresh profile data instead of cached login data
-    currentUserData = currentProfileData || AuthService.getUser();
-    
-    const modal = document.getElementById('amendmentModal');
-    modal.style.display = 'flex';
-    
-    // Pre-populate form with current family data
-    populateAmendmentForm(currentUserData);
-    
-    // Add character counter to notes field
-    const notesField = document.getElementById('memberNotes');
-    notesField.addEventListener('input', updateNotesCharCount);
-    
-    // Set up form submission
-    const form = document.getElementById('amendmentForm');
-    form.addEventListener('submit', handleAmendmentSubmission);
+async function openAmendmentModal() {
+    try {
+        // Always fetch fresh user data to avoid contamination
+        const response = await AuthService.makeRequest('/auth/profile');
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to load user data');
+        }
+        
+        // Use fresh data directly, never cached global data
+        const freshUserData = data.user;
+        
+        // Store original data for comparison during submission
+        originalUserDataForAmendment = JSON.parse(JSON.stringify(freshUserData));
+        
+        const modal = document.getElementById('amendmentModal');
+        modal.style.display = 'flex';
+        
+        // Pre-populate form with fresh family data
+        populateAmendmentForm(freshUserData);
+        
+        // Add character counter to notes field
+        const notesField = document.getElementById('memberNotes');
+        notesField.addEventListener('input', updateNotesCharCount);
+        
+        // Set up form submission
+        const form = document.getElementById('amendmentForm');
+        form.addEventListener('submit', handleAmendmentSubmission);
+        
+    } catch (error) {
+        console.error('Failed to open amendment modal:', error);
+        alert('Failed to load user data. Please try again.');
+    }
 }
 
 function closeAmendmentModal() {
@@ -714,6 +822,10 @@ function closeAmendmentModal() {
     const notesField = document.getElementById('memberNotes');
     notesField.removeEventListener('input', updateNotesCharCount);
     form.removeEventListener('submit', handleAmendmentSubmission);
+    
+    // Clear global state to prevent contamination
+    currentUserData = null;
+    originalUserDataForAmendment = null;
     
     // Reset character count
     const charCount = document.querySelector('.char-count');
@@ -741,54 +853,127 @@ function updateNotesCharCount() {
     }
 }
 
-function collectFormFamilyData(formData) {
-    const familyData = {
-        hasSpouse: false,
-        hasChildren: false,
-        hasParents: false,
-        hasSiblings: false,
-        spouse: null,
-        children: [],
-        parents: [],
-        siblings: []
+function collectFormFamilyData(formData, originalUserData = null) {
+    const familyData = {};
+    
+    // Personal information - use form data if available, otherwise use original
+    const amendedDateOfBirth = formData.get('amendDateOfBirth');
+    familyData.dateOfBirth = amendedDateOfBirth || originalUserData?.dateOfBirth || null;
+    
+    const formHomeAddress = {
+        street: formData.get('amendHomeAddressStreet') || '',
+        city: formData.get('amendHomeAddressCity') || '',
+        state: formData.get('amendHomeAddressState') || '',
+        postalCode: formData.get('amendHomeAddressPostalCode') || '',
+        country: formData.get('amendHomeAddressCountry') || ''
     };
     
-    // Collect spouse data
+    // If form has any address data, use it; otherwise use original
+    const hasFormAddressData = Object.values(formHomeAddress).some(v => v !== '');
+    if (hasFormAddressData) {
+        familyData.homeAddress = formHomeAddress;
+    } else {
+        familyData.homeAddress = originalUserData?.homeAddress || {};
+    }
+    
+    // Spouse information
     const spouseFirstName = formData.get('spouse[firstName]');
     const spouseLastName = formData.get('spouse[lastName]');
     
     if (spouseFirstName && spouseLastName) {
+        const spouseDateOfBirth = formData.get('spouse[dateOfBirth]');
+        
+        // Preserve original date if form value matches what was displayed
+        let finalDateOfBirth = null;
+        if (spouseDateOfBirth && spouseDateOfBirth.trim() !== '') {
+            if (originalUserData && originalUserData.spouse && originalUserData.spouse.dateOfBirth) {
+                const originalDisplayDate = new Date(originalUserData.spouse.dateOfBirth).toISOString().split('T')[0];
+                if (spouseDateOfBirth === originalDisplayDate) {
+                    // User didn't change the date, preserve original
+                    finalDateOfBirth = originalUserData.spouse.dateOfBirth;
+                } else {
+                    // User changed the date, use new value
+                    finalDateOfBirth = spouseDateOfBirth;
+                }
+            } else {
+                // No original date, use form value
+                finalDateOfBirth = spouseDateOfBirth;
+            }
+        }
+        
         familyData.hasSpouse = true;
         familyData.spouse = {
             firstName: spouseFirstName.trim(),
             lastName: spouseLastName.trim(),
-            dateOfBirth: formData.get('spouse[dateOfBirth]') || null,
+            dateOfBirth: finalDateOfBirth,
             relationship: formData.get('spouse[relationship]') || 'spouse',
+            phone: formData.get('spouse[phone]') || '',
             notes: (formData.get('spouse[notes]') || '').trim()
         };
+    } else {
+        // No form spouse data - use original data to preserve unchanged sections
+        if (originalUserData && originalUserData.spouse && originalUserData.spouse.firstName) {
+            familyData.hasSpouse = true;
+            familyData.spouse = originalUserData.spouse;
+        } else {
+            familyData.hasSpouse = false;
+            familyData.spouse = {};
+        }
     }
     
-    // Collect children data
+    // Children information
     const childrenEntries = document.querySelectorAll('#amendChildrenContent .editable-family-member[data-type="child"]');
+    familyData.children = [];
+    
     if (childrenEntries.length > 0) {
         familyData.hasChildren = true;
         childrenEntries.forEach((entry, index) => {
             const firstName = formData.get(`children[${index}][firstName]`);
             const lastName = formData.get(`children[${index}][lastName]`);
             if (firstName && lastName) {
+                const childDateOfBirth = formData.get(`children[${index}][dateOfBirth]`);
+                
+                // Preserve original child date if unchanged
+                let finalChildDateOfBirth = null;
+                if (childDateOfBirth && childDateOfBirth.trim() !== '') {
+                    if (originalUserData && originalUserData.children && originalUserData.children[index] && originalUserData.children[index].dateOfBirth) {
+                        const originalChildDisplayDate = new Date(originalUserData.children[index].dateOfBirth).toISOString().split('T')[0];
+                        if (childDateOfBirth === originalChildDisplayDate) {
+                            // User didn't change the date, preserve original
+                            finalChildDateOfBirth = originalUserData.children[index].dateOfBirth;
+                        } else {
+                            // User changed the date, use new value
+                            finalChildDateOfBirth = childDateOfBirth;
+                        }
+                    } else {
+                        // No original date, use form value
+                        finalChildDateOfBirth = childDateOfBirth;
+                    }
+                }
+                
                 familyData.children.push({
                     firstName: firstName.trim(),
                     lastName: lastName.trim(),
-                    dateOfBirth: formData.get(`children[${index}][dateOfBirth]`) || null,
-                    relationship: formData.get(`children[${index}][relationship]`) || 'child',
+                    dateOfBirth: finalChildDateOfBirth,
+                    relationship: formData.get(`children[${index}][relationship]`) || 'son',
                     notes: (formData.get(`children[${index}][notes]`) || '').trim()
                 });
             }
         });
+    } else {
+        // No form elements found - use original data to preserve unchanged sections
+        if (originalUserData && originalUserData.children && originalUserData.children.length > 0) {
+            familyData.hasChildren = true;
+            familyData.children = originalUserData.children;
+        } else {
+            familyData.hasChildren = false;
+        }
     }
     
-    // Collect parents data
+    // Parents information
     const parentEntries = document.querySelectorAll('#amendParentsContent .editable-family-member[data-type="parent"]');
+    familyData.parents = [];
+    
     if (parentEntries.length > 0) {
         familyData.hasParents = true;
         parentEntries.forEach((entry, index) => {
@@ -798,15 +983,19 @@ function collectFormFamilyData(formData) {
                 familyData.parents.push({
                     firstName: firstName.trim(),
                     lastName: lastName.trim(),
-                    relationship: formData.get(`parents[${index}][relationship]`) || 'parent',
+                    relationship: formData.get(`parents[${index}][relationship]`) || 'father',
                     notes: (formData.get(`parents[${index}][notes]`) || '').trim()
                 });
             }
         });
+    } else {
+        familyData.hasParents = false;
     }
     
-    // Collect siblings data
+    // Siblings information
     const siblingEntries = document.querySelectorAll('#amendSiblingsContent .editable-family-member[data-type="sibling"]');
+    familyData.siblings = [];
+    
     if (siblingEntries.length > 0) {
         familyData.hasSiblings = true;
         siblingEntries.forEach((entry, index) => {
@@ -816,11 +1005,47 @@ function collectFormFamilyData(formData) {
                 familyData.siblings.push({
                     firstName: firstName.trim(),
                     lastName: lastName.trim(),
-                    relationship: formData.get(`siblings[${index}][relationship]`) || 'sibling',
+                    relationship: formData.get(`siblings[${index}][relationship]`) || 'brother',
                     notes: (formData.get(`siblings[${index}][notes]`) || '').trim()
                 });
             }
         });
+    } else {
+        // No form elements found - use original data to preserve unchanged sections
+        if (originalUserData && originalUserData.siblings && originalUserData.siblings.length > 0) {
+            familyData.hasSiblings = true;
+            familyData.siblings = originalUserData.siblings;
+        } else {
+            familyData.hasSiblings = false;
+        }
+    }
+    
+    // Beneficiaries information
+    const beneficiaryEntries = document.querySelectorAll('#amendBeneficiariesContent .editable-family-member[data-type="beneficiary"]');
+    familyData.beneficiaries = [];
+    
+    if (beneficiaryEntries.length > 0) {
+        familyData.hasBeneficiaries = true;
+        beneficiaryEntries.forEach((entry, index) => {
+            const name = formData.get(`beneficiaries[${index}][name]`);
+            const phone = formData.get(`beneficiaries[${index}][phone]`);
+            const percentage = formData.get(`beneficiaries[${index}][beneficiaryPercentage]`);
+            if (name && phone && percentage) {
+                familyData.beneficiaries.push({
+                    name: name.trim(),
+                    phone: phone.trim(),
+                    beneficiaryPercentage: parseInt(percentage) || 0
+                });
+            }
+        });
+    } else {
+        // No form elements found - use original data to preserve unchanged sections
+        if (originalUserData && originalUserData.beneficiaries && originalUserData.beneficiaries.length > 0) {
+            familyData.hasBeneficiaries = true;
+            familyData.beneficiaries = originalUserData.beneficiaries;
+        } else {
+            familyData.hasBeneficiaries = false;
+        }
     }
     
     return familyData;
@@ -845,12 +1070,14 @@ async function handleAmendmentSubmission(e) {
         
         // Collect proposed family data from the form
         const formData = new FormData(e.target);
-        const proposedFamilyData = collectFormFamilyData(formData);
+        const proposedFamilyData = collectFormFamilyData(formData, originalUserDataForAmendment);
         
         const amendmentData = {
             proposedFamilyData: proposedFamilyData,
             memberNotes: memberNotes
         };
+        
+        console.log('Submitting amendment data:', amendmentData);
         
         const response = await AuthService.makeRequest('/amendments/member/submit-amendment', {
             method: 'POST',
@@ -909,6 +1136,153 @@ async function loadAmendmentRequests() {
         console.error('Load amendment requests error:', error);
         document.getElementById('loadingAmendments').style.display = 'none';
         document.getElementById('amendmentRequestsList').innerHTML = '<div class="error">Network error. Please try again.</div>';
+    }
+}
+
+function displayAmendmentPersonalInfo(userData) {
+    // Date of Birth
+    const dateOfBirthInput = document.getElementById('amendDateOfBirth');
+    if (dateOfBirthInput) {
+        dateOfBirthInput.value = userData.dateOfBirth ? new Date(userData.dateOfBirth).toISOString().split('T')[0] : '';
+    }
+    
+    // Home Address
+    const homeAddress = userData.homeAddress || {};
+    const streetInput = document.getElementById('amendHomeAddressStreet');
+    const cityInput = document.getElementById('amendHomeAddressCity');
+    const stateInput = document.getElementById('amendHomeAddressState');
+    const postalCodeInput = document.getElementById('amendHomeAddressPostalCode');
+    const countryInput = document.getElementById('amendHomeAddressCountry');
+    
+    if (streetInput) streetInput.value = homeAddress.street || '';
+    if (cityInput) cityInput.value = homeAddress.city || '';
+    if (stateInput) stateInput.value = homeAddress.state || '';
+    if (postalCodeInput) postalCodeInput.value = homeAddress.postalCode || '';
+    if (countryInput) countryInput.value = homeAddress.country || '';
+}
+
+function displayAmendmentBeneficiaries(beneficiaries) {
+    const beneficiariesContent = document.getElementById('amendBeneficiariesContent');
+    const addBeneficiaryBtn = document.getElementById('addBeneficiaryBtn');
+    
+    if (!beneficiariesContent) return;
+    
+    // Clear existing content
+    beneficiariesContent.innerHTML = '';
+    
+    if (beneficiaries && beneficiaries.length > 0) {
+        beneficiaries.forEach((beneficiary, index) => {
+            addAmendmentBeneficiary(beneficiary, index);
+        });
+        addBeneficiaryBtn.style.display = beneficiaries.length >= 3 ? 'none' : 'inline-block';
+    } else {
+        addBeneficiaryBtn.style.display = 'inline-block';
+    }
+    
+    updateAmendmentPercentageTotal();
+}
+
+function addAmendmentBeneficiary(beneficiaryData = {}, index = null) {
+    const container = document.getElementById('amendBeneficiariesContent');
+    const existingBeneficiaries = container.querySelectorAll('.editable-family-member');
+    
+    if (existingBeneficiaries.length >= 3) {
+        alert('Maximum 3 beneficiaries allowed');
+        return;
+    }
+    
+    const newIndex = index !== null ? index : existingBeneficiaries.length;
+    
+    const beneficiaryHTML = `
+        <div class="editable-family-member" data-type="beneficiary" data-index="${newIndex}">
+            <div class="member-header">
+                <div class="member-title">Beneficiary ${newIndex + 1}</div>
+                <button type="button" class="remove-member-btn" onclick="removeAmendmentBeneficiary(this)">Remove</button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" name="beneficiaries[${newIndex}][name]" value="${beneficiaryData.name || ''}" required maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" name="beneficiaries[${newIndex}][phone]" value="${beneficiaryData.phone || ''}" required placeholder="+254712345678">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Beneficiary Percentage (%) *</label>
+                    <input type="number" name="beneficiaries[${newIndex}][beneficiaryPercentage]" 
+                           value="${beneficiaryData.beneficiaryPercentage || ''}" 
+                           required min="1" max="100" step="1" 
+                           onchange="updateAmendmentPercentageTotal()">
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', beneficiaryHTML);
+    
+    // Update add button visibility
+    const addBtn = document.getElementById('addBeneficiaryBtn');
+    if (container.querySelectorAll('.editable-family-member').length >= 3) {
+        addBtn.style.display = 'none';
+    }
+    
+    updateAmendmentPercentageTotal();
+}
+
+function removeAmendmentBeneficiary(button) {
+    const beneficiaryElement = button.closest('.editable-family-member');
+    beneficiaryElement.remove();
+    
+    // Re-index remaining beneficiaries
+    const container = document.getElementById('amendBeneficiariesContent');
+    const remaining = container.querySelectorAll('.editable-family-member');
+    
+    remaining.forEach((element, index) => {
+        element.setAttribute('data-index', index);
+        element.querySelector('.member-title').textContent = `Beneficiary ${index + 1}`;
+        
+        // Update input names
+        const inputs = element.querySelectorAll('input');
+        inputs.forEach(input => {
+            const name = input.getAttribute('name');
+            if (name && name.includes('beneficiaries[')) {
+                const newName = name.replace(/beneficiaries\[\d+\]/, `beneficiaries[${index}]`);
+                input.setAttribute('name', newName);
+            }
+        });
+    });
+    
+    // Show add button if under limit
+    const addBtn = document.getElementById('addBeneficiaryBtn');
+    addBtn.style.display = remaining.length < 3 ? 'inline-block' : 'none';
+    
+    updateAmendmentPercentageTotal();
+}
+
+function updateAmendmentPercentageTotal() {
+    const percentageInputs = document.querySelectorAll('#amendBeneficiariesContent input[name*="beneficiaryPercentage"]');
+    let total = 0;
+    
+    percentageInputs.forEach(input => {
+        const value = parseInt(input.value) || 0;
+        total += value;
+    });
+    
+    const totalElement = document.getElementById('amendTotalPercentage');
+    if (totalElement) {
+        totalElement.textContent = total;
+        
+        const container = totalElement.parentElement;
+        container.classList.remove('valid', 'invalid');
+        
+        if (total === 100) {
+            container.classList.add('valid');
+        } else if (total > 0) {
+            container.classList.add('invalid');
+        }
     }
 }
 

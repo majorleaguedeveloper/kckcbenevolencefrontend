@@ -14,28 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '../login.html?role=member';
     }
 
-    // Login form handler
-    document.getElementById('login-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        hideError('login-error');
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        const result = await AuthService.login(email, password);
-
-        if (result.success) {
-            if (result.user.role === 'user') {
-                showDashboard();
-            } else {
-                showError('login-error', 'Member access only');
-                AuthService.logout();
-            }
-        } else {
-            showError('login-error', result.message);
-        }
-    });
-
     // Logout is now handled by the navbar component
 });
 
@@ -47,9 +25,6 @@ function showDashboard() {
     if (userNameElement) {
         userNameElement.textContent = `${user.firstName} ${user.lastName}`;
     }
-    
-    document.getElementById('login-section').classList.add('hidden');
-    document.getElementById('dashboard-section').classList.remove('hidden');
     
     loadPendingPayments();
     loadPaymentHistory();

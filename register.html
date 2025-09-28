@@ -432,19 +432,261 @@
             background: #27ae60;
         }
 
+        /* Form subsection styles */
+        .form-subsection {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .form-subsection h4 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Beneficiaries specific styles */
+        .form-note {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-note small {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .beneficiaries-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .percentage-total {
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .percentage-total.valid {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .percentage-total.invalid {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .beneficiary-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .beneficiary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .beneficiary-title {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .remove-beneficiary-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-beneficiary-btn:hover {
+            background: #c82333;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
             .register-container {
-                padding: 1.5rem;
-                margin: 10px;
+                padding: 1rem;
+                margin: 0;
+                max-width: 100%;
+                box-shadow: none;
+                border-radius: 10px;
             }
             
             .form-row {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                min-width: 0;
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 12px;
+                box-sizing: border-box;
+            }
+            
+            .form-group label {
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 8px;
             }
             
             .register-header h1 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
+            }
+            
+            .register-header p {
+                font-size: 0.9rem;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+            
+            .section-icon {
+                font-size: 1.2rem;
+            }
+            
+            /* Full width elements on mobile */
+            .full-width {
+                grid-column: 1;
+            }
+            
+            /* Better spacing for form sections */
+            .form-section {
+                margin-bottom: 1.5rem;
+                padding: 1rem;
+            }
+            
+            .form-subsection {
+                margin-top: 1rem;
+                padding-top: 1rem;
+            }
+            
+            /* Mobile-optimized buttons */
+            .btn {
+                padding: 14px 24px;
+                font-size: 16px;
+                width: 100%;
+                margin-top: 10px;
+            }
+            
+            .add-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            /* Beneficiaries controls stack on mobile */
+            .beneficiaries-controls {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .percentage-total {
+                text-align: center;
+                padding: 12px;
+            }
+            
+            /* Family member items better spacing */
+            .family-member-item,
+            .beneficiary-item {
+                margin-bottom: 1rem;
+                padding: 1rem;
+            }
+            
+            /* Radio groups stack vertically on mobile */
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .radio-option {
+                padding: 12px;
+                margin-bottom: 8px;
+            }
+            
+            /* Password toggle button sizing */
+            .password-toggle {
+                padding: 8px;
+                min-width: 44px; /* Touch target size */
+            }
+            
+            /* Character count text */
+            .char-count {
+                font-size: 12px;
+            }
+            
+            /* Form notes */
+            .form-note {
+                padding: 12px;
+                margin-bottom: 1rem;
+            }
+            
+            /* Step indicator */
+            .step-indicator {
+                margin-bottom: 1.5rem;
+            }
+            
+            .step {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 0.75rem;
+            }
+            
+            .register-header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .form-section {
+                padding: 0.75rem;
+            }
+            
+            .section-header {
+                margin-bottom: 1rem;
             }
         }
     </style>
@@ -497,7 +739,45 @@
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number <span class="required">*</span></label>
-                        <input type="tel" id="phone" name="phone" required placeholder="+254712345678">
+                        <input type="tel" id="phone" name="phone" required placeholder="+15551234567">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth">
+                    </div>
+                </div>
+                
+                <!-- Home Address Section -->
+                <div class="form-subsection">
+                    <h4>Home Address</h4>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="homeAddressStreet">Street Address</label>
+                            <input type="text" id="homeAddressStreet" name="homeAddress.street" maxlength="200">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="homeAddressCity">City</label>
+                            <input type="text" id="homeAddressCity" name="homeAddress.city" maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="homeAddressState">State/Province</label>
+                            <input type="text" id="homeAddressState" name="homeAddress.state" maxlength="100">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="homeAddressPostalCode">Postal Code</label>
+                            <input type="text" id="homeAddressPostalCode" name="homeAddress.postalCode" maxlength="20">
+                        </div>
+                        <div class="form-group">
+                            <label for="homeAddressCountry">Country</label>
+                            <input type="text" id="homeAddressCountry" name="homeAddress.country" maxlength="100">
+                        </div>
                     </div>
                 </div>
                 
@@ -546,7 +826,15 @@
                             <select id="spouseRelationship" name="spouse.relationship">
                                 <option value="">Select relationship</option>
                                 <option value="spouse">Spouse</option>
+                                <option value="partner">Partner</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="spousePhone">Phone Number</label>
+                            <input type="tel" id="spousePhone" name="spouse.phone" placeholder="+15551234567">
                         </div>
                     </div>
 
@@ -645,6 +933,44 @@
                     </div>
                     
                     <button type="button" class="add-btn" onclick="addSibling()">Add Sibling</button>
+                </div>
+            </div>
+
+            <!-- Beneficiaries Information Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">🎯</div>
+                    <div class="section-title">Beneficiaries Information <span class="required">*</span></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Do you have beneficiaries? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="hasBeneficiaries" value="true" required onchange="toggleBeneficiariesDetails(true)">
+                            <span class="radio-label">Yes, I have beneficiaries</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="hasBeneficiaries" value="false" required onchange="toggleBeneficiariesDetails(false)">
+                            <span class="radio-label">None</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="beneficiariesDetails" class="family-details" style="display: none;">
+                    <div class="form-note">
+                        <small>⚠️ Maximum 3 beneficiaries allowed. Percentages must sum to exactly 100%.</small>
+                    </div>
+                    <div id="beneficiariesContainer">
+                        <!-- Beneficiaries will be added dynamically -->
+                    </div>
+                    
+                    <div class="beneficiaries-controls">
+                        <button type="button" class="add-btn" onclick="addBeneficiary()" id="addBeneficiaryBtn">Add Beneficiary</button>
+                        <div class="percentage-total">
+                            Total: <span id="totalPercentage">0</span>%
+                        </div>
+                    </div>
                 </div>
             </div>
 

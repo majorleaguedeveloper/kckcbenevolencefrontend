@@ -294,6 +294,7 @@
                 }
 
                 document.getElementById('emailDisplay').textContent = this.email;
+                console.log('Email from URL:', this.email);
                 
                 // Set up event listeners
                 document.getElementById('verifyForm').addEventListener('submit', this.handleVerify.bind(this));
@@ -394,6 +395,8 @@
                 this.setLoading(true);
 
                 try {
+                    console.log('Submitting verification:', { email: this.email, code: code });
+                    
                     const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
                         method: 'POST',
                         headers: {
@@ -405,7 +408,21 @@
                         })
                     });
 
-                    const data = await response.json();
+                    console.log('Verification response status:', response.status);
+                    console.log('Verification response headers:', response.headers.get('content-type'));
+
+                    let data;
+                    try {
+                        data = await response.json();
+                        console.log('Verification response data:', data);
+                    } catch (jsonError) {
+                        console.error('Failed to parse JSON response:', jsonError);
+                        const textResponse = await response.text();
+                        console.error('Raw response:', textResponse);
+                        this.showError(`Server error (${response.status}): Unable to parse response. Check console for details.`);
+                        this.setLoading(false);
+                        return;
+                    }
 
                     if (response.ok) {
                         clearInterval(this.timer);
@@ -419,12 +436,16 @@
                             window.location.href = 'member/index.html';
                         }, 2000);
                     } else {
-                        this.showError(data.message || 'Verification failed. Please try again.');
+                        this.showError(data.message || `Verification failed (${response.status}). Please try again.`);
                         this.setLoading(false);
                     }
                 } catch (error) {
-                    console.error('Verification error:', error);
-                    this.showError('Network error. Please check your connection and try again.');
+                    console.error('Verification network error:', error);
+                    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                        this.showError('Cannot connect to server. Please check that the backend is running and try again.');
+                    } else {
+                        this.showError(`Network error: ${error.message}. Check console for details.`);
+                    }
                     this.setLoading(false);
                 }
             }

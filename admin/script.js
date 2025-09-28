@@ -14,34 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '../login.html?role=admin';
     }
 
-    // Login form handler
-    document.getElementById('login-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        hideError('login-error');
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        console.log('Attempting login with:', email);
-        const result = await AuthService.login(email, password);
-        console.log('Login result:', result);
-
-        if (result.success) {
-            console.log('Login successful, user role:', result.user.role);
-            if (result.user.role === 'admin') {
-                console.log('User is admin, showing dashboard');
-                showDashboard();
-            } else {
-                console.log('User is not admin, role:', result.user.role);
-                showError('login-error', 'Admin access required');
-                AuthService.logout();
-            }
-        } else {
-            console.log('Login failed:', result.message);
-            showError('login-error', result.message);
-        }
-    });
-
     // Logout is now handled by the navbar component
 
     // Payment request form handler
@@ -107,17 +79,6 @@ function showDashboard() {
         const userNameElement = document.querySelector('.navbar-user, .mobile-user');
         if (userNameElement) {
             userNameElement.textContent = `${user.firstName} ${user.lastName}`;
-        }
-        
-        const loginSection = document.getElementById('login-section');
-        const dashboardSection = document.getElementById('dashboard-section');
-        
-        if (loginSection && dashboardSection) {
-            loginSection.classList.add('hidden');
-            dashboardSection.classList.remove('hidden');
-            console.log('Dashboard sections switched successfully');
-        } else {
-            console.error('Login or dashboard sections not found');
         }
         
         loadPaymentRequests();

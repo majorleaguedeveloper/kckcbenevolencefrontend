@@ -410,9 +410,9 @@
             // Add a small delay for better UX
             setTimeout(() => {
                 if (type === 'admin') {
-                    window.location.href = 'admin/index.html';
+                    window.location.href = 'login.html?role=admin';
                 } else {
-                    window.location.href = 'member/index.html';
+                    window.location.href = 'login.html?role=member';
                 }
             }, 1000);
         }

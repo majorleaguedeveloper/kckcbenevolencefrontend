@@ -455,6 +455,34 @@
             display: block;
         }
 
+        .family-member-percentage {
+            color: #667eea;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .percentage-summary {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .percentage-total.valid {
+            border: 2px solid #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .percentage-total.invalid {
+            border: 2px solid #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         .amendment-request-item {
             background: #f8f9fa;
             border: 1px solid #e1e5e9;
@@ -942,6 +970,17 @@
                         <div class="no-data">No siblings information provided</div>
                     </div>
                 </div>
+
+                <!-- Beneficiaries Section -->
+                <div class="family-section" id="beneficiariesSection">
+                    <div class="family-header">
+                        <span>🏦</span>
+                        <h4>Beneficiaries</h4>
+                    </div>
+                    <div id="beneficiariesContent">
+                        <div class="no-data">No beneficiaries information provided</div>
+                    </div>
+                </div>
             </div>
 
             <!-- Amendment Requests Section -->
@@ -1029,6 +1068,24 @@
                             </div>
                             <div id="amendSiblingsContent">
                                 <div class="no-data">No siblings information provided</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Beneficiaries Amendment Section -->
+                    <div class="form-section">
+                        <div class="family-section" id="amendBeneficiariesSection">
+                            <div class="family-header">
+                                <span>🏦</span>
+                                <h4>Beneficiaries</h4>
+                                <button type="button" id="addBeneficiaryBtn" class="add-family-btn" onclick="addBeneficiary()">Add Beneficiary</button>
+                            </div>
+                            <div id="amendBeneficiariesContent">
+                                <div class="no-data">No beneficiaries information provided</div>
+                            </div>
+                            <div class="percentage-total" style="margin-top: 1rem; padding: 0.75rem; background: #f8f9fa; border-radius: 6px; text-align: center; font-weight: 600;">
+                                Total Percentage: <span id="amendTotalPercentage">0</span>% 
+                                <small style="font-weight: normal; color: #666;">(Must equal 100%)</small>
                             </div>
                         </div>
                     </div>

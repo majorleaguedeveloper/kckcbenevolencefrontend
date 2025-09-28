@@ -232,7 +232,7 @@ function showAmendmentModal(amendment) {
 }
 
 function renderFamilyComparison(currentData, proposedData) {
-    const sections = ['spouse', 'children', 'parents', 'siblings'];
+    const sections = ['personalInfo', 'spouse', 'children', 'parents', 'siblings', 'beneficiaries'];
     let html = '';
     
     sections.forEach(section => {
@@ -241,24 +241,41 @@ function renderFamilyComparison(currentData, proposedData) {
         const changes = detectChanges(currentSection, proposedSection, section);
         
         if (changes.hasChanges || currentSection.hasData || proposedSection.hasData) {
-            html += `
-                <div class="family-section-comparison ${changes.hasChanges ? 'has-changes' : ''}">
-                    <div class="section-header">
-                        <h5>${section.charAt(0).toUpperCase() + section.slice(1)}</h5>
-                        ${changes.hasChanges ? '<span class="change-indicator">✏️ Modified</span>' : '<span class="no-change-indicator">No Changes</span>'}
-                    </div>
-                    <div class="comparison-columns">
-                        <div class="current-column">
-                            <h6>Current</h6>
-                            ${renderSectionData(currentSection, 'current')}
+            if (changes.hasChanges) {
+                // Section has actual changes - show full comparison
+                html += `
+                    <div class="family-section-comparison has-changes">
+                        <div class="section-header">
+                            <h5>${section.charAt(0).toUpperCase() + section.slice(1)}</h5>
+                            <span class="change-indicator modified">✏️ Modified</span>
                         </div>
-                        <div class="proposed-column">
-                            <h6>Proposed</h6>
-                            ${renderSectionData(proposedSection, 'proposed', changes)}
+                        <div class="comparison-columns">
+                            <div class="current-column">
+                                <h6>Current</h6>
+                                ${renderSectionData(currentSection, 'current')}
+                            </div>
+                            <div class="proposed-column">
+                                <h6>Proposed</h6>
+                                ${renderSectionData(proposedSection, 'proposed', changes)}
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            } else if (currentSection.hasData || proposedSection.hasData) {
+                // Section has data but no changes - show single column with no changes indicator
+                const dataToShow = currentSection.hasData ? currentSection : proposedSection;
+                html += `
+                    <div class="family-section-comparison no-changes">
+                        <div class="section-header">
+                            <h5>${section.charAt(0).toUpperCase() + section.slice(1)}</h5>
+                            <span class="change-indicator no-change">✓ No Changes</span>
+                        </div>
+                        <div class="single-column">
+                            ${renderSectionData(dataToShow, 'unchanged')}
+                        </div>
+                    </div>
+                `;
+            }
         }
     });
     
@@ -266,10 +283,24 @@ function renderFamilyComparison(currentData, proposedData) {
 }
 
 function getCurrentSectionData(data, section) {
-    if (section === 'spouse') {
+    if (section === 'personalInfo') {
+        const personalData = {
+            dateOfBirth: data.dateOfBirth || null,
+            homeAddress: data.homeAddress || null
+        };
+        return {
+            hasData: !!(personalData.dateOfBirth || (personalData.homeAddress && Object.values(personalData.homeAddress).some(v => v))),
+            data: personalData
+        };
+    } else if (section === 'spouse') {
         return {
             hasData: !!(data.spouse && data.spouse.firstName),
             data: data.spouse || null
+        };
+    } else if (section === 'beneficiaries') {
+        return {
+            hasData: !!(data.beneficiaries && data.beneficiaries.length > 0),
+            data: data.beneficiaries || []
         };
     } else {
         return {
@@ -280,10 +311,24 @@ function getCurrentSectionData(data, section) {
 }
 
 function getProposedSectionData(data, section) {
-    if (section === 'spouse') {
+    if (section === 'personalInfo') {
+        const personalData = {
+            dateOfBirth: data.dateOfBirth || null,
+            homeAddress: data.homeAddress || null
+        };
+        return {
+            hasData: !!(personalData.dateOfBirth || (personalData.homeAddress && Object.values(personalData.homeAddress).some(v => v))),
+            data: personalData
+        };
+    } else if (section === 'spouse') {
         return {
             hasData: !!(data.spouse && data.spouse.firstName),
             data: data.spouse || null
+        };
+    } else if (section === 'beneficiaries') {
+        return {
+            hasData: !!(data.beneficiaries && data.beneficiaries.length > 0),
+            data: data.beneficiaries || []
         };
     } else {
         return {
@@ -294,7 +339,22 @@ function getProposedSectionData(data, section) {
 }
 
 function detectChanges(current, proposed, section) {
-    if (section === 'spouse') {
+    if (section === 'personalInfo') {
+        if (!current.hasData && !proposed.hasData) return { hasChanges: false };
+        if (!current.hasData && proposed.hasData) return { hasChanges: true, type: 'added' };
+        if (current.hasData && !proposed.hasData) return { hasChanges: true, type: 'removed' };
+        
+        // Compare personal information
+        const currentPersonal = current.data;
+        const proposedPersonal = proposed.data;
+        
+        if (currentPersonal.dateOfBirth !== proposedPersonal.dateOfBirth ||
+            JSON.stringify(currentPersonal.homeAddress) !== JSON.stringify(proposedPersonal.homeAddress)) {
+            return { hasChanges: true, type: 'modified' };
+        }
+        
+        return { hasChanges: false };
+    } else if (section === 'spouse') {
         if (!current.hasData && !proposed.hasData) return { hasChanges: false };
         if (!current.hasData && proposed.hasData) return { hasChanges: true, type: 'added' };
         if (current.hasData && !proposed.hasData) return { hasChanges: true, type: 'removed' };
@@ -306,8 +366,33 @@ function detectChanges(current, proposed, section) {
         if (currentSpouse.firstName !== proposedSpouse.firstName ||
             currentSpouse.lastName !== proposedSpouse.lastName ||
             currentSpouse.dateOfBirth !== proposedSpouse.dateOfBirth ||
+            currentSpouse.phone !== proposedSpouse.phone ||
             currentSpouse.notes !== proposedSpouse.notes) {
             return { hasChanges: true, type: 'modified' };
+        }
+        
+        return { hasChanges: false };
+    } else if (section === 'beneficiaries') {
+        // For beneficiaries array
+        if (!current.hasData && !proposed.hasData) return { hasChanges: false };
+        if (!current.hasData && proposed.hasData) return { hasChanges: true, type: 'added' };
+        if (current.hasData && !proposed.hasData) return { hasChanges: true, type: 'removed' };
+        
+        // Compare array lengths and contents
+        if (current.data.length !== proposed.data.length) {
+            return { hasChanges: true, type: 'modified' };
+        }
+        
+        // Deep compare each beneficiary
+        for (let i = 0; i < current.data.length; i++) {
+            const currentBeneficiary = current.data[i];
+            const proposedBeneficiary = proposed.data[i];
+            
+            if (currentBeneficiary.name !== proposedBeneficiary.name ||
+                currentBeneficiary.phone !== proposedBeneficiary.phone ||
+                currentBeneficiary.beneficiaryPercentage !== proposedBeneficiary.beneficiaryPercentage) {
+                return { hasChanges: true, type: 'modified' };
+            }
         }
         
         return { hasChanges: false };
@@ -330,9 +415,15 @@ function detectChanges(current, proposed, section) {
             if (currentMember.firstName !== proposedMember.firstName ||
                 currentMember.lastName !== proposedMember.lastName ||
                 currentMember.relationship !== proposedMember.relationship ||
-                currentMember.dateOfBirth !== proposedMember.dateOfBirth ||
-                currentMember.notes !== proposedMember.notes) {
+                (currentMember.notes || '') !== (proposedMember.notes || '')) {
                 return { hasChanges: true, type: 'modified' };
+            }
+            
+            // Only compare dateOfBirth for children (siblings don't have this field)
+            if (section === 'children') {
+                if ((currentMember.dateOfBirth || null) !== (proposedMember.dateOfBirth || null)) {
+                    return { hasChanges: true, type: 'modified' };
+                }
             }
         }
         
@@ -347,33 +438,68 @@ function renderSectionData(sectionData, type, changes = null) {
         </div>`;
     }
     
-    if (Array.isArray(sectionData.data)) {
-        // Handle arrays (children, parents, siblings)
-        return sectionData.data.map(member => `
-            <div class="family-member ${type === 'proposed' && changes?.hasChanges ? 'change-modified' : ''}">
-                <div class="member-name">
-                    ${type === 'proposed' && changes?.hasChanges ? '✏️ ' : ''}
-                    ${member.firstName} ${member.lastName}
-                </div>
-                <div class="member-details">
-                    Relationship: ${member.relationship}
-                    ${member.dateOfBirth ? `<br>DOB: ${formatDate(member.dateOfBirth)}` : ''}
-                    ${member.notes ? `<br>Notes: ${member.notes}` : ''}
+    // For unchanged sections, don't show modification indicators
+    const isUnchanged = type === 'unchanged';
+    const showChangeIndicator = !isUnchanged && type === 'proposed' && changes?.hasChanges;
+    
+    // Check what type of section we're rendering
+    if (sectionData.section === 'personalInfo' || (sectionData.data && sectionData.data.dateOfBirth !== undefined)) {
+        // Handle personal information
+        const personal = sectionData.data;
+        return `
+            <div class="personal-info ${showChangeIndicator ? 'change-modified' : ''}">
+                ${showChangeIndicator ? '✏️ ' : ''}
+                <div class="personal-details">
+                    ${personal.dateOfBirth ? `DOB: ${formatDate(personal.dateOfBirth)}` : 'DOB: Not provided'}
+                    <br>Address: ${getFormattedAddress(personal.homeAddress)}
                 </div>
             </div>
-        `).join('');
+        `;
+    } else if (Array.isArray(sectionData.data)) {
+        // Check if it's beneficiaries array or family members array
+        if (sectionData.data.length > 0 && sectionData.data[0].beneficiaryPercentage !== undefined) {
+            // Handle beneficiaries array
+            return sectionData.data.map(beneficiary => `
+                <div class="family-member ${showChangeIndicator ? 'change-modified' : ''}">
+                    <div class="member-name">
+                        ${showChangeIndicator ? '✏️ ' : ''}
+                        ${beneficiary.name}
+                    </div>
+                    <div class="member-details">
+                        Phone: ${beneficiary.phone}
+                        <br>Percentage: ${beneficiary.beneficiaryPercentage}%
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            // Handle arrays (children, parents, siblings)
+            return sectionData.data.map(member => `
+                <div class="family-member ${showChangeIndicator ? 'change-modified' : ''}">
+                    <div class="member-name">
+                        ${showChangeIndicator ? '✏️ ' : ''}
+                        ${member.firstName} ${member.lastName}
+                    </div>
+                    <div class="member-details">
+                        Relationship: ${member.relationship}
+                        ${member.dateOfBirth ? `<br>DOB: ${formatDate(member.dateOfBirth)}` : ''}
+                        ${member.notes ? `<br>Notes: ${member.notes}` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
     } else {
         // Handle spouse object
         const spouse = sectionData.data;
         return `
-            <div class="family-member ${type === 'proposed' && changes?.hasChanges ? 'change-modified' : ''}">
+            <div class="family-member ${showChangeIndicator ? 'change-modified' : ''}">
                 <div class="member-name">
-                    ${type === 'proposed' && changes?.hasChanges ? '✏️ ' : ''}
+                    ${showChangeIndicator ? '✏️ ' : ''}
                     ${spouse.firstName} ${spouse.lastName || ''}
                 </div>
                 <div class="member-details">
                     Relationship: ${spouse.relationship || 'spouse'}
                     ${spouse.dateOfBirth ? `<br>DOB: ${formatDate(spouse.dateOfBirth)}` : ''}
+                    ${spouse.phone ? `<br>Phone: ${spouse.phone}` : ''}
                     ${spouse.notes ? `<br>Notes: ${spouse.notes}` : ''}
                 </div>
             </div>
@@ -549,4 +675,17 @@ function formatDate(dateString) {
         hour: '2-digit',
         minute: '2-digit'
     });
+}
+
+function getFormattedAddress(homeAddress) {
+    if (!homeAddress) return 'Not provided';
+    
+    const addressParts = [];
+    if (homeAddress.street) addressParts.push(homeAddress.street);
+    if (homeAddress.city) addressParts.push(homeAddress.city);
+    if (homeAddress.state) addressParts.push(homeAddress.state);
+    if (homeAddress.postalCode) addressParts.push(homeAddress.postalCode);
+    if (homeAddress.country) addressParts.push(homeAddress.country);
+    
+    return addressParts.length > 0 ? addressParts.join(', ') : 'Not provided';
 }
