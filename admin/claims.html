@@ -382,6 +382,24 @@
             font-size: 3rem;
             margin-bottom: 1rem;
         }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body data-navbar="admin">
@@ -425,6 +443,7 @@
 
             <div id="loading" class="loading">Loading claims...</div>
             <div id="error" class="error-message" style="display: none;"></div>
+            <div id="success" class="success-message" style="display: none;"></div>
             
             <div id="claims-list"></div>
             <div id="pagination"></div>

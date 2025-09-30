@@ -70,6 +70,13 @@ function displayProfile(user) {
     document.getElementById('accountStatus').textContent = user.isActive ? 'Active' : 'Inactive';
     document.getElementById('lastLogin').textContent = user.lastLogin ? formatDate(user.lastLogin) : 'Never';
     
+    // Emergency contact information
+    document.getElementById('emergencyContactName').textContent = user.emergencyContact?.fullName || 'Not provided';
+    document.getElementById('emergencyContactPhone').textContent = user.emergencyContact?.phone || 'Not provided';
+    
+    // Endorsement information
+    displayEndorsementInfo(user);
+    
     // Additional personal information
     const dateOfBirthElement = document.getElementById('dateOfBirth');
     if (dateOfBirthElement) {
@@ -201,6 +208,94 @@ function displayHomeAddress(homeAddress) {
     }
 }
 
+function displayEndorsementInfo(user) {
+    // Status display with badge
+    const statusElement = document.getElementById('endorsementStatus');
+    const status = user.endorsementStatus || 'pending';
+    const statusIcons = {
+        'pending': '⏳',
+        'endorsed': '✅',
+        'rejected': '❌'
+    };
+    
+    statusElement.innerHTML = `
+        <span class="status-badge ${status}">
+            ${statusIcons[status]} ${status.charAt(0).toUpperCase() + status.slice(1)}
+        </span>
+    `;
+    
+    // Endorsement date
+    const dateElement = document.getElementById('endorsementDate');
+    if (user.endorsementDate) {
+        dateElement.textContent = formatDate(user.endorsementDate);
+    } else {
+        dateElement.textContent = status === 'pending' ? 'Not yet endorsed' : 'Not available';
+    }
+    
+    // Endorsed by
+    const endorsedByElement = document.getElementById('endorsedBy');
+    if (user.endorsedBy) {
+        if (user.endorsedBy.firstName) {
+            endorsedByElement.innerHTML = `
+                ${user.endorsedBy.firstName} ${user.endorsedBy.lastName || ''}
+                ${user.endorsedBy.email ? `<br><small style="color: #666;">(${user.endorsedBy.email})</small>` : ''}
+            `;
+        } else {
+            endorsedByElement.textContent = 'System Admin';
+        }
+    } else {
+        endorsedByElement.textContent = status === 'pending' ? 'Awaiting assignment' : 'Not available';
+    }
+    
+    // Show/hide action required item and set explanations
+    const actionItem = document.getElementById('endorsementActionItem');
+    const actionElement = document.getElementById('endorsementAction');
+    const explanationDiv = document.getElementById('endorsementExplanation');
+    const explanationText = document.getElementById('endorsementExplanationText');
+    
+    explanationDiv.className = `endorsement-explanation ${status}`;
+    
+    switch (status) {
+        case 'pending':
+            actionItem.style.display = 'block';
+            actionElement.innerHTML = '<span style="color: #ffc107;">⚠️ Awaiting endorsement approval</span>';
+            explanationDiv.style.display = 'block';
+            explanationText.innerHTML = `
+                <strong>📋 Endorsement Pending</strong><br>
+                Your account is currently awaiting endorsement from an existing member. 
+                Once endorsed, you'll gain full access to all platform features including 
+                claims submission, family management, and benefit participation.
+            `;
+            break;
+            
+        case 'endorsed':
+            actionItem.style.display = 'none';
+            explanationDiv.style.display = 'block';
+            explanationText.innerHTML = `
+                <strong>🎉 Account Endorsed!</strong><br>
+                Your account has been successfully endorsed. You now have full access to 
+                all Benevolence Fund features and can participate in the mutual aid community.
+            `;
+            break;
+            
+        case 'rejected':
+            actionItem.style.display = 'block';
+            actionElement.innerHTML = '<span style="color: #dc3545;">❌ Endorsement has been rejected</span>';
+            explanationDiv.style.display = 'block';
+            explanationText.innerHTML = `
+                <strong>🚫 Endorsement Rejected</strong><br>
+                Unfortunately, your endorsement request has been rejected. 
+                Please contact support or request a new endorsement from another member 
+                to proceed with your account activation.
+            `;
+            break;
+            
+        default:
+            actionItem.style.display = 'none';
+            explanationDiv.style.display = 'none';
+    }
+}
+
 function displayBeneficiaries(beneficiaries) {
     const beneficiariesContent = document.getElementById('beneficiariesContent');
     if (!beneficiariesContent) return;
@@ -250,6 +345,9 @@ function populateAmendmentForm(userData) {
     // Populate personal information
     displayAmendmentPersonalInfo(userData);
     
+    // Populate emergency contact information
+    displayAmendmentEmergencyContact(userData.emergencyContact);
+    
     // Populate spouse information
     displayAmendmentSpouse(userData.spouse);
     
@@ -264,6 +362,48 @@ function populateAmendmentForm(userData) {
     
     // Populate beneficiaries information
     displayAmendmentBeneficiaries(userData.beneficiaries || []);
+}
+
+function displayAmendmentEmergencyContact(emergencyContact) {
+    const emergencyContactContent = document.getElementById('amendEmergencyContactContent');
+    
+    if (emergencyContact && (emergencyContact.fullName || emergencyContact.phone)) {
+        emergencyContactContent.innerHTML = `
+            <div class="editable-family-member" data-type="emergencyContact">
+                <div class="member-header">
+                    <div class="member-title">Emergency Contact</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" name="emergencyContact[fullName]" value="${emergencyContact.fullName || ''}" required maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" name="emergencyContact[phone]" value="${emergencyContact.phone || ''}" required placeholder="+254712345678">
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        emergencyContactContent.innerHTML = `
+            <div class="editable-family-member" data-type="emergencyContact">
+                <div class="member-header">
+                    <div class="member-title">Emergency Contact</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" name="emergencyContact[fullName]" required maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" name="emergencyContact[phone]" required placeholder="+254712345678">
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 }
 
 function displayAmendmentSpouse(spouse) {
@@ -874,6 +1014,20 @@ function collectFormFamilyData(formData, originalUserData = null) {
         familyData.homeAddress = formHomeAddress;
     } else {
         familyData.homeAddress = originalUserData?.homeAddress || {};
+    }
+    
+    // Emergency contact information
+    const emergencyContactFullName = formData.get('emergencyContact[fullName]');
+    const emergencyContactPhone = formData.get('emergencyContact[phone]');
+    
+    if (emergencyContactFullName || emergencyContactPhone) {
+        familyData.emergencyContact = {
+            fullName: emergencyContactFullName ? emergencyContactFullName.trim() : '',
+            phone: emergencyContactPhone ? emergencyContactPhone.trim() : ''
+        };
+    } else {
+        // Use original emergency contact data to preserve unchanged sections
+        familyData.emergencyContact = originalUserData?.emergencyContact || {};
     }
     
     // Spouse information

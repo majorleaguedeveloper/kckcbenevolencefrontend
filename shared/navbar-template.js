@@ -129,6 +129,12 @@ const NAVBAR_CONFIGS = {
                 href: 'profile.html',
                 icon: '👤',
                 title: 'View My Profile'
+            },
+            {
+                text: 'Endorsements',
+                href: 'endorsements.html',
+                icon: '🤝',
+                title: 'Manage Endorsement Requests'
             }
         ]
     }

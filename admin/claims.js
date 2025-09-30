@@ -1,12 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Claims admin page loading...');
+    
     // Check if user is logged in and is admin
     if (!AuthService.isLoggedIn()) {
+        console.log('User not logged in, redirecting to login');
         window.location.href = '../login.html?role=admin';
         return;
     }
 
     const user = AuthService.getUser();
+    console.log('Current user:', user);
+    
     if (!user || user.role !== 'admin') {
+        console.log('User is not admin, redirecting to login');
         AuthService.logout();
         window.location.href = '../login.html?role=admin';
         return;
@@ -18,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
         userNameElement.textContent = `${user.firstName} ${user.lastName}`;
     }
 
+    console.log('Loading claims stats and data...');
+    
     // Load claims and stats on page load
     loadClaimsStats();
     loadClaims();
@@ -31,14 +39,21 @@ let currentClaim = null;
 
 async function loadClaimsStats() {
     try {
+        console.log('Fetching claims stats from /admin/stats');
         const response = await AuthService.makeRequest('/admin/stats');
+        console.log('Stats response status:', response.status);
         const data = await response.json();
+        console.log('Stats response data:', data);
 
         if (response.ok) {
             displayClaimsStats(data.claims);
+        } else {
+            console.error('Failed to load stats:', data.message);
+            showError('error', data.message || 'Failed to load statistics');
         }
     } catch (error) {
         console.error('Load claims stats error:', error);
+        showError('error', 'Network error while loading statistics. Please try again.');
     }
 }
 
@@ -78,19 +93,23 @@ async function loadClaims(page = 1) {
         if (status) url += `&status=${status}`;
         if (search) url += `&search=${encodeURIComponent(search)}`;
 
+        console.log('Fetching claims from:', url);
         const response = await AuthService.makeRequest(url);
+        console.log('Claims response status:', response.status);
         const data = await response.json();
+        console.log('Claims response data:', data);
 
         if (response.ok) {
             displayClaims(data.claims);
             displayPagination(data.pagination);
             currentPage = page;
         } else {
+            console.error('Failed to load claims:', data.message);
             showError('error', data.message || 'Failed to load claims');
         }
     } catch (error) {
         console.error('Load claims error:', error);
-        showError('error', 'Failed to load claims. Please try again.');
+        showError('error', 'Network error while loading claims. Please try again.');
     } finally {
         document.getElementById('loading').style.display = 'none';
     }
@@ -122,8 +141,8 @@ function displayClaims(claims) {
                 <div class="claim-header">
                     <div class="claim-member-info">
                         <div class="claim-member-name">
-                            ${claim.user.firstName} ${claim.user.lastName}
-                            <small style="color: #666; font-weight: normal;">(${claim.user.email})</small>
+                            ${claim.user ? `${claim.user.firstName} ${claim.user.lastName}` : 'Unknown User'}
+                            <small style="color: #666; font-weight: normal;">(${claim.user ? claim.user.email : 'No email'})</small>
                         </div>
                         <div class="claim-deceased">
                             Deceased: ${claim.deceasedFamilyMember.firstName} ${claim.deceasedFamilyMember.lastName}
@@ -179,6 +198,11 @@ function displayClaims(claims) {
 function verifyFamilyMember(claim) {
     const user = claim.user;
     const deceased = claim.deceasedFamilyMember;
+    
+    // Return false if user data is missing
+    if (!user) {
+        return false;
+    }
     
     // Check spouse
     if (deceased.relationship === 'spouse' && user.spouse) {
@@ -297,11 +321,12 @@ async function moveToReview(claimId) {
             loadClaims(currentPage);
             loadClaimsStats();
         } else {
+            console.error('Failed to move to review:', data.message);
             showError('error', data.message || 'Failed to update claim status');
         }
     } catch (error) {
         console.error('Move to review error:', error);
-        showError('error', 'Failed to update claim status. Please try again.');
+        showError('error', 'Network error while updating claim status. Please try again.');
     }
 }
 
@@ -314,11 +339,12 @@ async function reviewClaim(claimId) {
             currentClaim = data.claim;
             displayReviewModal(data.claim);
         } else {
+            console.error('Failed to load claim for review:', data.message);
             showError('error', data.message || 'Failed to load claim details');
         }
     } catch (error) {
         console.error('Load claim for review error:', error);
-        showError('error', 'Failed to load claim details. Please try again.');
+        showError('error', 'Network error while loading claim details. Please try again.');
     }
 }
 
@@ -333,15 +359,15 @@ function displayReviewModal(claim) {
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Name</span>
-                        <span class="claim-detail-value">${claim.user.firstName} ${claim.user.lastName}</span>
+                        <span class="claim-detail-value">${claim.user ? `${claim.user.firstName} ${claim.user.lastName}` : 'Unknown User'}</span>
                     </div>
                     <div class="claim-detail">
                         <span class="claim-detail-label">Email</span>
-                        <span class="claim-detail-value">${claim.user.email}</span>
+                        <span class="claim-detail-value">${claim.user ? claim.user.email : 'No email'}</span>
                     </div>
                     <div class="claim-detail">
                         <span class="claim-detail-label">Phone</span>
-                        <span class="claim-detail-value">${claim.user.phone}</span>
+                        <span class="claim-detail-value">${claim.user ? claim.user.phone : 'No phone'}</span>
                     </div>
                 </div>
             </div>
@@ -520,11 +546,12 @@ async function calculateContributions() {
             document.getElementById('calculation-result').style.display = 'block';
             hideError('review-error');
         } else {
+            console.error('Failed to calculate contributions:', data.message);
             showError('review-error', data.message || 'Failed to calculate contributions');
         }
     } catch (error) {
         console.error('Calculate contributions error:', error);
-        showError('review-error', 'Failed to calculate contributions. Please try again.');
+        showError('review-error', 'Network error while calculating contributions. Please try again.');
     }
 }
 
@@ -588,11 +615,12 @@ async function submitReview() {
                 loadClaimsStats();
             }, 2000);
         } else {
+            console.error(`Failed to ${decision} claim:`, data.message);
             showError('review-error', data.message || `Failed to ${decision} claim`);
         }
     } catch (error) {
         console.error('Submit review error:', error);
-        showError('review-error', 'Failed to submit review. Please try again.');
+        showError('review-error', 'Network error while submitting review. Please try again.');
     }
 }
 
@@ -617,11 +645,12 @@ async function markCompleted(claimId) {
             loadClaims(currentPage);
             loadClaimsStats();
         } else {
+            console.error('Failed to mark claim as completed:', data.message);
             showError('error', data.message || 'Failed to mark claim as completed');
         }
     } catch (error) {
         console.error('Mark completed error:', error);
-        showError('error', 'Failed to mark claim as completed. Please try again.');
+        showError('error', 'Network error while marking claim as completed. Please try again.');
     }
 }
 
@@ -633,11 +662,12 @@ async function viewClaimDetails(claimId) {
         if (response.ok) {
             displayClaimDetailsModal(data.claim);
         } else {
+            console.error('Failed to load claim details:', data.message);
             showError('error', data.message || 'Failed to load claim details');
         }
     } catch (error) {
         console.error('View claim details error:', error);
-        showError('error', 'Failed to load claim details. Please try again.');
+        showError('error', 'Network error while loading claim details. Please try again.');
     }
 }
 
@@ -652,15 +682,15 @@ function displayClaimDetailsModal(claim) {
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Name</span>
-                        <span class="claim-detail-value">${claim.user.firstName} ${claim.user.lastName}</span>
+                        <span class="claim-detail-value">${claim.user ? `${claim.user.firstName} ${claim.user.lastName}` : 'Unknown User'}</span>
                     </div>
                     <div class="claim-detail">
                         <span class="claim-detail-label">Email</span>
-                        <span class="claim-detail-value">${claim.user.email}</span>
+                        <span class="claim-detail-value">${claim.user ? claim.user.email : 'No email'}</span>
                     </div>
                     <div class="claim-detail">
                         <span class="claim-detail-label">Phone</span>
-                        <span class="claim-detail-value">${claim.user.phone}</span>
+                        <span class="claim-detail-value">${claim.user ? claim.user.phone : 'No phone'}</span>
                     </div>
                 </div>
             </div>
@@ -740,7 +770,7 @@ function displayClaimDetailsModal(claim) {
                     ${claim.reviewedBy ? `
                     <div class="claim-detail">
                         <span class="claim-detail-label">Reviewed By</span>
-                        <span class="claim-detail-value">${claim.reviewedBy.firstName} ${claim.reviewedBy.lastName}</span>
+                        <span class="claim-detail-value">${claim.reviewedBy.firstName || 'Unknown'} ${claim.reviewedBy.lastName || ''}</span>
                     </div>
                     ` : ''}
                 </div>
@@ -773,7 +803,7 @@ function displayClaimDetailsModal(claim) {
                                 <span class="claim-status status-${history.status}">${history.status}</span>
                                 <small style="color: #666;">${formatDate(history.changedAt)}</small>
                             </div>
-                            ${history.changedBy ? `<div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">By: ${history.changedBy.firstName} ${history.changedBy.lastName}</div>` : ''}
+                            ${history.changedBy ? `<div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">By: ${history.changedBy.firstName || 'Unknown'} ${history.changedBy.lastName || ''}</div>` : ''}
                             ${history.notes ? `<div style="margin-top: 0.5rem; font-size: 0.875rem;">${history.notes}</div>` : ''}
                         </div>
                     `).join('')}

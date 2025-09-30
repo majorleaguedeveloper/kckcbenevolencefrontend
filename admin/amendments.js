@@ -1,12 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Amendments admin page loading...');
+    
     // Check if user is logged in and is admin
     if (!AuthService.isLoggedIn()) {
+        console.log('User not logged in, redirecting to login');
         window.location.href = '../login.html?role=admin';
         return;
     }
 
     const user = AuthService.getUser();
+    console.log('Current user:', user);
+    
     if (!user || user.role !== 'admin') {
+        console.log('User is not admin, redirecting to login');
         AuthService.logout();
         window.location.href = '../login.html?role=admin';
         return;
@@ -18,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
         userNameElement.textContent = `${user.firstName} ${user.lastName}`;
     }
 
+    console.log('Loading amendment stats and data...');
+    
     // Load amendments and stats on page load
     loadAmendmentStats();
     loadAmendments();
@@ -28,14 +36,34 @@ let searchTimeout;
 
 async function loadAmendmentStats() {
     try {
+        console.log('Checking authentication before loading stats...');
+        const token = AuthService.getToken();
+        const user = AuthService.getUser();
+        console.log('Token exists:', !!token);
+        console.log('User role:', user?.role);
+        
+        if (!token) {
+            console.error('No authentication token found');
+            showError('error', 'Authentication required. Please log in.');
+            return;
+        }
+        
+        console.log('Fetching amendment stats from /amendments/admin/amendments?limit=1000');
         const response = await AuthService.makeRequest('/amendments/admin/amendments?limit=1000');
+        console.log('Amendment stats response status:', response.status);
         const data = await response.json();
+        console.log('Amendment stats response data:', data);
 
         if (response.ok) {
             displayAmendmentStats(data.stats);
+        } else {
+            console.error('Failed to load amendment stats:', data.message);
+            showError('error', data.message || 'Failed to load amendment statistics');
         }
     } catch (error) {
         console.error('Load amendment stats error:', error);
+        console.error('Stats error details:', error.message, error.stack);
+        showError('error', `Network error while loading amendment statistics: ${error.message}. Please try again.`);
     }
 }
 
@@ -64,6 +92,21 @@ function displayAmendmentStats(stats) {
 
 async function loadAmendments() {
     try {
+        console.log('Checking authentication before loading amendments...');
+        const token = AuthService.getToken();
+        const user = AuthService.getUser();
+        console.log('Token exists:', !!token);
+        console.log('User role:', user?.role);
+        
+        if (!token) {
+            console.error('No authentication token found');
+            const errorElement = document.getElementById('error');
+            errorElement.textContent = 'Authentication required. Please log in.';
+            errorElement.style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            return;
+        }
+        
         const loadingElement = document.getElementById('loading');
         const errorElement = document.getElementById('error');
         const listElement = document.getElementById('amendmentsList');
@@ -83,8 +126,12 @@ async function loadAmendments() {
         params.append('page', currentPage);
         params.append('limit', 10);
 
-        const response = await AuthService.makeRequest(`/amendments/admin/amendments?${params.toString()}`);
+        const url = `/amendments/admin/amendments?${params.toString()}`;
+        console.log('Fetching amendments from:', url);
+        const response = await AuthService.makeRequest(url);
+        console.log('Amendments response status:', response.status);
         const data = await response.json();
+        console.log('Amendments response data:', data);
 
         loadingElement.style.display = 'none';
 
@@ -95,14 +142,16 @@ async function loadAmendments() {
                 listElement.innerHTML = data.amendments.map(amendment => createAmendmentHTML(amendment)).join('');
             }
         } else {
+            console.error('Failed to load amendments:', data.message);
             errorElement.textContent = data.message || 'Failed to load amendments';
             errorElement.style.display = 'block';
         }
     } catch (error) {
         console.error('Load amendments error:', error);
+        console.error('Error details:', error.message, error.stack);
         document.getElementById('loading').style.display = 'none';
         const errorElement = document.getElementById('error');
-        errorElement.textContent = 'Network error. Please try again.';
+        errorElement.textContent = `Network error while loading amendments: ${error.message}. Please try again.`;
         errorElement.style.display = 'block';
     }
 }
@@ -111,11 +160,14 @@ function createAmendmentHTML(amendment) {
     const statusClass = `status-${amendment.status}`;
     const user = amendment.user;
     
+    // Handle cases where user data might be null or missing
+    const userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+    
     return `
         <div class="amendment-item">
             <div class="amendment-header">
                 <div>
-                    <div class="amendment-user">${user.firstName} ${user.lastName}</div>
+                    <div class="amendment-user">${userName}</div>
                     <div class="amendment-date">
                         Submitted: ${formatDate(amendment.createdAt)}
                         ${amendment.reviewedAt ? `• Reviewed: ${formatDate(amendment.reviewedAt)}` : ''}
@@ -135,7 +187,7 @@ function createAmendmentHTML(amendment) {
                 <div class="amendment-notes">
                     <div class="amendment-notes-label">Admin Response:</div>
                     <p class="amendment-notes-text">${amendment.adminResponse}</p>
-                    ${amendment.reviewedBy ? `<small>Reviewed by: ${amendment.reviewedBy.firstName} ${amendment.reviewedBy.lastName}</small>` : ''}
+                    ${amendment.reviewedBy ? `<small>Reviewed by: ${amendment.reviewedBy.firstName || 'Unknown'} ${amendment.reviewedBy.lastName || ''}</small>` : ''}
                 </div>
             ` : ''}
 
@@ -164,11 +216,12 @@ async function viewAmendmentDetails(amendmentId) {
         if (response.ok) {
             showAmendmentModal(data.amendment);
         } else {
-            alert('Failed to load amendment details');
+            console.error('Failed to load amendment details:', data.message);
+            alert(data.message || 'Failed to load amendment details');
         }
     } catch (error) {
         console.error('Load amendment details error:', error);
-        alert('Network error. Please try again.');
+        alert('Network error while loading amendment details. Please try again.');
     }
 }
 
@@ -177,7 +230,8 @@ function showAmendmentModal(amendment) {
     const title = document.getElementById('reviewModalTitle');
     const body = document.getElementById('reviewModalBody');
     
-    title.textContent = `Amendment Request - ${amendment.user.firstName} ${amendment.user.lastName}`;
+    const userName = amendment.user ? `${amendment.user.firstName} ${amendment.user.lastName}` : 'Unknown User';
+    title.textContent = `Amendment Request - ${userName}`;
     
     body.innerHTML = `
         <div class="amendment-details">
@@ -186,7 +240,7 @@ function showAmendmentModal(amendment) {
                 <p><strong>Status:</strong> <span class="status-badge status-${amendment.status}">${amendment.status}</span></p>
                 <p><strong>Submitted:</strong> ${formatDate(amendment.createdAt)}</p>
                 ${amendment.reviewedAt ? `<p><strong>Reviewed:</strong> ${formatDate(amendment.reviewedAt)}</p>` : ''}
-                ${amendment.reviewedBy ? `<p><strong>Reviewed by:</strong> ${amendment.reviewedBy.firstName} ${amendment.reviewedBy.lastName}</p>` : ''}
+                ${amendment.reviewedBy ? `<p><strong>Reviewed by:</strong> ${amendment.reviewedBy.firstName || 'Unknown'} ${amendment.reviewedBy.lastName || ''}</p>` : ''}
             </div>
 
             <div class="section">
@@ -231,8 +285,22 @@ function showAmendmentModal(amendment) {
     modal.style.display = 'flex';
 }
 
+function getSectionDisplayName(section) {
+    const sectionNames = {
+        'personalInfo': 'Personal Information',
+        'emergencyContact': 'Emergency Contact',
+        'spouse': 'Spouse',
+        'children': 'Children',
+        'parents': 'Parents',
+        'siblings': 'Siblings',
+        'beneficiaries': 'Beneficiaries'
+    };
+    
+    return sectionNames[section] || section.charAt(0).toUpperCase() + section.slice(1);
+}
+
 function renderFamilyComparison(currentData, proposedData) {
-    const sections = ['personalInfo', 'spouse', 'children', 'parents', 'siblings', 'beneficiaries'];
+    const sections = ['personalInfo', 'emergencyContact', 'spouse', 'children', 'parents', 'siblings', 'beneficiaries'];
     let html = '';
     
     sections.forEach(section => {
@@ -246,17 +314,17 @@ function renderFamilyComparison(currentData, proposedData) {
                 html += `
                     <div class="family-section-comparison has-changes">
                         <div class="section-header">
-                            <h5>${section.charAt(0).toUpperCase() + section.slice(1)}</h5>
+                            <h5>${getSectionDisplayName(section)}</h5>
                             <span class="change-indicator modified">✏️ Modified</span>
                         </div>
                         <div class="comparison-columns">
                             <div class="current-column">
                                 <h6>Current</h6>
-                                ${renderSectionData(currentSection, 'current')}
+                                ${renderSectionData({...currentSection, section}, 'current')}
                             </div>
                             <div class="proposed-column">
                                 <h6>Proposed</h6>
-                                ${renderSectionData(proposedSection, 'proposed', changes)}
+                                ${renderSectionData({...proposedSection, section}, 'proposed', changes)}
                             </div>
                         </div>
                     </div>
@@ -267,11 +335,11 @@ function renderFamilyComparison(currentData, proposedData) {
                 html += `
                     <div class="family-section-comparison no-changes">
                         <div class="section-header">
-                            <h5>${section.charAt(0).toUpperCase() + section.slice(1)}</h5>
+                            <h5>${getSectionDisplayName(section)}</h5>
                             <span class="change-indicator no-change">✓ No Changes</span>
                         </div>
                         <div class="single-column">
-                            ${renderSectionData(dataToShow, 'unchanged')}
+                            ${renderSectionData({...dataToShow, section}, 'unchanged')}
                         </div>
                     </div>
                 `;
@@ -291,6 +359,12 @@ function getCurrentSectionData(data, section) {
         return {
             hasData: !!(personalData.dateOfBirth || (personalData.homeAddress && Object.values(personalData.homeAddress).some(v => v))),
             data: personalData
+        };
+    } else if (section === 'emergencyContact') {
+        const emergencyContactData = data.emergencyContact || null;
+        return {
+            hasData: !!(emergencyContactData && (emergencyContactData.fullName || emergencyContactData.phone)),
+            data: emergencyContactData
         };
     } else if (section === 'spouse') {
         return {
@@ -319,6 +393,12 @@ function getProposedSectionData(data, section) {
         return {
             hasData: !!(personalData.dateOfBirth || (personalData.homeAddress && Object.values(personalData.homeAddress).some(v => v))),
             data: personalData
+        };
+    } else if (section === 'emergencyContact') {
+        const emergencyContactData = data.emergencyContact || null;
+        return {
+            hasData: !!(emergencyContactData && (emergencyContactData.fullName || emergencyContactData.phone)),
+            data: emergencyContactData
         };
     } else if (section === 'spouse') {
         return {
@@ -350,6 +430,21 @@ function detectChanges(current, proposed, section) {
         
         if (currentPersonal.dateOfBirth !== proposedPersonal.dateOfBirth ||
             JSON.stringify(currentPersonal.homeAddress) !== JSON.stringify(proposedPersonal.homeAddress)) {
+            return { hasChanges: true, type: 'modified' };
+        }
+        
+        return { hasChanges: false };
+    } else if (section === 'emergencyContact') {
+        if (!current.hasData && !proposed.hasData) return { hasChanges: false };
+        if (!current.hasData && proposed.hasData) return { hasChanges: true, type: 'added' };
+        if (current.hasData && !proposed.hasData) return { hasChanges: true, type: 'removed' };
+        
+        // Compare emergency contact details
+        const currentContact = current.data;
+        const proposedContact = proposed.data;
+        
+        if (currentContact.fullName !== proposedContact.fullName ||
+            currentContact.phone !== proposedContact.phone) {
             return { hasChanges: true, type: 'modified' };
         }
         
@@ -452,6 +547,18 @@ function renderSectionData(sectionData, type, changes = null) {
                 <div class="personal-details">
                     ${personal.dateOfBirth ? `DOB: ${formatDate(personal.dateOfBirth)}` : 'DOB: Not provided'}
                     <br>Address: ${getFormattedAddress(personal.homeAddress)}
+                </div>
+            </div>
+        `;
+    } else if (sectionData.section === 'emergencyContact' || (sectionData.data && sectionData.data.fullName !== undefined)) {
+        // Handle emergency contact information
+        const contact = sectionData.data;
+        return `
+            <div class="emergency-contact ${showChangeIndicator ? 'change-modified' : ''}">
+                ${showChangeIndicator ? '✏️ ' : ''}
+                <div class="contact-details">
+                    Name: ${contact.fullName || 'Not provided'}
+                    <br>Phone: ${contact.phone || 'Not provided'}
                 </div>
             </div>
         `;
@@ -610,11 +717,12 @@ async function approveAmendment(amendmentId) {
             loadAmendments();
             loadAmendmentStats();
         } else {
+            console.error('Failed to approve amendment:', data.message);
             alert(data.message || 'Failed to approve amendment');
         }
     } catch (error) {
         console.error('Approve amendment error:', error);
-        alert('Network error. Please try again.');
+        alert('Network error while approving amendment. Please try again.');
     }
 }
 
@@ -641,11 +749,12 @@ async function rejectAmendment(amendmentId) {
             loadAmendments();
             loadAmendmentStats();
         } else {
+            console.error('Failed to reject amendment:', data.message);
             alert(data.message || 'Failed to reject amendment');
         }
     } catch (error) {
         console.error('Reject amendment error:', error);
-        alert('Network error. Please try again.');
+        alert('Network error while rejecting amendment. Please try again.');
     }
 }
 
@@ -688,4 +797,15 @@ function getFormattedAddress(homeAddress) {
     if (homeAddress.country) addressParts.push(homeAddress.country);
     
     return addressParts.length > 0 ? addressParts.join(', ') : 'Not provided';
+}
+
+// Utility function to show errors
+function showError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    } else {
+        console.error('Error element not found:', elementId, 'Message:', message);
+    }
 }

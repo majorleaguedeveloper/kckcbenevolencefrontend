@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endorsement Requests - Benevolence Fund Portal</title>
+    <link rel="stylesheet" href="../shared/navbar.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .endorsement-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .endorsement-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .endorsement-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .requester-info h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .requester-details {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .request-date {
+            color: #888;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+
+        .family-info {
+            margin: 1.5rem 0;
+        }
+
+        .family-section {
+            margin-bottom: 1rem;
+        }
+
+        .family-section h4 {
+            color: #555;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .family-members {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-left: 1.5rem;
+        }
+
+        .family-member {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .family-member:last-child {
+            border-bottom: none;
+        }
+
+        .member-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .member-details {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+        }
+
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .response-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .response-section textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .response-section textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        @media (max-width: 768px) {
+            .endorsement-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .family-members {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body data-navbar="member">
+    <!-- Navigation -->
+    <div id="navbar-container"></div>
+
+    <div class="dashboard-container">
+        <h1>📋 Endorsement Requests</h1>
+        <p class="subtitle">Review and respond to endorsement requests from new members</p>
+
+        <!-- Messages -->
+        <div id="messageContainer"></div>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <p>🔍 Loading endorsement requests...</p>
+        </div>
+
+        <!-- Endorsement Requests -->
+        <div id="endorsementRequests"></div>
+    </div>
+
+    <script src="../shared/auth.js"></script>
+    <script src="../shared/navbar-template.js"></script>
+    <script src="../shared/navbar.js"></script>
+    <script>
+        class EndorsementManager {
+            constructor() {
+                this.requests = [];
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!AuthService.isLoggedIn()) {
+                    window.location.href = '../login.html';
+                    return;
+                }
+
+                // Load pending requests
+                await this.loadPendingRequests();
+            }
+
+            async loadPendingRequests() {
+                try {
+                    console.log('Loading pending requests...');
+                    console.log('API_BASE_URL:', API_BASE_URL);
+                    console.log('Token:', AuthService.getToken() ? 'Present' : 'Missing');
+                    
+                    const response = await fetch(`${API_BASE_URL}/endorsements/pending`, {
+                        headers: {
+                            'Authorization': `Bearer ${AuthService.getToken()}`
+                        }
+                    });
+
+                    console.log('Response status:', response.status);
+                    console.log('Response OK:', response.ok);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Response error:', errorText);
+                        throw new Error(`Failed to load endorsement requests: ${response.status} - ${errorText}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Endorsement requests data:', data);
+                    this.requests = data.requests;
+                    this.displayRequests();
+
+                } catch (error) {
+                    console.error('Error loading requests:', error);
+                    this.showMessage(`Error loading endorsement requests: ${error.message}`, 'error');
+                } finally {
+                    document.getElementById('loading').style.display = 'none';
+                }
+            }
+
+            displayRequests() {
+                const container = document.getElementById('endorsementRequests');
+                
+                if (this.requests.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>📭 No Pending Requests</h3>
+                            <p>You don't have any pending endorsement requests at the moment.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = this.requests.map(request => this.createRequestCard(request)).join('');
+            }
+
+            createRequestCard(request) {
+                const familySections = this.createFamilySections(request.familySnapshot);
+                
+                return `
+                    <div class="endorsement-card" data-request-id="${request.id}">
+                        <div class="endorsement-header">
+                            <div class="requester-info">
+                                <h3>${request.requester.name}</h3>
+                                <div class="requester-details">
+                                    <div>📧 ${request.requester.email}</div>
+                                    <div>📱 ${request.requester.phone}</div>
+                                </div>
+                            </div>
+                            <div class="request-date">
+                                Requested: ${new Date(request.requestDate).toLocaleDateString()}
+                            </div>
+                        </div>
+
+                        <div class="family-info">
+                            <h4>👨‍👩‍👧‍👦 Family Information</h4>
+                            ${familySections}
+                        </div>
+
+                        <div class="response-section">
+                            <label for="message-${request.id}">Optional Message:</label>
+                            <textarea 
+                                id="message-${request.id}" 
+                                placeholder="Add a personal message with your response (optional)"
+                                maxlength="500"
+                            ></textarea>
+                        </div>
+
+                        <div class="actions">
+                            <button 
+                                class="btn btn-reject" 
+                                onclick="endorsementManager.respondToRequest('${request.id}', 'reject')"
+                            >
+                                ❌ Reject
+                            </button>
+                            <button 
+                                class="btn btn-approve" 
+                                onclick="endorsementManager.respondToRequest('${request.id}', 'approve')"
+                            >
+                                ✅ Approve
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            createFamilySections(familySnapshot) {
+                let sections = [];
+
+                // Spouse section
+                if (familySnapshot.hasSpouse && familySnapshot.spouse) {
+                    const spouse = familySnapshot.spouse;
+                    sections.push(`
+                        <div class="family-section">
+                            <h4>💑 Spouse</h4>
+                            <div class="family-members">
+                                <div class="family-member">
+                                    <div class="member-name">${spouse.firstName} ${spouse.lastName}</div>
+                                    <div class="member-details">
+                                        ${spouse.dateOfBirth ? `Born: ${new Date(spouse.dateOfBirth).toLocaleDateString()}` : ''}
+                                        ${spouse.phone ? `📱 ${spouse.phone}` : ''}
+                                        <div>Relationship: ${spouse.relationship}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                // Children section
+                if (familySnapshot.hasChildren && familySnapshot.children?.length > 0) {
+                    const childrenHtml = familySnapshot.children.map(child => `
+                        <div class="family-member">
+                            <div class="member-name">${child.firstName} ${child.lastName}</div>
+                            <div class="member-details">
+                                ${child.dateOfBirth ? `Born: ${new Date(child.dateOfBirth).toLocaleDateString()}` : ''}
+                                <div>Relationship: ${child.relationship}</div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    sections.push(`
+                        <div class="family-section">
+                            <h4>👶 Children (${familySnapshot.children.length})</h4>
+                            <div class="family-members">
+                                ${childrenHtml}
+                            </div>
+                        </div>
+                    `);
+                }
+
+                // Parents section
+                if (familySnapshot.hasParents && familySnapshot.parents?.length > 0) {
+                    const parentsHtml = familySnapshot.parents.map(parent => `
+                        <div class="family-member">
+                            <div class="member-name">${parent.firstName} ${parent.lastName}</div>
+                            <div class="member-details">
+                                <div>Relationship: ${parent.relationship}</div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    sections.push(`
+                        <div class="family-section">
+                            <h4>👴👵 Parents</h4>
+                            <div class="family-members">
+                                ${parentsHtml}
+                            </div>
+                        </div>
+                    `);
+                }
+
+                // Siblings section
+                if (familySnapshot.hasSiblings && familySnapshot.siblings?.length > 0) {
+                    const siblingsHtml = familySnapshot.siblings.map(sibling => `
+                        <div class="family-member">
+                            <div class="member-name">${sibling.firstName} ${sibling.lastName}</div>
+                            <div class="member-details">
+                                <div>Relationship: ${sibling.relationship}</div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    sections.push(`
+                        <div class="family-section">
+                            <h4>👫👬👭 Siblings</h4>
+                            <div class="family-members">
+                                ${siblingsHtml}
+                            </div>
+                        </div>
+                    `);
+                }
+
+                return sections.length > 0 ? sections.join('') : '<p>No family information provided.</p>';
+            }
+
+            async respondToRequest(requestId, action) {
+                const messageTextarea = document.getElementById(`message-${requestId}`);
+                const message = messageTextarea?.value.trim() || '';
+                
+                // Disable buttons during request
+                const card = document.querySelector(`[data-request-id="${requestId}"]`);
+                const buttons = card.querySelectorAll('.btn');
+                buttons.forEach(btn => btn.disabled = true);
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/endorsements/respond`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${AuthService.getToken()}`
+                        },
+                        body: JSON.stringify({
+                            requestId,
+                            action,
+                            message
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Failed to respond to request');
+                    }
+
+                    const data = await response.json();
+                    const actionText = action === 'approve' ? 'approved' : 'rejected';
+                    this.showMessage(`Endorsement request ${actionText} successfully!`, 'success');
+                    
+                    // Remove the card from display
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(-100%)';
+                    
+                    setTimeout(() => {
+                        card.remove();
+                        // Update requests array
+                        this.requests = this.requests.filter(r => r.id !== requestId);
+                        
+                        // Check if no more requests
+                        if (this.requests.length === 0) {
+                            this.displayRequests();
+                        }
+                    }, 500);
+
+                } catch (error) {
+                    console.error('Error responding to request:', error);
+                    this.showMessage(error.message, 'error');
+                    
+                    // Re-enable buttons
+                    buttons.forEach(btn => btn.disabled = false);
+                }
+            }
+
+            showMessage(message, type) {
+                const messageContainer = document.getElementById('messageContainer');
+                messageContainer.innerHTML = `
+                    <div class="message ${type}">
+                        ${message}
+                    </div>
+                `;
+
+                // Auto-hide messages
+                setTimeout(() => {
+                    messageContainer.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        // Global instance for onclick handlers
+        let endorsementManager;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            endorsementManager = new EndorsementManager();
+        });
+    </script>
+</body>
+</html>

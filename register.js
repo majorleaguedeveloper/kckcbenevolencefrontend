@@ -41,10 +41,23 @@ class RegistrationForm {
             });
         }
         
+        // Real-time preview updates for auto-beneficiary
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        if (firstNameInput) {
+            firstNameInput.addEventListener('input', updateAutoBeneficiaryPreview);
+        }
+        if (lastNameInput) {
+            lastNameInput.addEventListener('input', updateAutoBeneficiaryPreview);
+        }
+        
         // Phone validation
         const phoneInput = document.getElementById('phone');
         if (phoneInput) {
             phoneInput.addEventListener('input', () => {
+                // Update auto-beneficiary preview
+                updateAutoBeneficiaryPreview();
+                
                 // Auto-format phone number
                 let value = phoneInput.value.replace(/[^\d+]/g, '');
                 if (value && !value.startsWith('+')) {
@@ -68,11 +81,19 @@ class RegistrationForm {
         const confirmPasswordInput = document.getElementById('confirmPassword');
         
         if (passwordInput) {
-            passwordInput.addEventListener('input', () => {
+            passwordInput.addEventListener('blur', () => {
                 const password = passwordInput.value;
-                if (password.length > 0 && password.length < 6) {
-                    this.showFieldError(passwordInput, 'Password must be at least 6 characters');
+                if (password.length > 0 && !this.validatePasswordComplexity(password)) {
+                    this.showFieldError(passwordInput, 'Password must be at least 10 characters with uppercase, lowercase, and special character');
                 } else {
+                    this.clearFieldError(passwordInput);
+                }
+            });
+            
+            passwordInput.addEventListener('input', () => {
+                // Only clear errors on input, don't show new ones immediately
+                const password = passwordInput.value;
+                if (password.length >= 10 && this.validatePasswordComplexity(password)) {
                     this.clearFieldError(passwordInput);
                 }
                 
@@ -150,6 +171,16 @@ class RegistrationForm {
         }
     }
     
+    validatePasswordComplexity(password) {
+        // Password must have: 10+ chars, uppercase, lowercase, special char
+        const minLength = password.length >= 10;
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        
+        return minLength && hasUppercase && hasLowercase && hasSpecialChar;
+    }
+    
     showFieldError(input, message) {
         this.clearFieldError(input);
         
@@ -159,15 +190,37 @@ class RegistrationForm {
         errorDiv.style.color = '#e74c3c';
         errorDiv.style.fontSize = '0.8rem';
         errorDiv.style.marginTop = '4px';
+        errorDiv.style.display = 'block';
         
         input.style.borderColor = '#e74c3c';
-        input.parentNode.appendChild(errorDiv);
+        
+        // Special handling for password fields - place error below the container
+        if (input.id === 'password' || input.id === 'confirmPassword') {
+            const container = input.closest('.password-input-container');
+            if (container) {
+                // Insert after the password container
+                container.parentNode.insertBefore(errorDiv, container.nextSibling);
+            } else {
+                input.parentNode.appendChild(errorDiv);
+            }
+        } else {
+            input.parentNode.appendChild(errorDiv);
+        }
     }
     
     clearFieldError(input) {
-        const existingError = input.parentNode.querySelector('.field-error');
-        if (existingError) {
-            existingError.remove();
+        // For password fields, look for errors in the form group
+        if (input.id === 'password' || input.id === 'confirmPassword') {
+            const formGroup = input.closest('.form-group');
+            const existingError = formGroup ? formGroup.querySelector('.field-error') : null;
+            if (existingError) {
+                existingError.remove();
+            }
+        } else {
+            const existingError = input.parentNode.querySelector('.field-error');
+            if (existingError) {
+                existingError.remove();
+            }
         }
         input.style.borderColor = '';
     }
@@ -446,11 +499,23 @@ class RegistrationForm {
             throw new Error('Required form elements are missing');
         }
 
+        // Collect emergency contact with null checks
+        const emergencyContactNameEl = document.getElementById('emergencyContactName');
+        const emergencyContactPhoneEl = document.getElementById('emergencyContactPhone');
+        
+        if (!emergencyContactNameEl || !emergencyContactPhoneEl) {
+            throw new Error('Emergency contact fields are missing');
+        }
+
         const formData = {
             firstName: firstNameEl.value.trim(),
             lastName: lastNameEl.value.trim(),
             email: emailEl.value.trim(),
             phone: phoneEl.value.trim(),
+            emergencyContact: {
+                fullName: emergencyContactNameEl.value.trim(),
+                phone: emergencyContactPhoneEl.value.trim()
+            },
             password: passwordEl.value
         };
 
@@ -1033,19 +1098,41 @@ function updateCharCount(textareaId, maxLength) {
 function toggleBeneficiariesDetails(hasBeneficiaries) {
     const beneficiariesDetails = document.getElementById('beneficiariesDetails');
     const beneficiariesContainer = document.getElementById('beneficiariesContainer');
+    const autoBeneficiaryPreview = document.getElementById('autoBeneficiaryPreview');
     
     if (hasBeneficiaries) {
         beneficiariesDetails.style.display = 'block';
+        autoBeneficiaryPreview.style.display = 'none';
         // Add first beneficiary if none exist
         if (beneficiariesContainer.children.length === 0) {
             addBeneficiary();
         }
     } else {
         beneficiariesDetails.style.display = 'none';
+        autoBeneficiaryPreview.style.display = 'block';
         // Clear all beneficiaries
         beneficiariesContainer.innerHTML = '';
         registrationForm.beneficiariesCount = 0;
         updatePercentageTotal();
+        
+        // Update auto-populated beneficiary preview with current user info
+        updateAutoBeneficiaryPreview();
+    }
+}
+
+function updateAutoBeneficiaryPreview() {
+    const firstName = document.getElementById('firstName')?.value || '';
+    const lastName = document.getElementById('lastName')?.value || '';
+    const phone = document.getElementById('phone')?.value || '';
+    
+    const previewName = document.getElementById('previewBeneficiaryName');
+    const previewPhone = document.getElementById('previewBeneficiaryPhone');
+    
+    if (previewName) {
+        previewName.value = `${firstName} ${lastName}`.trim();
+    }
+    if (previewPhone) {
+        previewPhone.value = phone;
     }
 }
 

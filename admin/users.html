@@ -310,6 +310,53 @@
             border-bottom: 2px solid #e9ecef;
             padding-bottom: 0.5rem;
         }
+
+        /* Emergency contact specific styling */
+        .form-section h3:has-text("🚨 Emergency Contact") {
+            color: #dc3545;
+            border-bottom-color: #dc3545;
+        }
+
+        /* Endorsement details specific styling */
+        .form-section h3:has-text("✅ Endorsement Details") {
+            color: #28a745;
+            border-bottom-color: #28a745;
+        }
+
+        /* Status badge enhancements */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* User detail styling improvements */
+        .user-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .user-detail:last-child {
+            border-bottom: none;
+        }
+
+        .user-detail-label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 140px;
+            flex-shrink: 0;
+        }
+
+        .user-detail-value {
+            flex: 1;
+            text-align: right;
+            color: #212529;
+        }
         
         .pagination {
             display: flex;

@@ -284,6 +284,16 @@ function displayUserDetailsModal(user) {
             </div>
 
             <div class="form-section">
+                <h3>🚨 Emergency Contact</h3>
+                ${getEmergencyContactInfo(user)}
+            </div>
+
+            <div class="form-section">
+                <h3>✅ Endorsement Details</h3>
+                ${getEndorsementInfo(user)}
+            </div>
+
+            <div class="form-section">
                 <h3>👨‍👩‍👧‍👦 Family Information</h3>
                 ${getDetailedFamilyInfo(user)}
             </div>
@@ -437,6 +447,91 @@ function getDetailedFamilyInfo(user) {
     }
     
     return familyHTML;
+}
+
+function getEmergencyContactInfo(user) {
+    if (!user.emergencyContact || (!user.emergencyContact.fullName && !user.emergencyContact.phone)) {
+        return '<p style="color: #666; font-style: italic;">No emergency contact information provided</p>';
+    }
+
+    return `
+        <div class="user-details">
+            <div class="user-detail">
+                <span class="user-detail-label">Full Name</span>
+                <span class="user-detail-value">${user.emergencyContact.fullName || 'Not provided'}</span>
+            </div>
+            <div class="user-detail">
+                <span class="user-detail-label">Phone Number</span>
+                <span class="user-detail-value">${user.emergencyContact.phone || 'Not provided'}</span>
+            </div>
+        </div>
+    `;
+}
+
+function getEndorsementInfo(user) {
+    const statusColors = {
+        'pending': '#ffc107',
+        'endorsed': '#28a745',
+        'rejected': '#dc3545'
+    };
+    
+    const statusIcons = {
+        'pending': '⏳',
+        'endorsed': '✅',
+        'rejected': '❌'
+    };
+
+    const statusColor = statusColors[user.endorsementStatus] || '#6c757d';
+    const statusIcon = statusIcons[user.endorsementStatus] || '❓';
+
+    return `
+        <div class="user-details">
+            <div class="user-detail">
+                <span class="user-detail-label">Endorsement Status</span>
+                <span class="user-detail-value">
+                    <span class="status-badge" style="background-color: ${statusColor}; color: white;">
+                        ${statusIcon} ${user.endorsementStatus ? user.endorsementStatus.charAt(0).toUpperCase() + user.endorsementStatus.slice(1) : 'Pending'}
+                    </span>
+                </span>
+            </div>
+            ${user.endorsementDate ? `
+            <div class="user-detail">
+                <span class="user-detail-label">Endorsement Date</span>
+                <span class="user-detail-value">${formatDate(user.endorsementDate)}</span>
+            </div>
+            ` : ''}
+            ${user.endorsedBy ? `
+            <div class="user-detail">
+                <span class="user-detail-label">Endorsed By</span>
+                <span class="user-detail-value">
+                    ${user.endorsedBy.firstName ? `${user.endorsedBy.firstName} ${user.endorsedBy.lastName || ''}` : 'Admin User'}
+                    ${user.endorsedBy.email ? `<br><small style="color: #666;">(${user.endorsedBy.email})</small>` : ''}
+                </span>
+            </div>
+            ` : (user.endorsementStatus !== 'pending' ? `
+            <div class="user-detail">
+                <span class="user-detail-label">Endorsed By</span>
+                <span class="user-detail-value">System Admin</span>
+            </div>
+            ` : '')}
+            ${user.endorsementStatus === 'pending' ? `
+            <div class="user-detail">
+                <span class="user-detail-label">Action Required</span>
+                <span class="user-detail-value" style="color: #ffc107;">
+                    ⚠️ User requires endorsement to access full platform features
+                </span>
+            </div>
+            ` : ''}
+            ${user.endorsementStatus === 'rejected' ? `
+            <div class="user-detail">
+                <span class="user-detail-label">Status Note</span>
+                <span class="user-detail-value" style="color: #dc3545;">
+                    ❌ User has been rejected and cannot access platform features
+                </span>
+            </div>
+            ` : ''}
+        </div>
+    `;
 }
 
 async function toggleUserRole(userId, newRole) {

@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'https://kckcbenevolencebackend.onrender.com/api';
+const API_BASE_URL = 'http://172.31.232.186:5000/api';
 
 // Auth utility functions
 class AuthService {
@@ -33,6 +33,21 @@ class AuthService {
 
     static isLoggedIn() {
         return !!this.getToken();
+    }
+
+    static isEndorsed() {
+        const user = this.getUser();
+        return user && user.endorsementStatus === 'endorsed';
+    }
+
+    static getEndorsementStatus() {
+        const user = this.getUser();
+        return user ? user.endorsementStatus : 'pending';
+    }
+
+    static requiresEndorsement() {
+        const user = this.getUser();
+        return user && user.role === 'user' && user.endorsementStatus !== 'endorsed';
     }
 
     static async makeRequest(url, options = {}) {

@@ -1,8 +1,26 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     // Check if user is already logged in
     if (AuthService.isLoggedIn()) {
         const user = AuthService.getUser();
         if (user && user.role === 'user') {
+            // Check if user data has endorsement fields, if not refresh it
+            if (!user.hasOwnProperty('endorsementStatus')) {
+                try {
+                    await refreshUserData();
+                } catch (error) {
+                    console.error('Failed to refresh user data:', error);
+                    // Fallback: redirect to login
+                    AuthService.logout();
+                    window.location.href = '../login.html?role=member';
+                    return;
+                }
+            }
+            
+            // Check if user requires endorsement
+            if (AuthService.requiresEndorsement()) {
+                window.location.href = '../request-endorsement.html';
+                return;
+            }
             showDashboard();
         } else {
             // Not a regular user, redirect to login with member role
@@ -16,6 +34,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Logout is now handled by the navbar component
 });
+
+async function refreshUserData() {
+    try {
+        const response = await AuthService.makeRequest('/endorsements/status');
+        if (response.ok) {
+            const statusData = await response.json();
+            
+            // Get current user data and update with endorsement fields
+            const currentUser = AuthService.getUser();
+            const updatedUser = {
+                ...currentUser,
+                endorsementStatus: statusData.endorsementStatus,
+                endorsementDate: statusData.endorsementDate,
+                endorsedBy: statusData.endorsedBy
+            };
+            
+            AuthService.setUser(updatedUser);
+            return updatedUser;
+        } else {
+            throw new Error(`Failed to fetch endorsement status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error refreshing user data:', error);
+        throw error;
+    }
+}
 
 function showDashboard() {
     const user = AuthService.getUser();
