@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Reset Code - Benevolence Fund Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .verify-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .verify-header {
+            margin-bottom: 2rem;
+        }
+
+        .verify-header h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .verify-header p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .email-display {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .code-input-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-digit {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .code-digit:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .code-digit.filled {
+            border-color: #667eea;
+            background: white;
+        }
+
+        .attempts-info {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: #856404;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid #fcc;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #373;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid #cfc;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .resend-timer {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .verify-container {
+                padding: 2rem 1.5rem;
+                margin: 10px;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .verify-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .code-digit {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .code-input-container {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-container">
+        <div class="logo">
+            <div class="logo-icon">🤝</div>
+            <div class="logo-text">Benevolence Fund</div>
+        </div>
+
+        <a href="forgot-password.html" class="back-link">Back to Email Entry</a>
+
+        <div class="verify-header">
+            <h1>Verify Reset Code</h1>
+            <p>We've sent a 6-digit verification code to:</p>
+        </div>
+
+        <div class="email-display" id="emailDisplay">
+            Loading...
+        </div>
+
+        <form id="verifyCodeForm">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <div class="attempts-info" id="attemptsInfo" style="display: none;">
+                <strong>⚠️ Attempts remaining:</strong> <span id="attemptsRemaining">5</span>
+            </div>
+
+            <div class="code-input-container">
+                <input type="text" class="code-digit" id="digit1" maxlength="1" pattern="[0-9]">
+                <input type="text" class="code-digit" id="digit2" maxlength="1" pattern="[0-9]">
+                <input type="text" class="code-digit" id="digit3" maxlength="1" pattern="[0-9]">
+                <input type="text" class="code-digit" id="digit4" maxlength="1" pattern="[0-9]">
+                <input type="text" class="code-digit" id="digit5" maxlength="1" pattern="[0-9]">
+                <input type="text" class="code-digit" id="digit6" maxlength="1" pattern="[0-9]">
+            </div>
+
+            <button type="submit" class="btn" id="verifyBtn">
+                <span id="verifyText">Verify Code</span>
+                <div class="loading-spinner" id="loadingSpinner"></div>
+            </button>
+
+            <button type="button" class="btn btn-secondary" id="resendBtn">
+                <span id="resendText">Resend Code</span>
+                <div class="loading-spinner" id="resendSpinner" style="border-top-color: #667eea;"></div>
+            </button>
+
+            <div class="resend-timer" id="resendTimer" style="display: none;">
+                You can request a new code in <span id="countdown">60</span> seconds
+            </div>
+        </form>
+    </div>
+
+    <script src="shared/auth.js"></script>
+    <script>
+        const verifyCodeForm = document.getElementById('verifyCodeForm');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const verifyText = document.getElementById('verifyText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const resendBtn = document.getElementById('resendBtn');
+        const resendText = document.getElementById('resendText');
+        const resendSpinner = document.getElementById('resendSpinner');
+        const resendTimer = document.getElementById('resendTimer');
+        const countdown = document.getElementById('countdown');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const emailDisplay = document.getElementById('emailDisplay');
+        const attemptsInfo = document.getElementById('attemptsInfo');
+        const attemptsRemaining = document.getElementById('attemptsRemaining');
+
+        let resendCooldown = 0;
+        let resendInterval = null;
+        let currentAttempts = 0;
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        function setVerifyLoading(loading) {
+            verifyBtn.disabled = loading;
+            if (loading) {
+                verifyText.style.display = 'none';
+                loadingSpinner.style.display = 'block';
+            } else {
+                verifyText.style.display = 'inline';
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        function setResendLoading(loading) {
+            resendBtn.disabled = loading;
+            if (loading) {
+                resendText.style.display = 'none';
+                resendSpinner.style.display = 'block';
+            } else {
+                resendText.style.display = 'inline';
+                resendSpinner.style.display = 'none';
+            }
+        }
+
+        function startResendCooldown() {
+            resendCooldown = 60;
+            resendBtn.disabled = true;
+            resendTimer.style.display = 'block';
+            countdown.textContent = resendCooldown;
+
+            resendInterval = setInterval(() => {
+                resendCooldown--;
+                countdown.textContent = resendCooldown;
+
+                if (resendCooldown <= 0) {
+                    clearInterval(resendInterval);
+                    resendBtn.disabled = false;
+                    resendTimer.style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        function updateAttemptsDisplay(attempts) {
+            currentAttempts = attempts;
+            const remaining = 5 - attempts;
+            attemptsRemaining.textContent = remaining;
+            
+            if (attempts > 0) {
+                attemptsInfo.style.display = 'block';
+            }
+            
+            if (remaining <= 2) {
+                attemptsInfo.style.backgroundColor = 'rgba(220, 53, 69, 0.1)';
+                attemptsInfo.style.borderColor = 'rgba(220, 53, 69, 0.3)';
+                attemptsInfo.style.color = '#721c24';
+            }
+        }
+
+        // Code input handling
+        const codeDigits = document.querySelectorAll('.code-digit');
+        
+        codeDigits.forEach((digit, index) => {
+            digit.addEventListener('input', function(e) {
+                // Only allow numbers
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                if (this.value) {
+                    this.classList.add('filled');
+                    // Auto focus next input
+                    if (index < codeDigits.length - 1) {
+                        codeDigits[index + 1].focus();
+                    }
+                } else {
+                    this.classList.remove('filled');
+                }
+            });
+
+            digit.addEventListener('keydown', function(e) {
+                // Handle backspace
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    codeDigits[index - 1].focus();
+                    codeDigits[index - 1].value = '';
+                    codeDigits[index - 1].classList.remove('filled');
+                }
+            });
+
+            digit.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+                
+                if (pastedData.length >= 6) {
+                    for (let i = 0; i < 6 && i < pastedData.length; i++) {
+                        codeDigits[i].value = pastedData[i];
+                        codeDigits[i].classList.add('filled');
+                    }
+                    codeDigits[5].focus();
+                }
+            });
+        });
+
+        function getCodeValue() {
+            return Array.from(codeDigits).map(digit => digit.value).join('');
+        }
+
+        function clearCode() {
+            codeDigits.forEach(digit => {
+                digit.value = '';
+                digit.classList.remove('filled');
+            });
+            codeDigits[0].focus();
+        }
+
+        verifyCodeForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const code = getCodeValue();
+            const email = sessionStorage.getItem('resetEmail');
+
+            if (!email) {
+                showError('Session expired. Please start the reset process again.');
+                setTimeout(() => {
+                    window.location.href = 'forgot-password.html';
+                }, 2000);
+                return;
+            }
+
+            if (code.length !== 6) {
+                showError('Please enter all 6 digits of the verification code');
+                return;
+            }
+
+            setVerifyLoading(true);
+            hideMessages();
+
+            try {
+                const response = await AuthService.makeRequest('/auth/verify-reset-code', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, code })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showSuccess('Code verified! Redirecting to password reset...');
+                    
+                    // Store verification token and code for next step
+                    sessionStorage.setItem('resetVerified', 'true');
+                    sessionStorage.setItem('resetCode', code);
+                    
+                    setTimeout(() => {
+                        window.location.href = 'set-new-password.html';
+                    }, 1500);
+                    
+                } else {
+                    showError(data.message || 'Invalid verification code. Please try again.');
+                    
+                    // Extract attempts from error message if available
+                    const attemptsMatch = data.message?.match(/(\d+) attempts remaining/);
+                    if (attemptsMatch) {
+                        const remaining = parseInt(attemptsMatch[1]);
+                        updateAttemptsDisplay(5 - remaining);
+                    }
+                    
+                    clearCode();
+                }
+            } catch (error) {
+                showError('Network error. Please check your connection and try again.');
+                console.error('Verify code error:', error);
+            } finally {
+                setVerifyLoading(false);
+            }
+        });
+
+        resendBtn.addEventListener('click', async function() {
+            const email = sessionStorage.getItem('resetEmail');
+
+            if (!email) {
+                showError('Session expired. Please start the reset process again.');
+                return;
+            }
+
+            setResendLoading(true);
+            hideMessages();
+
+            try {
+                const response = await AuthService.makeRequest('/auth/resend-reset-code', {
+                    method: 'POST',
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showSuccess('New verification code sent to your email!');
+                    clearCode();
+                    currentAttempts = 0;
+                    attemptsInfo.style.display = 'none';
+                    startResendCooldown();
+                } else {
+                    showError(data.message || 'Failed to resend code. Please try again.');
+                }
+            } catch (error) {
+                showError('Network error. Please check your connection and try again.');
+                console.error('Resend code error:', error);
+            } finally {
+                setResendLoading(false);
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            const email = sessionStorage.getItem('resetEmail');
+            
+            if (!email) {
+                window.location.href = 'forgot-password.html';
+                return;
+            }
+
+            emailDisplay.textContent = email;
+            codeDigits[0].focus();
+            startResendCooldown();
+
+            // Check if user is already logged in
+            if (AuthService.isLoggedIn()) {
+                const user = AuthService.getUser();
+                if (user) {
+                    window.location.href = user.role === 'admin' ? 'admin/index.html' : 'member/index.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
