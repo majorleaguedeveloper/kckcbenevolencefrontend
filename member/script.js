@@ -127,14 +127,19 @@ async function loadPaymentHistory(showLoading = true) {
     }
 
     try {
+        console.log('🔍 Loading payment history...');
         const response = await AuthService.makeRequest('/payments/member/payment-history');
+        console.log('📡 Payment history response status:', response.status);
+        
         const data = await response.json();
+        console.log('📊 Payment history data:', data);
 
         if (showLoading) {
             loadingElement.style.display = 'none';
         }
 
         if (response.ok) {
+            console.log('✅ Payment history loaded successfully, payments count:', data.payments.length);
             const newContent = data.payments.length === 0 
                 ? '<p class="no-data">No payment history found.</p>'
                 : data.payments.map(payment => createPaymentHistoryHTML(payment)).join('');
@@ -144,11 +149,13 @@ async function loadPaymentHistory(showLoading = true) {
                 listElement.innerHTML = newContent;
             }
         } else {
+            console.error('❌ Payment history API error:', response.status);
             if (showLoading || listElement.innerHTML === '') {
                 listElement.innerHTML = '<p class="error">Failed to load payment history.</p>';
             }
         }
     } catch (error) {
+        console.error('🚨 Payment history network error:', error);
         if (showLoading) {
             loadingElement.style.display = 'none';
         }
@@ -182,12 +189,18 @@ function createPendingPaymentHTML(request) {
 }
 
 function createPaymentHistoryHTML(payment) {
+    console.log('🏗️ Creating payment history HTML for:', payment);
     const statusClass = `status-${payment.status}`;
+    
+    // Handle case where paymentRequest might be null
+    const paymentTitle = payment.paymentRequest && payment.paymentRequest.title 
+        ? payment.paymentRequest.title 
+        : 'Payment (Details Unavailable)';
     
     return `
         <div class="payment-history-item">
             <div class="payment-info">
-                <h4>${payment.paymentRequest.title}</h4>
+                <h4>${paymentTitle}</h4>
                 ${payment.amount ? `<p>Amount: ${formatCurrency(payment.amount)}</p>` : ''}
                 <p>Date: ${formatDate(payment.createdAt)}</p>
             </div>
