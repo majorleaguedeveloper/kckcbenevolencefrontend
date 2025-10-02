@@ -689,6 +689,12 @@
                 margin-bottom: 1rem;
             }
         }
+
+        /* Simple date input styling */
+        .form-group input[type="text"][placeholder*="DD/MM/YYYY"] {
+            font-family: monospace;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
 <body>
@@ -746,7 +752,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="dateOfBirth">Date of Birth</label>
-                        <input type="date" id="dateOfBirth" name="dateOfBirth">
+                        <input type="text" id="dateOfBirth" name="dateOfBirth" placeholder="DD/MM/YYYY" maxlength="10" pattern="\d{2}/\d{2}/\d{4}">
                     </div>
                 </div>
                 
@@ -834,7 +840,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="spouseDateOfBirth">Date of Birth</label>
-                            <input type="date" id="spouseDateOfBirth" name="spouse.dateOfBirth">
+                            <input type="text" id="spouseDateOfBirth" name="spouse.dateOfBirth" placeholder="DD/MM/YYYY" maxlength="10" pattern="\d{2}/\d{2}/\d{4}">
                         </div>
                         <div class="form-group">
                             <label for="spouseRelationship">Relationship <span class="required">*</span></label>

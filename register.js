@@ -522,7 +522,7 @@ class RegistrationForm {
         // Collect personal information with null check
         const dateOfBirthEl = document.getElementById('dateOfBirth');
         if (dateOfBirthEl && dateOfBirthEl.value) {
-            formData.dateOfBirth = dateOfBirthEl.value;
+            formData.dateOfBirth = convertDateToISO(dateOfBirthEl.value);
         }
 
         // Collect home address with null checks
@@ -575,7 +575,7 @@ class RegistrationForm {
             formData.spouse = {
                 firstName: spouseFirstNameEl.value.trim(),
                 lastName: spouseLastNameEl.value.trim(),
-                dateOfBirth: spouseDateOfBirthEl ? spouseDateOfBirthEl.value : '',
+                dateOfBirth: spouseDateOfBirthEl ? convertDateToISO(spouseDateOfBirthEl.value) : '',
                 phone: spousePhoneEl ? spousePhoneEl.value.trim() : '',
                 relationship: spouseRelationshipEl ? spouseRelationshipEl.value || 'spouse' : 'spouse',
                 notes: spouseNotesEl ? spouseNotesEl.value.trim() : ''
@@ -601,7 +601,7 @@ class RegistrationForm {
                 if (firstNameInput && lastNameInput && relationshipInput && notesInput && dateOfBirthInput) {
                     const firstName = firstNameInput.value.trim();
                     const lastName = lastNameInput.value.trim();
-                    const dateOfBirth = dateOfBirthInput.value;
+                    const dateOfBirth = convertDateToISO(dateOfBirthInput.value);
                     const relationship = relationshipInput.value;
                     const notes = notesInput.value.trim();
                     
@@ -892,7 +892,7 @@ function addChild() {
         <div class="form-row">
             <div class="form-group">
                 <label>Date of Birth</label>
-                <input type="date" name="children[${index}].dateOfBirth">
+                <input type="text" name="children[${index}].dateOfBirth" placeholder="DD/MM/YYYY" maxlength="10" pattern="\\d{2}/\\d{2}/\\d{4}" oninput="formatDateInput(this)">
             </div>
             <div class="form-group">
                 <label>Relationship <span class="required">*</span></label>
@@ -1288,6 +1288,106 @@ function checkPasswordMatch() {
     }
 }
 
+// Simple date formatting function
+function formatDateInput(input) {
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    
+    // Simple formatting: add slashes as user types
+    if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    if (value.length >= 5) {
+        value = value.slice(0, 5) + '/' + value.slice(5, 9);
+    }
+    
+    // Limit to 10 characters (DD/MM/YYYY)
+    if (value.length > 10) {
+        value = value.slice(0, 10);
+    }
+    
+    input.value = value;
+    
+    // Validate only when complete
+    if (value.length === 10) {
+        validateDateFormat(input);
+    } else {
+        clearDateError(input);
+    }
+}
+
+function validateDateFormat(input) {
+    const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = input.value.match(datePattern);
+    
+    if (!match) {
+        showDateError(input, 'Please use DD/MM/YYYY format');
+        return false;
+    }
+    
+    const day = parseInt(match[1]);
+    const month = parseInt(match[2]);
+    const year = parseInt(match[3]);
+    
+    // Check if date is valid
+    const date = new Date(year, month - 1, day);
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+        showDateError(input, 'Please enter a valid date');
+        return false;
+    }
+    
+    // Check if date is not in the future
+    const today = new Date();
+    if (date > today) {
+        showDateError(input, 'Birth date cannot be in the future');
+        return false;
+    }
+    
+    clearDateError(input);
+    return true;
+}
+
+function showDateError(input, message) {
+    clearDateError(input);
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'date-error';
+    errorDiv.textContent = message;
+    errorDiv.style.color = '#e74c3c';
+    errorDiv.style.fontSize = '0.8rem';
+    errorDiv.style.marginTop = '4px';
+    
+    input.style.borderColor = '#e74c3c';
+    input.parentNode.appendChild(errorDiv);
+}
+
+function clearDateError(input) {
+    const existingError = input.parentNode.querySelector('.date-error');
+    if (existingError) {
+        existingError.remove();
+    }
+    input.style.borderColor = '';
+}
+
+function convertDateToISO(dateString) {
+    if (!dateString || dateString.trim() === '') {
+        return '';
+    }
+    
+    const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = dateString.match(datePattern);
+    
+    if (!match) {
+        return '';
+    }
+    
+    const day = match[1];
+    const month = match[2];
+    const year = match[3];
+    
+    // Convert to ISO format YYYY-MM-DD
+    return `${year}-${month}-${day}`;
+}
+
 // Initialize the form when DOM loads
 let registrationForm;
 document.addEventListener('DOMContentLoaded', function() {
@@ -1299,4 +1399,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     passwordField.addEventListener('input', checkPasswordMatch);
     confirmPasswordField.addEventListener('input', checkPasswordMatch);
+    
+    // Add simple date formatting to existing date inputs
+    const dateInputs = ['dateOfBirth', 'spouseDateOfBirth'];
+    dateInputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', function() {
+                formatDateInput(this);
+            });
+        }
+    });
 });
