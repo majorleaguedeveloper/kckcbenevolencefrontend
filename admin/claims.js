@@ -211,7 +211,7 @@ function verifyFamilyMember(claim) {
     }
     
     // Check children
-    if (['son', 'daughter'].includes(deceased.relationship) && user.children) {
+    if (['child', 'son', 'daughter'].includes(deceased.relationship) && user.children) {
         return user.children.some(child => 
             child.firstName?.toLowerCase() === deceased.firstName.toLowerCase() &&
             child.lastName?.toLowerCase() === deceased.lastName.toLowerCase() &&
@@ -220,7 +220,7 @@ function verifyFamilyMember(claim) {
     }
     
     // Check parents
-    if (['father', 'mother', 'guardian'].includes(deceased.relationship) && user.parents) {
+    if (['parent','father', 'mother', 'guardian'].includes(deceased.relationship) && user.parents) {
         return user.parents.some(parent => 
             parent.firstName?.toLowerCase() === deceased.firstName.toLowerCase() &&
             parent.lastName?.toLowerCase() === deceased.lastName.toLowerCase() &&
@@ -229,7 +229,7 @@ function verifyFamilyMember(claim) {
     }
     
     // Check siblings
-    if (['brother', 'sister'].includes(deceased.relationship) && user.siblings) {
+    if (['sibling', 'brother', 'sister'].includes(deceased.relationship) && user.siblings) {
         return user.siblings.some(sibling => 
             sibling.firstName?.toLowerCase() === deceased.firstName.toLowerCase() &&
             sibling.lastName?.toLowerCase() === deceased.lastName.toLowerCase() &&
