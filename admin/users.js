@@ -136,12 +136,6 @@ function displayUsers(users) {
             
             <div class="user-actions">
                 <button onclick="viewUserDetails('${user._id}')" class="btn btn-outline">View Details</button>
-                ${user.role !== 'admin' || user._id !== getCurrentUserId() ? `
-                    <button onclick="toggleUserRole('${user._id}', '${user.role === 'admin' ? 'user' : 'admin'}')" 
-                            class="btn btn-secondary">
-                        Make ${user.role === 'admin' ? 'User' : 'Admin'}
-                    </button>
-                ` : ''}
                 ${user._id !== getCurrentUserId() ? `
                     <button onclick="toggleUserStatus('${user._id}', ${!user.isActive})" 
                             class="btn ${user.isActive ? 'btn-warning' : 'btn-success'}">
