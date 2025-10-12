@@ -489,6 +489,7 @@ function displayAmendmentChildren(children) {
                         <select name="children[${index}][relationship]" required>
                             <option value="son" ${child.relationship === 'son' ? 'selected' : ''}>Son</option>
                             <option value="daughter" ${child.relationship === 'daughter' ? 'selected' : ''}>Daughter</option>
+                            <option value="child" ${child.relationship === 'child' ? 'selected' : ''}>Child</option>
                             <option value="adopted son" ${child.relationship === 'adopted son' ? 'selected' : ''}>Adopted Son</option>
                             <option value="adopted daughter" ${child.relationship === 'adopted daughter' ? 'selected' : ''}>Adopted Daughter</option>
                             <option value="stepson" ${child.relationship === 'stepson' ? 'selected' : ''}>Stepson</option>
@@ -535,6 +536,7 @@ function displayAmendmentParents(parents) {
                         <select name="parents[${index}][relationship]" required>
                             <option value="father" ${parent.relationship === 'father' ? 'selected' : ''}>Father</option>
                             <option value="mother" ${parent.relationship === 'mother' ? 'selected' : ''}>Mother</option>
+                            <option value="parent" ${parent.relationship === 'parent' ? 'selected' : ''}>Parent</option>
                             <option value="adoptive father" ${parent.relationship === 'adoptive father' ? 'selected' : ''}>Adoptive Father</option>
                             <option value="adoptive mother" ${parent.relationship === 'adoptive mother' ? 'selected' : ''}>Adoptive Mother</option>
                             <option value="stepfather" ${parent.relationship === 'stepfather' ? 'selected' : ''}>Stepfather</option>
@@ -581,6 +583,7 @@ function displayAmendmentSiblings(siblings) {
                         <select name="siblings[${index}][relationship]" required>
                             <option value="brother" ${sibling.relationship === 'brother' ? 'selected' : ''}>Brother</option>
                             <option value="sister" ${sibling.relationship === 'sister' ? 'selected' : ''}>Sister</option>
+                            <option value="sibling" ${sibling.relationship === 'sibling' ? 'selected' : ''}>Sibling</option>
                             <option value="half-brother" ${sibling.relationship === 'half-brother' ? 'selected' : ''}>Half-Brother</option>
                             <option value="half-sister" ${sibling.relationship === 'half-sister' ? 'selected' : ''}>Half-Sister</option>
                             <option value="stepbrother" ${sibling.relationship === 'stepbrother' ? 'selected' : ''}>Stepbrother</option>
@@ -681,6 +684,7 @@ function addChild() {
                         <option value="">Select relationship</option>
                         <option value="son">Son</option>
                         <option value="daughter">Daughter</option>
+                        <option value="child">Child</option>
                         <option value="adopted son">Adopted Son</option>
                         <option value="adopted daughter">Adopted Daughter</option>
                         <option value="stepson">Stepson</option>
@@ -730,6 +734,7 @@ function addParent() {
                         <option value="">Select relationship</option>
                         <option value="father">Father</option>
                         <option value="mother">Mother</option>
+                        <option value="parent">Parent</option>
                         <option value="adoptive father">Adoptive Father</option>
                         <option value="adoptive mother">Adoptive Mother</option>
                         <option value="stepfather">Stepfather</option>
@@ -779,6 +784,7 @@ function addSibling() {
                         <option value="">Select relationship</option>
                         <option value="brother">Brother</option>
                         <option value="sister">Sister</option>
+                        <option value="sibling">Sibling</option>
                         <option value="half-brother">Half-Brother</option>
                         <option value="half-sister">Half-Sister</option>
                         <option value="stepbrother">Stepbrother</option>
@@ -1109,7 +1115,7 @@ function collectFormFamilyData(formData, originalUserData = null) {
                     firstName: firstName.trim(),
                     lastName: lastName.trim(),
                     dateOfBirth: finalChildDateOfBirth,
-                    relationship: formData.get(`children[${index}][relationship]`) || 'son',
+                    relationship: formData.get(`children[${index}][relationship]`) || 'child',
                     notes: (formData.get(`children[${index}][notes]`) || '').trim()
                 });
             }
@@ -1137,7 +1143,7 @@ function collectFormFamilyData(formData, originalUserData = null) {
                 familyData.parents.push({
                     firstName: firstName.trim(),
                     lastName: lastName.trim(),
-                    relationship: formData.get(`parents[${index}][relationship]`) || 'father',
+                    relationship: formData.get(`parents[${index}][relationship]`) || 'parent',
                     notes: (formData.get(`parents[${index}][notes]`) || '').trim()
                 });
             }
@@ -1159,7 +1165,7 @@ function collectFormFamilyData(formData, originalUserData = null) {
                 familyData.siblings.push({
                     firstName: firstName.trim(),
                     lastName: lastName.trim(),
-                    relationship: formData.get(`siblings[${index}][relationship]`) || 'brother',
+                    relationship: formData.get(`siblings[${index}][relationship]`) || 'sibling',
                     notes: (formData.get(`siblings[${index}][notes]`) || '').trim()
                 });
             }
