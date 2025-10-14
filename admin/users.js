@@ -272,7 +272,7 @@ function displayUserDetailsModal(user) {
                     </div>
                     <div class="user-detail">
                         <span class="user-detail-label">Home Address</span>
-                        <span class="user-detail-value">${getFormattedAddress(user.homeAddress)}</span>
+                        <span class="user-detail-value">${getFormattedAddress(user.homeAddress.street)}</span>
                     </div>
                 </div>
             </div>

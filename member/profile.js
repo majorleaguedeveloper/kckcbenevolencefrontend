@@ -635,7 +635,6 @@ function addSpouse() {
                     <select name="spouse[relationship]" required>
                         <option value="">Select relationship</option>
                         <option value="spouse">Spouse</option>
-                        <option value="partner">Partner</option>
                     </select>
                 </div>
             </div>
