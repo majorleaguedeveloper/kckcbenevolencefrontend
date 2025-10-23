@@ -380,6 +380,14 @@
                     console.log('Response status:', response.status);
                     console.log('Response OK:', response.ok);
 
+                    // Check for unauthorized status (401)
+                    if (response.status === 401) {
+                        // Token is invalid, clear auth data and redirect to login
+                        AuthService.clearTokens();
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
                     if (!response.ok) {
                         const errorText = await response.text();
                         console.error('Response error:', errorText);
