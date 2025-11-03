@@ -228,7 +228,7 @@ class RegistrationForm {
     addFieldTooltips() {
         const tooltips = {
             'phone': 'Use international format starting with + (e.g., +15551234567)',
-            'password': 'Minimum 6 characters required',
+            'password': 'Minimum 10 characters required',
             'email': 'Use a valid email address you can access'
         };
         
@@ -316,8 +316,8 @@ class RegistrationForm {
             return false;
         }
 
-        if (!password || password.length < 6) {
-            this.showError('Password must be at least 6 characters long');
+        if (!password || password.length < 10) {
+            this.showError('Password must be at least 10 characters long');
             return false;
         }
 
