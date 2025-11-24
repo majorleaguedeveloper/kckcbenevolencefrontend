@@ -93,9 +93,13 @@ async function loadPendingPayments(showLoading = true) {
         }
 
         if (response.ok) {
+            // const newContent = data.pendingPayments.length === 0 
+            //     ? '<p class="no-data">No pending payments at this time.</p>'
+            //     : data.pendingPayments.map(request => createPendingPaymentHTML(request)).join('');
+
             const newContent = data.pendingPayments.length === 0 
-                ? '<p class="no-data">No pending payments at this time.</p>'
-                : data.pendingPayments.map(request => createPendingPaymentHTML(request)).join('');
+                ? createPendingPaymentHTML()
+                : createPendingPaymentHTML();
             
             // Only update content if it's different to avoid flashing
             if (listElement.innerHTML !== newContent) {
