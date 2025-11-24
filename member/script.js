@@ -166,23 +166,65 @@ async function loadPaymentHistory(showLoading = true) {
 }
 
 function createPendingPaymentHTML(request) {
+    // return `
+    //     <div class="payment-request-item">
+    //         <div class="payment-request-header">
+    //             <div>
+    //                 <div class="payment-request-title">${request.title}</div>
+    //                 <div class="payment-request-meta">
+    //                     Due: ${formatDate(request.dueDate)}
+    //                 </div>
+    //             </div>
+    //         </div>
+            
+    //         <div class="payment-request-description">${request.description}</div>
+            
+    //         <div class="payment-actions">
+    //             <button onclick="redirectToPayment('${request._id}', '${request.stripePaymentLinkUrl}')" class="btn btn-success">
+    //                 Pay Now
+    //             </button>
+    //         </div>
+    //     </div>
+    // `;
     return `
         <div class="payment-request-item">
             <div class="payment-request-header">
                 <div>
-                    <div class="payment-request-title">${request.title}</div>
+                    <div class="payment-request-title">MNK Replenishment</div>
                     <div class="payment-request-meta">
-                        Due: ${formatDate(request.dueDate)}
+                        Due: Dec 7, 2025
                     </div>
                 </div>
             </div>
             
-            <div class="payment-request-description">${request.description}</div>
+            <div class="payment-request-description">(1) Makori and (2) Koin Occurrences: Total Replenishment Amount= $65.00</div>
             
             <div class="payment-actions">
-                <button onclick="redirectToPayment('${request._id}', '${request.stripePaymentLinkUrl}')" class="btn btn-success">
-                    Pay Now
-                </button>
+                <a href="https://buy.stripe.com/9B66oH2CabwV8pPguqgjC03">
+                    <button class="btn btn-success">
+                        Pay Now
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div class="payment-request-item">
+            <div class="payment-request-header">
+                <div>
+                    <div class="payment-request-title">MNK Replenishment</div>
+                    <div class="payment-request-meta">
+                        Due: Dec 7 2025
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-request-description">MNK Benevolence Replenishment $110.00</div>
+            
+            <div class="payment-actions">
+                <a href="https://buy.stripe.com/4gM00j2CaeJ7axXceagjC04">
+                    <button class="btn btn-success">
+                        Pay Now
+                    </button>
+                </a>
             </div>
         </div>
     `;
@@ -197,18 +239,18 @@ function createPaymentHistoryHTML(payment) {
         ? payment.paymentRequest.title 
         : 'Payment (Details Unavailable)';
     
-    return `
-        <div class="payment-history-item">
-            <div class="payment-info">
-                <h4>${paymentTitle}</h4>
-                ${payment.amount ? `<p>Amount: ${formatCurrency(payment.amount)}</p>` : ''}
-                <p>Date: ${formatDate(payment.createdAt)}</p>
-            </div>
-            <div>
-                <span class="status-badge ${statusClass}">${payment.status}</span>
-            </div>
-        </div>
-    `;
+    // return `
+    //     <div class="payment-history-item">
+    //         <div class="payment-info">
+    //             <h4>${paymentTitle}</h4>
+    //             ${payment.amount ? `<p>Amount: ${formatCurrency(payment.amount)}</p>` : ''}
+    //             <p>Date: ${formatDate(payment.createdAt)}</p>
+    //         </div>
+    //         <div>
+    //             <span class="status-badge ${statusClass}">${payment.status}</span>
+    //         </div>
+    //     </div>
+    // `;
 }
 
 async function redirectToPayment(paymentRequestId, paymentLinkUrl) {
