@@ -97,9 +97,10 @@ async function loadPendingPayments(showLoading = true) {
             //     ? '<p class="no-data">No pending payments at this time.</p>'
             //     : data.pendingPayments.map(request => createPendingPaymentHTML(request)).join('');
 
-            const newContent = data.pendingPayments.length === 0 
-                ? createPendingPaymentHTML()
-                : createPendingPaymentHTML();
+            // const newContent = data.pendingPayments.length === 0 
+            //     ? createPendingPaymentHTML()
+            //     : createPendingPaymentHTML();
+            const newContent = '<p class="no-data">Dashboard disadled at the moment! For unpaid replenishments, use payment links provided by admins</p>'
             
             // Only update content if it's different to avoid flashing
             if (listElement.innerHTML !== newContent) {
@@ -144,9 +145,11 @@ async function loadPaymentHistory(showLoading = true) {
 
         if (response.ok) {
             console.log('✅ Payment history loaded successfully, payments count:', data.payments.length);
-            const newContent = data.payments.length === 0 
-                ? '<p class="no-data">No payment history found.</p>'
-                : data.payments.map(payment => createPaymentHistoryHTML(payment)).join('');
+            // const newContent = data.payments.length === 0 
+            //     ? '<p class="no-data">No payment history found.</p>'
+            //     : data.payments.map(payment => createPaymentHistoryHTML(payment)).join('');
+            const newContent = '<p class="no-data">Payment History will be available soon</p>'
+            
             
             // Only update content if it's different to avoid flashing
             if (listElement.innerHTML !== newContent) {
