@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../shared/navbar.css">
     <link rel="stylesheet" href="../shared/navbar-spacing.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <style>
         .amendments-container {
             max-width: 1200px;
@@ -39,16 +42,23 @@
         .stat-card {
             background: white;
             padding: 1.5rem;
-            border-radius: 12px;
+            border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             border: 1px solid #e1e5e9;
         }
 
+        .stat-line{
+            margin-top: 16px;
+            height: 4px;
+            width: 70%;
+            background-color: #00684a;
+            border-radius: 2px;
+        }
+
         .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 0.5rem;
+            font-size: 60px;
+            font-weight: 600;
+            color: #00684a;
         }
 
         .stat-label {
@@ -77,6 +87,7 @@
         .filter-group {
             display: flex;
             flex-direction: column;
+            align-items: start;
         }
 
         .filter-group label {
@@ -95,7 +106,7 @@
 
         .filter-group select:focus,
         .filter-group input:focus {
-            border-color: #667eea;
+            border-color: #00684a;
             outline: none;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
@@ -109,7 +120,7 @@
         }
 
         .list-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #00684a, #001e2b);
             color: white;
             padding: 1.5rem;
         }
@@ -188,7 +199,7 @@
             background: #f8f9fa;
             padding: 1rem;
             border-radius: 6px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #00684a;
             margin: 1rem 0;
         }
 
@@ -225,7 +236,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #00684a, #001e2b);
             color: white;
         }
 
@@ -241,8 +252,8 @@
 
         .btn-secondary {
             background: #f8f9fa;
-            color: #667eea;
-            border: 1px solid #667eea;
+            color: #00684a;
+            border: 1px solid #00684a;
         }
 
         .btn:hover {
@@ -260,13 +271,13 @@
         .loading {
             text-align: center;
             padding: 3rem;
-            color: #666;
+            color: white;
         }
 
         .no-data {
             text-align: center;
             padding: 3rem;
-            color: #666;
+            color: white;
             font-style: italic;
         }
 
@@ -304,7 +315,8 @@
         }
 
         .modal-content {
-            background: white;
+            
+            background: linear-gradient(135deg,#00684a  0%,#001e2b 100%);
             border-radius: 15px;
             max-width: 900px;
             width: 90%;
@@ -319,7 +331,7 @@
             align-items: center;
             padding: 1.5rem;
             border-bottom: 1px solid #e1e5e9;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg,#001e2b  0%,#00684a 100%);
             color: white;
             border-radius: 15px 15px 0 0;
         }
@@ -375,7 +387,7 @@
 
         .family-type {
             font-weight: 600;
-            color: #667eea;
+            color: #00684a;
             margin-bottom: 0.5rem;
         }
 
@@ -384,7 +396,7 @@
             padding: 0.75rem;
             border-radius: 4px;
             margin-bottom: 0.5rem;
-            border-left: 3px solid #667eea;
+            border-left: 3px solid #00684a;
         }
 
         .member-name {
@@ -484,22 +496,18 @@
 
         .current-column h6, .proposed-column h6 {
             margin: 0 0 1rem 0;
-            color: #495057;
+            color: white;
             font-size: 0.95rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .current-column h6 {
-            color: #6c757d;
-        }
 
         .proposed-column h6 {
-            color: #007bff;
+            color: white;
         }
 
         .change-modified {
-            background: #fff3cd !important;
             border-left-color: #f39c12 !important;
         }
 
@@ -516,6 +524,10 @@
             padding: 2rem;
             color: #6c757d;
             font-style: italic;
+        }
+
+        .amendment-details {
+            color: white;
         }
 
         /* Responsive Design */
@@ -807,10 +819,6 @@
 </head>
 <body data-navbar="admin">
     <div class="amendments-container">
-        <div class="page-header">
-            <h1 class="page-title">Amendment Management</h1>
-            <p class="page-subtitle">Review and manage family information amendment requests</p>
-        </div>
 
         <!-- Statistics -->
         <div id="amendmentStats" class="stats-grid">

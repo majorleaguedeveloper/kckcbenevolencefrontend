@@ -72,20 +72,28 @@ function displayAmendmentStats(stats) {
     
     statsContainer.innerHTML = `
         <div class="stat-card">
-            <div class="stat-number">${stats.total || 0}</div>
             <div class="stat-label">Total Requests</div>
+            <div class="stat-number">${stats.total || 0}</div>
+            <div class="stat-label">Requests</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">${stats.pending || 0}</div>
             <div class="stat-label">Pending Review</div>
+            <div class="stat-number">${stats.pending || 0}</div>
+            <div class="stat-label">Reviews</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">${stats.approved || 0}</div>
             <div class="stat-label">Approved</div>
+            <div class="stat-number">${stats.approved || 0}</div>
+            <div class="stat-label">Approvals</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">${stats.rejected || 0}</div>
             <div class="stat-label">Rejected</div>
+            <div class="stat-number">${stats.rejected || 0}</div>
+            <div class="stat-label">Rejects</div>
+            <div class="stat-line"></div>
         </div>
     `;
 }
@@ -315,7 +323,7 @@ function renderFamilyComparison(currentData, proposedData) {
                     <div class="family-section-comparison has-changes">
                         <div class="section-header">
                             <h5>${getSectionDisplayName(section)}</h5>
-                            <span class="change-indicator modified">✏️ Modified</span>
+                            <span class="change-indicator modified">Modified</span>
                         </div>
                         <div class="comparison-columns">
                             <div class="current-column">
@@ -529,7 +537,7 @@ function detectChanges(current, proposed, section) {
 function renderSectionData(sectionData, type, changes = null) {
     if (!sectionData.hasData) {
         return `<div class="no-data ${type === 'proposed' && changes?.type === 'added' ? 'change-added' : ''}">
-            ${type === 'proposed' && changes?.type === 'added' ? '+ ' : ''}No information provided
+            ${type === 'proposed' && changes?.type === 'added' ? '+ ' : ''}No information
         </div>`;
     }
     
@@ -543,7 +551,6 @@ function renderSectionData(sectionData, type, changes = null) {
         const personal = sectionData.data;
         return `
             <div class="personal-info ${showChangeIndicator ? 'change-modified' : ''}">
-                ${showChangeIndicator ? '✏️ ' : ''}
                 <div class="personal-details">
                     ${personal.dateOfBirth ? `DOB: ${formatDate(personal.dateOfBirth)}` : 'DOB: Not provided'}
                     <br>Address: ${getFormattedAddress(personal.homeAddress)}
@@ -555,7 +562,6 @@ function renderSectionData(sectionData, type, changes = null) {
         const contact = sectionData.data;
         return `
             <div class="emergency-contact ${showChangeIndicator ? 'change-modified' : ''}">
-                ${showChangeIndicator ? '✏️ ' : ''}
                 <div class="contact-details">
                     Name: ${contact.fullName || 'Not provided'}
                     <br>Phone: ${contact.phone || 'Not provided'}
@@ -569,7 +575,6 @@ function renderSectionData(sectionData, type, changes = null) {
             return sectionData.data.map(beneficiary => `
                 <div class="family-member ${showChangeIndicator ? 'change-modified' : ''}">
                     <div class="member-name">
-                        ${showChangeIndicator ? '✏️ ' : ''}
                         ${beneficiary.name}
                     </div>
                     <div class="member-details">
@@ -583,7 +588,6 @@ function renderSectionData(sectionData, type, changes = null) {
             return sectionData.data.map(member => `
                 <div class="family-member ${showChangeIndicator ? 'change-modified' : ''}">
                     <div class="member-name">
-                        ${showChangeIndicator ? '✏️ ' : ''}
                         ${member.firstName} ${member.lastName}
                     </div>
                     <div class="member-details">
@@ -600,7 +604,6 @@ function renderSectionData(sectionData, type, changes = null) {
         return `
             <div class="family-member ${showChangeIndicator ? 'change-modified' : ''}">
                 <div class="member-name">
-                    ${showChangeIndicator ? '✏️ ' : ''}
                     ${spouse.firstName} ${spouse.lastName || ''}
                 </div>
                 <div class="member-details">

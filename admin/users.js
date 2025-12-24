@@ -46,24 +46,34 @@ function displayUsersStats(stats) {
     
     statsContainer.innerHTML = `
         <div class="stat-card">
-            <div class="stat-number">${stats.totalUsers || 0}</div>
             <div class="stat-label">Total Users</div>
+            <div class="stat-number">${stats.totalUsers || 0}</div>
+            <div class="stat-label">Users</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">${stats.activeUsers || 0}</div>
             <div class="stat-label">Active Users</div>
+            <div class="stat-number">${stats.activeUsers || 0}</div>
+            <div class="stat-label">Users</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">${stats.inactiveUsers || 0}</div>
             <div class="stat-label">Inactive Users</div>
+            <div class="stat-number">${stats.inactiveUsers || 0}</div>
+            <div class="stat-label">Users</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">${stats.adminUsers || 0}</div>
             <div class="stat-label">Admin Users</div>
+            <div class="stat-number">${stats.adminUsers || 0}</div>
+            <div class="stat-label">Users</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
+            <div class="stat-label">Registrations (30d)</div>
             <div class="stat-number">${stats.recentRegistrations || 0}</div>
-            <div class="stat-label">Recent Registrations (30d)</div>
+            <div class="stat-label">Users</div>
+            <div class="stat-line"></div>
         </div>
     `;
 }
@@ -110,7 +120,6 @@ function displayUsers(users) {
     if (users.length === 0) {
         usersList.innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">👥</div>
                 <h3>No Users Found</h3>
                 <p>No users match the current filters.</p>
             </div>
@@ -124,7 +133,7 @@ function displayUsers(users) {
                 <div class="user-info">
                     <div class="user-name">${user.firstName} ${user.lastName}</div>
                     <div class="user-email">${user.email}</div>
-                    <div class="user-phone">📞 ${user.phone}</div>
+                    <div class="user-phone">${user.phone}</div>
                 </div>
                 <div class="user-status">
                     <span class="status-badge ${user.isActive ? 'status-active' : 'status-inactive'}">
@@ -138,7 +147,7 @@ function displayUsers(users) {
                 <button onclick="viewUserDetails('${user._id}')" class="btn btn-outline">View Details</button>
                 ${user._id !== getCurrentUserId() ? `
                     <button onclick="toggleUserStatus('${user._id}', ${!user.isActive})" 
-                            class="btn ${user.isActive ? 'btn-warning' : 'btn-success'}">
+                            class="btn ${user.isActive ? 'btn-secondary' : 'btn-primary'}">
                         ${user.isActive ? 'Deactivate' : 'Activate'}
                     </button>
                 ` : ''}
@@ -166,19 +175,13 @@ function displayPagination(pagination) {
     // Previous button
     paginationHTML += `
         <button onclick="loadUsers(${pagination.currentPage - 1})" 
-                ${!pagination.hasPrev ? 'disabled' : ''}>
+                ${!pagination.hasPrev ? 'disabled' : ''} style="color: black;">
             ← Previous
         </button>
     `;
     
-    // Page numbers
-    for (let i = 1; i <= pagination.totalPages; i++) {
-        if (i === pagination.currentPage) {
-            paginationHTML += `<button class="current-page">${i}</button>`;
-        } else {
-            paginationHTML += `<button onclick="loadUsers(${i})">${i}</button>`;
-        }
-    }
+    // Page indicator (shows current page / total pages)
+    paginationHTML += `<span class="page-indicator">Page ${pagination.currentPage} of ${pagination.totalPages}</span>`;
     
     // Next button
     paginationHTML += `
@@ -230,7 +233,7 @@ function displayUserDetailsModal(user) {
     content.innerHTML = `
         <div class="user-details-full">
             <div class="form-section">
-                <h3>👤 Personal Information</h3>
+                <h3>Personal Information</h3>
                 <div class="user-details">
                     <div class="user-detail">
                         <span class="user-detail-label">Full Name</span>
@@ -278,17 +281,17 @@ function displayUserDetailsModal(user) {
             </div>
 
             <div class="form-section">
-                <h3>🚨 Emergency Contact</h3>
+                <h3>Emergency Contact</h3>
                 ${getEmergencyContactInfo(user)}
             </div>
 
             <div class="form-section">
-                <h3>✅ Endorsement Details</h3>
+                <h3>Endorsement Details</h3>
                 ${getEndorsementInfo(user)}
             </div>
 
             <div class="form-section">
-                <h3>👨‍👩‍👧‍👦 Family Information</h3>
+                <h3>Family Information</h3>
                 ${getDetailedFamilyInfo(user)}
             </div>
         </div>
@@ -304,7 +307,7 @@ function getDetailedFamilyInfo(user) {
     if (user.spouse && user.spouse.firstName) {
         familyHTML += `
             <div class="family-section">
-                <h4>💑 Spouse</h4>
+                <h4>Spouse</h4>
                 <div class="user-details">
                     <div class="user-detail">
                         <span class="user-detail-label">Name</span>
@@ -333,7 +336,7 @@ function getDetailedFamilyInfo(user) {
         if (children.length > 0) {
             familyHTML += `
                 <div class="family-section">
-                    <h4>👶 Children</h4>
+                    <h4>Children</h4>
                     ${children.map(child => `
                         <div class="user-details" style="margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
                             <div class="user-detail">
@@ -363,7 +366,7 @@ function getDetailedFamilyInfo(user) {
         if (parents.length > 0) {
             familyHTML += `
                 <div class="family-section">
-                    <h4>👨‍👩‍👧‍👦 Parents</h4>
+                    <h4>Parents</h4>
                     ${parents.map(parent => `
                         <div class="user-details" style="margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
                             <div class="user-detail">
@@ -387,7 +390,7 @@ function getDetailedFamilyInfo(user) {
         if (siblings.length > 0) {
             familyHTML += `
                 <div class="family-section">
-                    <h4>👫 Siblings</h4>
+                    <h4>Siblings</h4>
                     ${siblings.map(sibling => `
                         <div class="user-details" style="margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
                             <div class="user-detail">
@@ -409,7 +412,7 @@ function getDetailedFamilyInfo(user) {
     if (user.beneficiaries && user.beneficiaries.length > 0) {
         familyHTML += `
             <div class="family-section">
-                <h4>🎯 Beneficiaries</h4>
+                <h4>Beneficiaries</h4>
                 ${user.beneficiaries.map(beneficiary => `
                     <div class="user-details" style="margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
                         <div class="user-detail">

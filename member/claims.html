@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../shared/navbar.css">
     <link rel="stylesheet" href="../shared/navbar-spacing.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <style>
         .claims-header {
             display: flex;
@@ -52,11 +55,11 @@
             border-left: 4px solid #ddd;
         }
         
-        .claim-card.pending { border-left-color: #ffa500; }
-        .claim-card.review { border-left-color: #007bff; }
-        .claim-card.approved { border-left-color: #28a745; }
-        .claim-card.rejected { border-left-color: #dc3545; }
-        .claim-card.completed { border-left-color: #6c757d; }
+        .claim-card.pending { border-left-color: #856404; }
+        .claim-card.review { border-left-color: #004085; }
+        .claim-card.approved { border-left-color: #155724; }
+        .claim-card.rejected { border-left-color: #721c24; }
+        .claim-card.completed { border-left-color: #383d41; }
         
         .claim-header {
             display: flex;
@@ -73,7 +76,7 @@
         
         .claim-status {
             padding: 0.25rem 0.75rem;
-            border-radius: 20px;
+            border-radius: 4px;
             font-size: 0.875rem;
             font-weight: 500;
             text-transform: capitalize;
@@ -124,7 +127,7 @@
         .empty-state {
             text-align: center;
             padding: 3rem;
-            color: #666;
+            color: #ffffff;
         }
         
         .empty-state-icon {
@@ -181,7 +184,7 @@
         
         .family-member-option.selected {
             background: #cce5ff;
-            border-color: #007bff;
+            border-color: #00684a;
         }
         
         .family-member-option input[type="radio"] {
@@ -215,9 +218,9 @@
         
         .pagination .current-page {
             font-weight: 600;
-            background: #007bff;
+            background: #00684a;
             color: white;
-            border-color: #007bff;
+            border-color: #00684a;
         }
     </style>
 </head>
@@ -225,7 +228,6 @@
     <div class="container">
         <main class="dashboard-content">
             <div class="claims-header">
-                <h2>My Claims</h2>
                 <button id="new-claim-btn" class="btn btn-primary">Submit New Claim</button>
             </div>
 
@@ -248,7 +250,7 @@
             
             <form id="new-claim-form">
                 <div class="form-section">
-                    <h3>👨‍👩‍👧‍👦 Select Deceased Family Member</h3>
+                    <h3>Select Deceased Family Member</h3>
                     <div id="family-members-list">
                         <div class="loading">Loading family members...</div>
                     </div>
@@ -262,12 +264,12 @@
                 </div>
 
                 <div class="form-section">
-                    <h3>📝 Claim Details</h3>
+                    <h3>Claim Details</h3>
                     <div class="form-group">
                         <label for="claim-reason">Reason for Claim:</label>
                         <textarea id="claim-reason" rows="4" placeholder="Please provide details about the circumstances and why this claim is being made..." required style="width: 100%; min-width: 100%; box-sizing: border-box;"></textarea>
                     </div>
-                    <p style="background: #e3f2fd; padding: 1rem; border-radius: 4px; color: #1565c0; font-size: 0.875rem;">
+                    <p style="background: #e3f2fd; padding: 1rem; border-radius: 4px; color: #00684a; font-size: 0.875rem;">
                         ℹ️ The claim amount will be determined by the admin during the review process.
                     </p>
                 </div>
@@ -301,5 +303,7 @@
     <script src="../shared/navbar-template.js"></script>
     <script src="../shared/navbar.js"></script>
     <script src="claims.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

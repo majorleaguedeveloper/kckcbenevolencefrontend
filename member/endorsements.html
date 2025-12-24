@@ -6,6 +6,9 @@
     <title>Endorsement Requests - Benevolence Fund Portal</title>
     <link rel="stylesheet" href="../shared/navbar.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <style>
         .endorsement-card {
             background: white;
@@ -152,24 +155,24 @@
 
         .response-section textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #00684a;
         }
 
         .empty-state {
             text-align: center;
             padding: 3rem 1rem;
-            color: #666;
+            color: white;
         }
 
         .empty-state h3 {
             margin-bottom: 1rem;
-            color: #555;
+            color: white;
         }
 
         .loading {
             text-align: center;
             padding: 2rem;
-            color: #666;
+            color: white;
         }
 
         .message {
@@ -217,15 +220,13 @@
     <div id="navbar-container"></div>
 
     <div class="dashboard-container">
-        <h1>📋 Endorsement Requests</h1>
-        <p class="subtitle">Review and respond to endorsement requests from new members</p>
 
         <!-- Messages -->
         <div id="messageContainer"></div>
 
         <!-- Loading State -->
         <div id="loading" class="loading">
-            <p>🔍 Loading endorsement requests...</p>
+            <p>Loading endorsement requests...</p>
         </div>
 
         <!-- Endorsement Requests -->
@@ -293,7 +294,8 @@
                 if (this.requests.length === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
-                            <h3>📭 No Pending Requests</h3>
+                            <ion-icon name="search-outline" style="font-size: 4rem; color: #999;"></ion-icon>
+                            <h3>No Pending Requests</h3>
                             <p>You don't have any pending endorsement requests at the moment.</p>
                         </div>
                     `;
@@ -523,5 +525,7 @@
             endorsementManager = new EndorsementManager();
         });
     </script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

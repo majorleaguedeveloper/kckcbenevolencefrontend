@@ -59,8 +59,8 @@ function displayClaims(claims) {
     if (claims.length === 0) {
         claimsList.innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">📋</div>
-                <h3>No Claims Found</h3>
+                <ion-icon name="search-outline" style="font-size: 4rem; color: white;"></ion-icon>
+                <h3>No Claim Found At The Moment</h3>
                 <p>You haven't submitted any claims yet. Click "Submit New Claim" to get started.</p>
             </div>
         `;
@@ -107,14 +107,14 @@ function displayClaims(claims) {
             
             ${claim.stripePaymentLinkUrl && claim.status === 'approved' ? `
             <div class="payment-link-section">
-                <h4>💳 Community Contribution Required</h4>
+                <h4>Community Contribution Required</h4>
                 <p>Your claim has been approved! Community members need to contribute <strong>${formatCurrency(claim.perMemberContribution)}</strong> each.</p>
                 <a href="${claim.stripePaymentLinkUrl}" target="_blank" class="btn btn-primary">View Payment Link</a>
             </div>
             ` : ''}
             
             <div class="claim-actions">
-                <button onclick="viewClaimDetails('${claim._id}')" class="btn btn-outline">View Details</button>
+                <button onclick="viewClaimDetails('${claim._id}')" class="btn btn-outline">←View Details</button>
             </div>
         </div>
     `).join('');
@@ -332,7 +332,7 @@ function displayClaimDetailsModal(claim) {
     content.innerHTML = `
         <div class="claim-details-full">
             <div class="form-section">
-                <h3>👤 Deceased Family Member</h3>
+                <h3>Deceased Family Member</h3>
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Name</span>
@@ -356,7 +356,7 @@ function displayClaimDetailsModal(claim) {
             </div>
 
             <div class="form-section">
-                <h3>💰 Claim Information</h3>
+                <h3>Claim Information</h3>
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Status</span>
@@ -395,7 +395,7 @@ function displayClaimDetailsModal(claim) {
 
             ${claim.reviewNotes ? `
             <div class="form-section">
-                <h3>📝 Admin Review</h3>
+                <h3>Admin Review</h3>
                 <div class="claim-details">
                     ${claim.reviewedBy ? `
                     <div class="claim-detail">
@@ -415,7 +415,7 @@ function displayClaimDetailsModal(claim) {
 
             ${claim.statusHistory && claim.statusHistory.length > 0 ? `
             <div class="form-section">
-                <h3>📊 Status History</h3>
+                <h3>Status History</h3>
                 <div style="max-height: 200px; overflow-y: auto;">
                     ${claim.statusHistory.map(history => `
                         <div style="background: #f8f9fa; padding: 0.75rem; border-radius: 4px; margin-bottom: 0.5rem;">
@@ -432,7 +432,7 @@ function displayClaimDetailsModal(claim) {
 
             ${claim.stripePaymentLinkUrl && claim.status === 'approved' ? `
             <div class="form-section">
-                <h3>💳 Community Contribution</h3>
+                <h3>Community Contribution</h3>
                 <div class="payment-link-section">
                     <p>Your claim has been approved! Community members can contribute using the link below:</p>
                     <a href="${claim.stripePaymentLinkUrl}" target="_blank" class="btn btn-primary">Open Payment Link</a>

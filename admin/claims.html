@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../shared/navbar.css">
     <link rel="stylesheet" href="../shared/navbar-spacing.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <style>
         .claims-header {
             display: flex;
@@ -38,6 +41,7 @@
         
         .claims-filters {
             display: flex;
+            justify-content: space-between;
             gap: 1rem;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
@@ -52,6 +56,7 @@
         .filter-group {
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             gap: 0.5rem;
             min-width: 200px;
         }
@@ -59,17 +64,17 @@
         .filter-label {
             font-size: 0.875rem;
             font-weight: 600;
-            color: #495057;
+            color: #00684a;
             margin-bottom: 0.25rem;
         }
         
         .claims-filters select {
             padding: 0.75rem 1rem;
-            border: 2px solid #e9ecef;
+            border: 2px solid #00684a;
             border-radius: 8px;
             font-size: 0.95rem;
             background: white;
-            color: #495057;
+            color: #00684a;
             transition: all 0.3s ease;
             cursor: pointer;
             appearance: none;
@@ -82,7 +87,7 @@
         
         .claims-filters select:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: #00684a;
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
         
@@ -91,14 +96,14 @@
             border: 2px solid #e9ecef;
             border-radius: 8px;
             font-size: 0.95rem;
-            color: #495057;
+            color: #00684a;
             transition: all 0.3s ease;
             min-width: 280px;
         }
         
         .claims-filters input[type="text"]:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: #00684a;
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
         
@@ -116,7 +121,7 @@
         
         .btn-filter {
             padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            background: linear-gradient(135deg, #00684a 0%, #001e2b 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -130,7 +135,7 @@
         .btn-filter:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+            background: rgb(0, 104, 74, 0.8);
         }
         
         .btn-filter:active {
@@ -167,13 +172,20 @@
             padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
         }
         
         .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #007bff;
+            font-size: 60px;
+            font-weight: 600;
+            color: #00684a;
+        }
+        
+        .stat-line{
+            margin-top: 16px;
+            height: 4px;
+            width: 70%;
+            background-color: #00684a;
+            border-radius: 2px;
         }
         
         .stat-label {
@@ -191,7 +203,7 @@
         }
         
         .claim-card.pending { border-left-color: #ffa500; }
-        .claim-card.review { border-left-color: #007bff; }
+        .claim-card.review { border-left-color: #00684a; }
         .claim-card.approved { border-left-color: #28a745; }
         .claim-card.rejected { border-left-color: #dc3545; }
         .claim-card.completed { border-left-color: #6c757d; }
@@ -337,7 +349,7 @@
             padding: 1rem;
             border-radius: 4px;
             margin-top: 1rem;
-            border: 2px solid #007bff;
+            border: 2px solid #00684a;
         }
         
         .pagination {
@@ -367,15 +379,15 @@
         
         .pagination .current-page {
             font-weight: 600;
-            background: #007bff;
+            background: #00684a;
             color: white;
-            border-color: #007bff;
+            border-color: #00684a;
         }
         
         .empty-state {
             text-align: center;
             padding: 3rem;
-            color: #666;
+            color: white;
         }
         
         .empty-state-icon {
@@ -406,10 +418,6 @@
     <div class="container">
 
         <main class="dashboard-content">
-            <div class="claims-header">
-                <h2>Claims Management</h2>
-                <button onclick="loadClaims()" class="btn btn-primary">Refresh</button>
-            </div>
 
             <!-- Claims Statistics -->
             <div id="claims-stats" class="claims-stats">
@@ -419,20 +427,20 @@
             <!-- Claims Filters -->
             <div class="claims-filters">
                 <div class="filter-group">
-                    <label class="filter-label" for="status-filter">📊 Filter by Status</label>
+                    <label class="filter-label" for="status-filter">Filter by Status</label>
                     <select id="status-filter">
                         <option value="">All Status</option>
-                        <option value="pending">🟡 Pending</option>
-                        <option value="review">🔍 Under Review</option>
-                        <option value="approved">✅ Approved</option>
-                        <option value="rejected">❌ Rejected</option>
-                        <option value="completed">🏆 Completed</option>
+                        <option value="pending">Pending </option>
+                        <option value="review">Under Review</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="completed">Completed</option>
                     </select>
                 </div>
                 
                 <div class="filter-group">
-                    <label class="filter-label" for="search-claims">🔍 Search Claims</label>
-                    <input type="text" id="search-claims" placeholder="Search by member name or claim reason...">
+                    <label class="filter-label" for="search-claims">Search Claims</label>
+                    <input type="text" id="search-claims" placeholder="member name or claim reason...">
                 </div>
                 
                 <div class="filter-actions">

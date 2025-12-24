@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Benevolence Fund Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,16 +15,14 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: "Outfit", sans-serif;
+            background: linear-gradient(135deg, #001e2b 0%, #00684a 100%);
             min-height: 100vh;
-            padding: 20px;
         }
 
         .register-container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             padding: 2rem;
             width: 100%;
@@ -33,23 +34,8 @@
         .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
             margin-bottom: 2rem;
             color: #333;
-        }
-
-        .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 1.5rem;
-            color: white;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
         .logo-text {
@@ -76,7 +62,7 @@
         .back-link {
             display: inline-flex;
             align-items: center;
-            color: #667eea;
+            color: #00684a;
             text-decoration: none;
             font-size: 0.9rem;
             margin-bottom: 1rem;
@@ -84,7 +70,7 @@
         }
 
         .back-link:hover {
-            color: #764ba2;
+            color: #00684a;
         }
 
         .back-link::before {
@@ -106,13 +92,13 @@
             align-items: center;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 2px solid #00684a;
         }
 
         .section-icon {
             width: 30px;
             height: 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #004d33, #004d33);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -159,7 +145,7 @@
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #00684a;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
             background: white;
         }
@@ -193,7 +179,7 @@
         }
 
         .radio-option:hover {
-            border-color: #667eea;
+            border-color: #00684a;
             background: rgba(102, 126, 234, 0.05);
         }
 
@@ -204,11 +190,11 @@
 
         .radio-option input[type="radio"]:checked + .radio-label {
             font-weight: 600;
-            color: #667eea;
+            color: #00684a;
         }
 
         .radio-option:has(input[type="radio"]:checked) {
-            border-color: #667eea;
+            border-color: #004d33;
             background: rgba(102, 126, 234, 0.1);
         }
 
@@ -237,8 +223,8 @@
             align-items: center;
             padding: 8px 16px;
             background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            border: 1px solid #667eea;
+            color: #004d33;
+            border: 1px solid #004d33;
             border-radius: 6px;
             font-size: 0.9rem;
             cursor: pointer;
@@ -283,10 +269,10 @@
         .btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #004d33, #004d33);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 4px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -369,12 +355,12 @@
         }
 
         .password-toggle:hover {
-            color: #667eea;
+            color: #004d33;
         }
 
         .password-toggle:focus {
             outline: none;
-            color: #667eea;
+            color: #004d33;
         }
 
         .password-hint {
@@ -425,11 +411,11 @@
         }
 
         .step.active {
-            background: #667eea;
+            background: #004d33;
         }
 
         .step.completed {
-            background: #27ae60;
+            background: #004d33;
         }
 
         /* Form subsection styles */
@@ -484,7 +470,7 @@
         .percentage-total.valid {
             background: #d4edda;
             border-color: #c3e6cb;
-            color: #155724;
+            color: #004d33;
         }
 
         .percentage-total.invalid {
@@ -695,12 +681,17 @@
             font-family: monospace;
             letter-spacing: 0.5px;
         }
+
+        ion-icon {
+            font-size: 50px;
+            color: rgb(0, 104, 74);
+        }
     </style>
 </head>
 <body>
     <div class="register-container">
         <div class="logo">
-            <div class="logo-icon">🤝</div>
+            <ion-icon name="heart"></ion-icon>
             <div class="logo-text">Benevolence Fund</div>
         </div>
 
@@ -1059,11 +1050,13 @@
         </form>
 
         <div style="text-align: center; margin-top: 1rem; color: #666;">
-            Already have an account? <a href="login.html" style="color: #667eea;">Sign in here</a>
+            Already have an account? <a href="login.html" style="color: #004d33;">Sign in here</a>
         </div>
     </div>
 
     <script src="shared/auth.js"></script>
     <script src="register.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

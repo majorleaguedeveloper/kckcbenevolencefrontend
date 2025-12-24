@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - Benevolence Fund</title>
+    <link rel="stylesheet" href="../shared/navbar.css">
+    <link rel="stylesheet" href="../shared/navbar-spacing.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <style>
         .profile-container {
             max-width: 900px;
@@ -13,26 +18,13 @@
         }
 
         .profile-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg,#001e2b  0%,#00684a 100%);
             color: white;
             padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 1rem;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px #dadadaaf;
         }
 
         .profile-name {
@@ -51,7 +43,8 @@
         }
 
         .profile-section {
-            background: white;
+            background: linear-gradient(135deg,#001e2b  0%,#00684a 100%);
+            color: white;
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
@@ -61,29 +54,17 @@
 
         .section-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
             border-bottom: 2px solid #f8f9fa;
         }
 
-        .section-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            font-size: 1.2rem;
-            color: white;
-        }
-
         .section-title {
             font-size: 1.3rem;
             font-weight: 600;
-            color: #333;
+            color: #ffffff;
         }
 
         .info-grid {
@@ -95,13 +76,12 @@
         .info-item {
             padding: 1rem;
             background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #00ED64;
         }
 
         .info-label {
             font-size: 0.85rem;
-            color: #666;
+            color: #00684a;
             font-weight: 500;
             margin-bottom: 4px;
             text-transform: uppercase;
@@ -122,7 +102,7 @@
             display: flex;
             align-items: center;
             margin-bottom: 1rem;
-            color: #667eea;
+            color: #ffffff;
         }
 
         .family-header h4 {
@@ -139,27 +119,31 @@
 
         .family-member {
             padding: 1rem;
-            background: rgba(102, 126, 234, 0.05);
-            border: 1px solid rgba(102, 126, 234, 0.15);
-            border-radius: 8px;
-            text-align: center;
+            background: #ffffff;
+            border-left: #00ED64 4px solid;
         }
 
         .family-member-name {
             font-weight: 600;
-            color: #333;
+            color: #00684a;
             margin-bottom: 4px;
         }
 
         .family-member-relation {
-            color: #667eea;
+            color: #333;
             font-size: 0.9rem;
             text-transform: capitalize;
             margin-bottom: 4px;
         }
 
+        .family-member-phone {
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
         .family-member-dob {
-            color: #666;
+            color: #333;
             font-size: 0.8rem;
         }
 
@@ -169,8 +153,8 @@
             background: rgba(102, 126, 234, 0.05);
             border-radius: 4px;
             font-size: 0.85rem;
-            color: #555;
-            border-left: 3px solid #667eea;
+            color: #333;
+            border-left: 3px solid #ffffff;
         }
 
         .btn {
@@ -188,20 +172,21 @@
         }
 
         .btn-secondary {
-            background: #f8f9fa;
-            color: #667eea;
-            border: 1px solid #667eea;
+            background: #00ED64;
+            padding: 14px;
+            color: rgba(0, 0, 0, 0.8);
         }
 
         .btn-secondary:hover {
-            background: #667eea;
-            color: white;
+            background: #00ED64;
+            padding: 14px;
+            color: rgba(0, 0, 0, 0.8);
             transform: translateY(-1px);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            background: linear-gradient(135deg, #00ED64, #00ED64);
+            color: rgb(0, 0, 0, 0.8);
         }
 
         .btn-primary:hover {
@@ -226,7 +211,6 @@
 
         .modal-content {
             background: white;
-            border-radius: 15px;
             max-width: 800px;
             width: 90%;
             max-height: 90vh;
@@ -258,7 +242,7 @@
         }
 
         .radio-option:hover {
-            border-color: #667eea;
+            border-color: #00684a;
             background: rgba(102, 126, 234, 0.05);
         }
 
@@ -269,11 +253,11 @@
 
         .radio-option input[type="radio"]:checked + .radio-label {
             font-weight: 600;
-            color: #667eea;
+            color: #00684a;
         }
 
         .radio-option:has(input[type="radio"]:checked) {
-            border-color: #667eea;
+            border-color: #00684a;
             background: rgba(102, 126, 234, 0.1);
         }
 
@@ -311,8 +295,8 @@
             align-items: center;
             padding: 8px 16px;
             background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            border: 1px solid #667eea;
+            color: #00684a;
+            border: 1px solid #00684a;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -321,7 +305,7 @@
         }
 
         .add-btn:hover {
-            background: #667eea;
+            background: #00684a;
             color: white;
         }
 
@@ -359,7 +343,7 @@
             align-items: center;
             padding: 1.5rem;
             border-bottom: 1px solid #e1e5e9;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg,#001e2b  0%,#00684a 100%);
             color: white;
             border-radius: 15px 15px 0 0;
         }
@@ -391,6 +375,7 @@
 
         .modal-body {
             padding: 1.5rem;
+            background: linear-gradient(135deg,#00684a  0%,#001e2b 100%);
         }
 
         .form-section {
@@ -400,6 +385,7 @@
             border-radius: 8px;
             background: #f8f9fa;
         }
+
 
         .section-header h4 {
             margin: 0 0 0.5rem 0;
@@ -435,7 +421,7 @@
         }
 
         .form-group textarea:focus {
-            border-color: #667eea;
+            border-color: #00684a;
             outline: none;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
@@ -456,7 +442,7 @@
         }
 
         .family-member-percentage {
-            color: #667eea;
+            color: #00684a;
             font-size: 0.9rem;
             font-weight: 600;
         }
@@ -530,7 +516,7 @@
             background: white;
             padding: 0.75rem;
             border-radius: 4px;
-            border-left: 3px solid #667eea;
+            border-left: 3px solid #00684a;
             margin-top: 0.5rem;
             font-size: 0.9rem;
         }
@@ -549,7 +535,7 @@
             display: inline-flex;
             align-items: center;
             padding: 10px 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #00684a, #001e2b);
             color: white;
             text-decoration: none;
             border-radius: 8px;
@@ -571,7 +557,7 @@
 
         .loading {
             text-align: center;
-            color: #666;
+            color: white;
             font-style: italic;
             padding: 2rem;
         }
@@ -616,6 +602,7 @@
         }
 
         .family-header h4 {
+            color: white;
             margin: 0;
             display: flex;
             align-items: center;
@@ -681,6 +668,11 @@
             
             .profile-header {
                 padding: 1.5rem;
+            }
+
+            .section-header {
+                display: flex;
+                flex-direction: column;
             }
             
             .profile-name {
@@ -864,7 +856,7 @@
 
         /* Endorsement specific styles */
         .endorsement-explanation {
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #00684a;
             background: rgba(102, 126, 234, 0.05);
         }
 
@@ -886,7 +878,6 @@
         .status-badge {
             display: inline-block;
             padding: 0.25rem 0.5rem;
-            border-radius: 12px;
             font-size: 0.85rem;
             font-weight: 500;
             text-transform: capitalize;
@@ -909,14 +900,16 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        ion-icon {
+            font-size: 50px;
+            color: rgb(255, 255, 255);
+        }
     </style>
 </head>
-<body>
+<body data-navbar="member">
+    <div id="navbar-container"></div>
     <div class="profile-container">
-        <div class="navigation-buttons">
-            <a href="index.html" class="back-button">Back to Dashboard</a>
-            <a href="claims.html" class="back-button">My Claims</a>
-        </div>
+        
         
         <div id="loading" class="loading">Loading profile...</div>
         <div id="error" class="error" style="display: none;"></div>
@@ -924,7 +917,7 @@
         <div id="profileContent" style="display: none;">
             <!-- Profile Header -->
             <div class="profile-header">
-                <div class="profile-avatar">👤</div>
+                <ion-icon name="person"></ion-icon>
                 <div class="profile-name" id="profileName">Loading...</div>
                 <div class="profile-role">Member</div>
                 <div class="member-since" id="memberSince">Member since...</div>
@@ -933,7 +926,6 @@
             <!-- Personal Information Section -->
             <div class="profile-section">
                 <div class="section-header">
-                    <div class="section-icon">👤</div>
                     <div class="section-title">Personal Information</div>
                 </div>
                 
@@ -968,7 +960,6 @@
             <!-- Emergency Contact Section -->
             <div class="profile-section">
                 <div class="section-header">
-                    <div class="section-icon">🚨</div>
                     <div class="section-title">Emergency Contact</div>
                 </div>
                 
@@ -987,7 +978,6 @@
             <!-- Endorsement Information Section -->
             <div class="profile-section">
                 <div class="section-header">
-                    <div class="section-icon">✅</div>
                     <div class="section-title">Endorsement Status</div>
                 </div>
                 
@@ -1011,7 +1001,7 @@
                 </div>
                 
                 <!-- Endorsement status explanation -->
-                <div id="endorsementExplanation" class="endorsement-explanation" style="margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none;">
+                <div id="endorsementExplanation" class="endorsement-explanation" style="margin-top: 1rem; padding: 1rem; display: none;">
                     <p id="endorsementExplanationText"></p>
                 </div>
             </div>
@@ -1019,17 +1009,15 @@
             <!-- Family Information Section -->
             <div class="profile-section">
                 <div class="section-header">
-                    <div class="section-icon">👨‍👩‍👧‍👦</div>
                     <div class="section-title">Family Information</div>
                     <button id="request-amendment-btn" class="btn btn-secondary" onclick="openAmendmentModal()">
-                        📝 Request Amendment
+                        Request Amendment
                     </button>
                 </div>
                 
                 <!-- Spouse Section -->
                 <div class="family-section" id="spouseSection">
                     <div class="family-header">
-                        <span>💑</span>
                         <h4>Spouse</h4>
                     </div>
                     <div id="spouseContent">
@@ -1040,7 +1028,6 @@
                 <!-- Children Section -->
                 <div class="family-section" id="childrenSection">
                     <div class="family-header">
-                        <span>👶</span>
                         <h4>Children</h4>
                     </div>
                     <div id="childrenContent">
@@ -1051,7 +1038,6 @@
                 <!-- Parents Section -->
                 <div class="family-section" id="parentsSection">
                     <div class="family-header">
-                        <span>👨‍👩‍👦</span>
                         <h4>Parents</h4>
                     </div>
                     <div id="parentsContent">
@@ -1062,7 +1048,6 @@
                 <!-- Siblings Section -->
                 <div class="family-section" id="siblingsSection">
                     <div class="family-header">
-                        <span>👫</span>
                         <h4>Siblings</h4>
                     </div>
                     <div id="siblingsContent">
@@ -1073,7 +1058,6 @@
                 <!-- Beneficiaries Section -->
                 <div class="family-section" id="beneficiariesSection">
                     <div class="family-header">
-                        <span>🏦</span>
                         <h4>Beneficiaries</h4>
                     </div>
                     <div id="beneficiariesContent">
@@ -1085,7 +1069,6 @@
             <!-- Amendment Requests Section -->
             <div class="profile-section">
                 <div class="section-header">
-                    <div class="section-icon">📝</div>
                     <div class="section-title">Amendment Requests</div>
                 </div>
                 
@@ -1119,7 +1102,6 @@
                     <div class="form-section">
                         <div class="family-section" id="amendEmergencyContactSection">
                             <div class="family-header">
-                                <span>🚨</span>
                                 <h4>Emergency Contact</h4>
                             </div>
                             <div id="amendEmergencyContactContent">
@@ -1132,7 +1114,6 @@
                     <div class="form-section">
                         <div class="family-section" id="amendSpouseSection">
                             <div class="family-header">
-                                <span>💑</span>
                                 <h4>Spouse</h4>
                                 <button type="button" id="addSpouseBtn" class="add-family-btn" onclick="addSpouse()" style="display: none;">Add Spouse</button>
                             </div>
@@ -1146,7 +1127,6 @@
                     <div class="form-section">
                         <div class="family-section" id="amendChildrenSection">
                             <div class="family-header">
-                                <span>👶</span>
                                 <h4>Children</h4>
                                 <button type="button" id="addChildBtn" class="add-family-btn" onclick="addChild()">Add Child</button>
                             </div>
@@ -1160,7 +1140,6 @@
                     <div class="form-section">
                         <div class="family-section" id="amendParentsSection">
                             <div class="family-header">
-                                <span>👨‍👩‍👦</span>
                                 <h4>Parents</h4>
                                 <button type="button" id="addParentBtn" class="add-family-btn" onclick="addParent()">Add Parent</button>
                             </div>
@@ -1174,7 +1153,6 @@
                     <div class="form-section">
                         <div class="family-section" id="amendSiblingsSection">
                             <div class="family-header">
-                                <span>👫</span>
                                 <h4>Siblings</h4>
                                 <button type="button" id="addSiblingBtn" class="add-family-btn" onclick="addSibling()">Add Sibling</button>
                             </div>
@@ -1188,7 +1166,6 @@
                     <div class="form-section">
                         <div class="family-section" id="amendBeneficiariesSection">
                             <div class="family-header">
-                                <span>🏦</span>
                                 <h4>Beneficiaries</h4>
                                 <button type="button" id="addBeneficiaryBtn" class="add-family-btn" onclick="addBeneficiary()">Add Beneficiary</button>
                             </div>
@@ -1217,7 +1194,7 @@
 
                     <div class="modal-actions">
                         <button type="button" onclick="closeAmendmentModal()" class="btn btn-secondary">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Submit Amendment Request</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
@@ -1225,6 +1202,10 @@
     </div>
 
     <script src="../shared/auth.js"></script>
+    <script src="../shared/navbar-template.js"></script>
+    <script src="../shared/navbar.js"></script>
     <script src="profile.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

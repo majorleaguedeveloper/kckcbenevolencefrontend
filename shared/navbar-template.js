@@ -1,14 +1,6 @@
-/**
- * ============================================
- * NAVBAR HTML TEMPLATE GENERATOR
- * ============================================
- */
-
 function createNavbarHTML(config) {
     const {
-        title = 'Benevolence Fund',
-        subtitle = '',
-        theme = 'admin-theme',
+        theme = '',
         userName = '',
         navigation = [],
         showLogout = true
@@ -19,8 +11,7 @@ function createNavbarHTML(config) {
             <div class="navbar-container">
                 <!-- Brand/Title -->
                 <div class="navbar-brand">
-                    ${title}
-                    ${subtitle ? `<span class="navbar-subtitle">${subtitle}</span>` : ''}
+                    MNK Benevolence
                 </div>
 
                 <!-- Desktop Navigation -->
@@ -28,16 +19,16 @@ function createNavbarHTML(config) {
                     ${userName ? `<span class="navbar-user">${userName}</span>` : ''}
                     ${navigation.map(item => `
                         <a href="${item.href}" class="nav-link" title="${item.title || item.text}">
-                            ${item.icon ? `<span class="nav-icon">${item.icon}</span>` : ''}
                             ${item.text}
                         </a>
                     `).join('')}
-                    ${showLogout ? `
-                        <button class="navbar-logout" onclick="handleLogout()" title="Logout">
-                            <span class="logout-icon">🚪</span>
-                            Logout
-                        </button>
-                    ` : ''}
+                </div>
+
+                <!-- Support Nav-->
+                <div>
+                    <button class="support-button">
+                        Support
+                    </button>
                 </div>
 
                 <!-- Mobile Toggle Button -->
@@ -58,13 +49,11 @@ function createNavbarHTML(config) {
                 ${userName ? `<div class="mobile-user">${userName}</div>` : ''}
                 ${navigation.map(item => `
                     <a href="${item.href}" class="mobile-nav-link">
-                        ${item.icon ? `<span class="mobile-nav-icon">${item.icon}</span>` : ''}
                         ${item.text}
                     </a>
                 `).join('')}
                 ${showLogout ? `
                     <button class="mobile-logout" onclick="handleLogout()">
-                        <span class="logout-icon">🚪</span>
                         Logout
                     </button>
                 ` : ''}
@@ -76,64 +65,52 @@ function createNavbarHTML(config) {
 // Predefined navigation configurations
 const NAVBAR_CONFIGS = {
     admin: {
-        title: 'Benevolence Fund',
-        subtitle: 'Admin Portal',
         theme: 'admin-theme',
         navigation: [
             {
                 text: 'Dashboard',
                 href: 'index.html',
-                icon: '📊',
                 title: 'Go to Admin Dashboard'
             },
             {
-                text: 'Claims Management',
+                text: 'Claims',
                 href: 'claims.html',
-                icon: '📋',
                 title: 'Manage Claims'
             },
             {
-                text: 'User Management',
+                text: 'Users',
                 href: 'users.html',
-                icon: '👥',
                 title: 'Manage Users'
             },
             {
-                text: 'Amendment Management',
+                text: 'Amendments',
                 href: 'amendments.html',
-                icon: '📝',
                 title: 'Manage Family Information Amendments'
             }
         ]
     },
     
     member: {
-        title: 'Benevolence Fund',
-        subtitle: 'Member Portal',
         theme: 'member-theme',
         navigation: [
             {
                 text: 'Dashboard',
                 href: 'index.html',
-                icon: '🏠',
                 title: 'Go to Dashboard'
             },
             {
-                text: 'My Claims',
+                text: 'Claims',
                 href: 'claims.html',
-                icon: '📝',
-                title: 'View My Claims'
+                title: 'View Claims'
             },
             {
                 text: 'My Profile',
                 href: 'profile.html',
-                icon: '👤',
                 title: 'View My Profile'
             },
             {
                 text: 'Endorsements',
                 href: 'endorsements.html',
-                icon: '🤝',
                 title: 'Manage Endorsement Requests'
             }
         ]

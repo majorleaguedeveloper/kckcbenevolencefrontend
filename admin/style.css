@@ -5,8 +5,8 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: "Outfit", sans-serif;
+    background: linear-gradient(135deg, #00684a 0%, #001e2b 100%);
     min-height: 100vh;
     color: #333;
 }
@@ -76,8 +76,7 @@ body {
 }
 
 .portal-badge {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
+    background: linear-gradient(135deg, #00684a 0%, #001e2b 100%);
     padding: 6px 12px;
     border-radius: 15px;
     font-size: 12px;
@@ -113,7 +112,7 @@ body {
 }
 
 .mobile-menu-toggle:focus {
-    outline: 2px solid #667eea;
+    outline: 2px solid #00684a;
     outline-offset: 2px;
     background-color: #f8f9fa;
 }
@@ -155,8 +154,8 @@ body {
 
 .btn-outline {
     background: transparent;
-    color: #667eea;
-    border: 2px solid #667eea;
+    color: #00684a;
+    border: 2px solid #00684a;
     padding: 8px 16px;
     border-radius: 20px;
     text-decoration: none;
@@ -166,7 +165,7 @@ body {
 }
 
 .btn-outline:hover {
-    background: #667eea;
+    background: #00684a;
     color: white;
 }
 
@@ -186,7 +185,7 @@ body {
 .card h3 {
     margin-bottom: 20px;
     color: #333;
-    border-bottom: 2px solid #667eea;
+    border-bottom: 2px solid #00684a;
     padding-bottom: 10px;
 }
 
@@ -215,7 +214,7 @@ body {
 }
 
 .info-box a {
-    color: #667eea;
+    color: #00684a;
     text-decoration: none;
 }
 
@@ -248,7 +247,7 @@ body {
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #00684a;
 }
 
 .form-group textarea {
@@ -270,17 +269,16 @@ body {
 }
 
 .btn-primary {
-    background: #667eea;
+    background: #00684a;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #5a6fd8;
     transform: translateY(-2px);
 }
 
 .btn-secondary {
-    background: #6c757d;
+    background: linear-gradient(135deg, #00684a 0%, #001e2b 100%);
     color: white;
 }
 
@@ -316,7 +314,7 @@ body {
 
 .loading {
     text-align: center;
-    color: #6c757d;
+    color: white;
     font-style: italic;
 }
 
@@ -370,7 +368,7 @@ body {
 .stat-value {
     font-size: 20px;
     font-weight: 600;
-    color: #667eea;
+    color: #00684a;
 }
 
 .stat-label {
@@ -420,7 +418,7 @@ body {
 
 /* Payment Link */
 .payment-link {
-    color: #667eea;
+    color: #00684a;
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
@@ -501,11 +499,11 @@ body {
     padding: 12px;
     background: rgba(102, 126, 234, 0.05);
     border-radius: 6px;
-    border-left: 3px solid #667eea;
+    border-left: 3px solid #00684a;
 }
 
 .family-section h4 {
-    color: #667eea;
+    color: #00684a;
     font-size: 0.95rem;
     margin-bottom: 8px;
     display: flex;
@@ -564,9 +562,9 @@ body {
 }
 
 .pagination button:hover:not(:disabled) {
-    background: #667eea;
+    background: #00684a;
     color: white;
-    border-color: #667eea;
+    border-color: #00684a;
 }
 
 .pagination button:disabled {
@@ -575,9 +573,9 @@ body {
 }
 
 .pagination .current-page {
-    background: #667eea;
+    background: #00684a;
     color: white;
-    border-color: #667eea;
+    border-color: #00684a;
 }
 
 .pagination-info {
@@ -649,7 +647,7 @@ body {
     
     .nav-menu .user-info {
         padding: 20px 24px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #00684a, #001e2b);
         color: white;
         margin: 0;
         font-size: 16px;
@@ -681,8 +679,8 @@ body {
     
     .nav-menu .btn-outline:hover {
         background: #f8f9fa;
-        border-color: #667eea;
-        color: #667eea;
+        border-color: #00684a;
+        color: #00684a;
     }
     
     .nav-menu .btn-secondary {

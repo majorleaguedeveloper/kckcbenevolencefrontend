@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Benevolence Fund Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,11 +15,10 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
             min-height: 100vh;
+            background: linear-gradient(135deg, #00684a 0%, #001e2b 100%);
+            font-family: "Outfit", sans-serif;
         }
 
         .container {
@@ -27,7 +29,7 @@
 
         /* Header */
         .header {
-            background: rgba(255, 255, 255, 0.1);
+            background-color: white;
             backdrop-filter: blur(10px);
             padding: 1rem 0;
             margin-bottom: 3rem;
@@ -42,9 +44,10 @@
         .logo {
             display: flex;
             align-items: center;
+            gap: 50px;
             font-size: 1.5rem;
             font-weight: 700;
-            color: white;
+            color: #00684a;
             text-decoration: none;
         }
 
@@ -109,23 +112,9 @@
             border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .portal-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
         .portal-card h3 {
             font-size: 1.5rem;
-            margin-bottom: 1rem;
+            margin: 40px 40px;
             color: #333;
         }
 
@@ -138,7 +127,7 @@
         .btn {
             display: inline-block;
             padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, rgb(0, 104, 74), rgb(0, 104, 74));
             color: white;
             text-decoration: none;
             border-radius: 25px;
@@ -166,10 +155,11 @@
 
         /* Features Section */
         .features {
-            padding: 4rem 0;
-            background: rgba(255, 255, 255, 0.05);
+            padding: 70px 0;
+            background: linear-gradient(135deg,#001e2b  0%, #00684a 100%);
             backdrop-filter: blur(10px);
             margin-top: 4rem;
+            border-radius: 40px;
         }
 
         .features h2 {
@@ -186,9 +176,11 @@
         }
 
         .feature-item {
+            background-color: white;
             text-align: center;
-            color: white;
-            padding: 1.5rem;
+            color: rgb(70, 70, 70);
+            padding: 60px 20px;
+            border-radius: 30px;
         }
 
         .feature-item i {
@@ -199,7 +191,7 @@
 
         .feature-item h4 {
             font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            margin: 30px 0px;
         }
 
         .feature-item p {
@@ -325,6 +317,11 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        ion-icon {
+            font-size: 70px;
+            color: rgb(0, 104, 74);
+        }
     </style>
 </head>
 <body>
@@ -332,8 +329,8 @@
         <div class="container">
             <nav class="nav">
                 <a href="#" class="logo">
-                    <div class="logo-icon">🤝</div>
-                    Benevolence Fund
+                    <ion-icon name="heart"></ion-icon>
+                    MNK Benevolence Fund
                 </a>
             </nav>
         </div>
@@ -341,19 +338,19 @@
 
     <div class="container">
         <section class="hero">
-            <h1>Welcome to Our Benevolence Fund</h1>
+            <h1>The MNK Benevolence Fund</h1>
             <p>Supporting our community members during times of need through collective care and compassion. Choose your portal to access the system.</p>
             
             <div class="portal-selection">
                 <div class="portal-card" onclick="selectPortal('member')">
-                    <div class="portal-icon">👥</div>
+                    <ion-icon name="person"></ion-icon>
                     <h3>Member Portal</h3>
                     <p>Access your payment requests, make contributions, and view your payment history in a secure, user-friendly interface.</p>
                     <button class="btn">Access Member Portal</button>
                 </div>
 
                 <div class="portal-card" onclick="selectPortal('admin')">
-                    <div class="portal-icon">⚙️</div>
+                    <ion-icon name="settings"></ion-icon>
                     <h3>Admin Portal</h3>
                     <p>Manage payment requests, monitor contributions, oversee member activities, and generate comprehensive reports.</p>
                     <button class="btn">Access Admin Portal</button>
@@ -366,22 +363,22 @@
                 <h2>System Features</h2>
                 <div class="features-grid">
                     <div class="feature-item">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">💳</div>
+                        <ion-icon name="card" style="font-size: 2.5rem; margin-bottom: 1rem;"></ion-icon>
                         <h4>Secure Payments</h4>
                         <p>Powered by Stripe for safe and reliable payment processing</p>
                     </div>
                     <div class="feature-item">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">📊</div>
+                        <ion-icon name="stats-chart" style="font-size: 2.5rem; margin-bottom: 1rem;"></ion-icon>
                         <h4>Real-time Tracking</h4>
                         <p>Monitor payment status and member contributions in real-time</p>
                     </div>
                     <div class="feature-item">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔒</div>
+                        <ion-icon name="lock-closed" style="font-size: 2.5rem; margin-bottom: 1rem;"></ion-icon>
                         <h4>Privacy Protected</h4>
                         <p>Your personal and financial information is always secure</p>
                     </div>
                     <div class="feature-item">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">📱</div>
+                        <ion-icon name="phone-portrait" style="font-size: 2.5rem; margin-bottom: 1rem;"></ion-icon>
                         <h4>Mobile Friendly</h4>
                         <p>Access the system from any device, anywhere, anytime</p>
                     </div>
@@ -447,5 +444,7 @@
             });
         });
     </script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

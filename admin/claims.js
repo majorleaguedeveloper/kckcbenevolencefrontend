@@ -62,24 +62,34 @@ function displayClaimsStats(stats) {
     
     statsContainer.innerHTML = `
         <div class="stat-card">
-            <div class="stat-number">${stats.totalClaims || 0}</div>
             <div class="stat-label">Total Claims</div>
+            <div class="stat-number">${stats.totalClaims || 0}</div>
+            <div class="stat-label">Claims</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">${stats.pendingClaims || 0}</div>
             <div class="stat-label">Pending Review</div>
+            <div class="stat-number">${stats.pendingClaims || 0}</div>
+            <div class="stat-label">Reviews</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">${stats.reviewClaims || 0}</div>
             <div class="stat-label">Under Review</div>
+            <div class="stat-number">${stats.reviewClaims || 0}</div>
+            <div class="stat-label">Reviews</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
+            <div class="stat-label">Approved Claims</div>
             <div class="stat-number">${stats.approvedClaims || 0}</div>
-            <div class="stat-label">Approved</div>
+            <div class="stat-label">Claims</div>
+            <div class="stat-line"></div>
         </div>
         <div class="stat-card">
+            <div class="stat-label">Completed Claims</div>
             <div class="stat-number">${stats.completedClaims || 0}</div>
-            <div class="stat-label">Completed</div>
+            <div class="stat-label">Claims</div>
+            <div class="stat-line"></div>
         </div>
     `;
 }
@@ -127,7 +137,6 @@ function displayClaims(claims) {
     if (claims.length === 0) {
         claimsList.innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">📋</div>
                 <h3>No Claims Found</h3>
                 <p>No claims match the current filters.</p>
             </div>
@@ -181,13 +190,13 @@ function displayClaims(claims) {
                 <div class="claim-actions">
                     <button onclick="viewClaimDetails('${claim._id}')" class="btn btn-outline">View Full Details</button>
                     ${claim.status === 'pending' ? `
-                        <button onclick="moveToReview('${claim._id}')" class="btn btn-primary">Move to Review</button>
+                        <button onclick="moveToReview('${claim._id}')" class="btn btn-secondary">Move to Review</button>
                     ` : ''}
                     ${['pending', 'review'].includes(claim.status) ? `
-                        <button onclick="reviewClaim('${claim._id}')" class="btn btn-success">Review & Approve/Reject</button>
+                        <button onclick="reviewClaim('${claim._id}')" class="btn btn-secondary">Review & Approve/Reject</button>
                     ` : ''}
                     ${claim.status === 'approved' ? `
-                        <button onclick="markCompleted('${claim._id}')" class="btn btn-primary">Mark as Completed</button>
+                        <button onclick="markCompleted('${claim._id}')" class="btn btn-secondary">Mark as Completed</button>
                     ` : ''}
                 </div>
             </div>
@@ -355,7 +364,7 @@ function displayReviewModal(claim) {
     content.innerHTML = `
         <div class="claim-review-full">
             <div class="form-section">
-                <h3>👤 Claimant Information</h3>
+                <h3>Claimant Information</h3>
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Name</span>
@@ -373,7 +382,7 @@ function displayReviewModal(claim) {
             </div>
 
             <div class="form-section">
-                <h3>💀 Deceased Family Member</h3>
+                <h3>Deceased Family Member</h3>
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Name</span>
@@ -419,7 +428,7 @@ function displayReviewModal(claim) {
             </div>
 
             <div class="form-section">
-                <h3>📋 Review Decision</h3>
+                <h3>Review Decision</h3>
                 <form id="review-form">
                     <div class="form-group">
                         <label>Decision:</label>
@@ -437,7 +446,7 @@ function displayReviewModal(claim) {
 
                     <div id="approval-fields" style="display: none;">
                         <div class="calculation-section">
-                            <h4>💰 Calculate Contributions</h4>
+                            <h4>Calculate Contributions</h4>
                             <div class="form-group">
                                 <label for="total-amount">Total Amount to Distribute ($):</label>
                                 <input type="number" id="total-amount" min="1" step="0.01" placeholder="Enter total amount">
@@ -474,7 +483,7 @@ function displayReviewModal(claim) {
 
                     <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
                         <button type="button" onclick="closeReviewModal()" class="btn btn-secondary">Cancel</button>
-                        <button type="button" onclick="submitReview()" class="btn btn-primary">Submit Review</button>
+                        <button type="button" onclick="submitReview()" class="btn btn-secondary">Submit Review</button>
                     </div>
                 </form>
             </div>
@@ -519,7 +528,7 @@ async function calculateContributions() {
 
         if (response.ok) {
             document.getElementById('calculation-result').innerHTML = `
-                <h4>📊 Calculation Results</h4>
+                <h4>Calculation Results</h4>
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Total Amount</span>
@@ -678,7 +687,7 @@ function displayClaimDetailsModal(claim) {
     content.innerHTML = `
         <div class="claim-details-full">
             <div class="form-section">
-                <h3>👤 Claimant Information</h3>
+                <h3>Claimant Information</h3>
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Name</span>
@@ -696,7 +705,7 @@ function displayClaimDetailsModal(claim) {
             </div>
 
             <div class="form-section">
-                <h3>💀 Deceased Family Member</h3>
+                <h3>Deceased Family Member</h3>
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Name</span>
@@ -726,7 +735,7 @@ function displayClaimDetailsModal(claim) {
             </div>
 
             <div class="form-section">
-                <h3>💰 Claim Information</h3>
+                <h3>Claim Information</h3>
                 <div class="claim-details">
                     <div class="claim-detail">
                         <span class="claim-detail-label">Status</span>
@@ -765,7 +774,7 @@ function displayClaimDetailsModal(claim) {
 
             ${claim.reviewNotes ? `
             <div class="form-section">
-                <h3>📝 Admin Review</h3>
+                <h3>Admin Review</h3>
                 <div class="claim-details">
                     ${claim.reviewedBy ? `
                     <div class="claim-detail">
@@ -785,7 +794,7 @@ function displayClaimDetailsModal(claim) {
 
             ${claim.stripePaymentLinkUrl ? `
             <div class="form-section">
-                <h3>💳 Payment Link</h3>
+                <h3>Stripe Payment Link</h3>
                 <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px;">
                     <p>Stripe Payment Link for community contributions:</p>
                     <a href="${claim.stripePaymentLinkUrl}" target="_blank" class="btn btn-primary">Open Payment Link</a>
@@ -795,7 +804,7 @@ function displayClaimDetailsModal(claim) {
 
             ${claim.statusHistory && claim.statusHistory.length > 0 ? `
             <div class="form-section">
-                <h3>📊 Status History</h3>
+                <h3>Status History</h3>
                 <div style="max-height: 200px; overflow-y: auto;">
                     ${claim.statusHistory.map(history => `
                         <div style="background: #f8f9fa; padding: 0.75rem; border-radius: 4px; margin-bottom: 0.5rem;">

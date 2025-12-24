@@ -711,7 +711,7 @@ function showUserDetailsModal(user) {
             border-bottom: none;
         }
         .detail-section h4 {
-            color: #667eea;
+            color: #00684a;
             font-size: 1.1rem;
             margin-bottom: 10px;
         }

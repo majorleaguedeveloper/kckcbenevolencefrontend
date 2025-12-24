@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../shared/navbar.css">
     <link rel="stylesheet" href="../shared/navbar-spacing.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <style>
         .users-header {
             display: flex;
@@ -47,13 +50,18 @@
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             border: 1px solid #e9ecef;
+            max-width: 100%;
+            overflow-x: hidden;
         }
         
         .filter-group {
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             gap: 0.5rem;
             min-width: 180px;
+            flex: 1 1 180px;
+            max-width: 100%;
         }
         
         .filter-label {
@@ -78,11 +86,13 @@
             background-repeat: no-repeat;
             background-size: 1.25em 1.25em;
             padding-right: 2.5rem;
+            width: 100%;
+            max-width: 100%;
         }
         
         .users-filters select:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: #00684a;
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
         
@@ -93,12 +103,13 @@
             font-size: 0.95rem;
             color: #495057;
             transition: all 0.3s ease;
-            min-width: 300px;
+            width: 100%;
+            max-width: 100%;
         }
         
         .users-filters input[type="text"]:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: #00684a;
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
         
@@ -116,7 +127,7 @@
         
         .btn-filter {
             padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            background: linear-gradient(135deg, #00684a 0%, #001e2b 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -154,6 +165,7 @@
             border-color: #6c757d;
             color: #495057;
         }
+
         
         .users-stats {
             display: grid;
@@ -167,13 +179,20 @@
             padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
         }
         
         .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #007bff;
+            font-size: 60px;
+            font-weight: 600;
+            color: #00684a;
+        }
+
+        .stat-line{
+            margin-top: 16px;
+            height: 4px;
+            width: 70%;
+            background-color: #00684a;
+            border-radius: 2px;
         }
         
         .stat-label {
@@ -187,7 +206,7 @@
             padding: 1.5rem;
             margin-bottom: 1rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-left: 4px solid #007bff;
+            border-left: 4px solid #00684a;
         }
         
         .user-card.inactive {
@@ -312,13 +331,13 @@
         }
 
         /* Emergency contact specific styling */
-        .form-section h3:has-text("🚨 Emergency Contact") {
+        .form-section h3:has-text("Emergency Contact") {
             color: #dc3545;
             border-bottom-color: #dc3545;
         }
 
         /* Endorsement details specific styling */
-        .form-section h3:has-text("✅ Endorsement Details") {
+        .form-section h3:has-text("Endorsement Details") {
             color: #28a745;
             border-bottom-color: #28a745;
         }
@@ -335,8 +354,8 @@
         /* User detail styling improvements */
         .user-detail {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            flex-direction: column;
+            align-items: start;
             padding: 0.5rem 0;
             border-bottom: 1px solid #f8f9fa;
         }
@@ -347,7 +366,7 @@
 
         .user-detail-label {
             font-weight: 600;
-            color: #495057;
+            color: #00684a;
             min-width: 140px;
             flex-shrink: 0;
         }
@@ -364,6 +383,7 @@
             align-items: center;
             gap: 0.5rem;
             margin-top: 2rem;
+            flex-wrap: wrap;
         }
         
         .pagination button {
@@ -372,10 +392,19 @@
             background: white;
             cursor: pointer;
             border-radius: 4px;
+            white-space: nowrap;
+        }
+        
+        .pagination .page-indicator {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            color: white;
+            white-space: nowrap;
         }
         
         .pagination button:hover:not(:disabled) {
             background: #f8f9fa;
+            color: black;
         }
         
         .pagination button:disabled {
@@ -385,15 +414,15 @@
         
         .pagination .current-page {
             font-weight: 600;
-            background: #007bff;
+            background: #00684a;
             color: white;
-            border-color: #007bff;
+            border-color: #00684a;
         }
         
         .empty-state {
             text-align: center;
             padding: 3rem;
-            color: #666;
+            color: white;
         }
         
         .empty-state-icon {
@@ -406,10 +435,6 @@
     <div class="container">
 
         <main class="dashboard-content">
-            <div class="users-header">
-                <h2>User Management</h2>
-                <button onclick="loadUsers()" class="btn btn-primary">Refresh</button>
-            </div>
 
             <!-- User Statistics -->
             <div id="users-stats" class="users-stats">
@@ -419,25 +444,25 @@
             <!-- User Filters -->
             <div class="users-filters">
                 <div class="filter-group">
-                    <label class="filter-label" for="search-users">🔍 Search Users</label>
+                    <label class="filter-label" for="search-users">Search Users</label>
                     <input type="text" id="search-users" placeholder="Search by email or phone number...">
                 </div>
                 
                 <div class="filter-group">
-                    <label class="filter-label" for="role-filter">👤 Filter by Role</label>
+                    <label class="filter-label" for="role-filter">Filter by Role</label>
                     <select id="role-filter">
                         <option value="">All Roles</option>
-                        <option value="user">👥 User</option>
-                        <option value="admin">👑 Admin</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
                     </select>
                 </div>
                 
                 <div class="filter-group">
-                    <label class="filter-label" for="status-filter">📊 Filter by Status</label>
+                    <label class="filter-label" for="status-filter">Filter by Status</label>
                     <select id="status-filter">
                         <option value="">All Status</option>
-                        <option value="active">✅ Active</option>
-                        <option value="inactive">❌ Inactive</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
                     </select>
                 </div>
                 
